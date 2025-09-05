@@ -1,0 +1,53 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+.acceuil-container {
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  background: linear-gradient(135deg, #345DAC 0%, #345DAC 50%, white 50%, white 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.name, .job, .about {
+  position: absolute;
+  color: black;
+  font-weight: bold;
+  padding: 20px;
+}
+
+/* Prénom/nom en haut à droite */
+.name {
+  top: 20px;
+  right: 20px;
+  font-size: 60px;
+  font-weight: bold;
+  text-align: right;
+}
+
+/* Métier à gauche au milieu */
+.job {
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 45px;
+  font-weight: bold;
+}
+
+/* Description en bas à droite */
+.about {
+  top: 65%;
+  right: 20px;
+  font-size: 16px;
+  max-width: 300px;
+  text-align: left;
+}
+
+/* Photo de profils milieu */

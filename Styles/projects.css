@@ -1,0 +1,19 @@
+.projets-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 16px;
+    row-gap: 40px;
+}
+
+.image-projet {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 8px;
+    margin-right: 16px;
+}
+
+.projet {
+    display: grid;
+    grid-template-columns: 50px 1fr;
+}

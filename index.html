@@ -1,169 +1,44 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Allan NICOLAS - Développeur</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="JavaScript" href="script.js">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-</head>
-<body>
-  <!-- Navigation -->
-  <nav class="navbar">
-    <div class="nav-container">
-      <div class="nav-logo">Allan NICOLAS</div>
-      <div class="nav-menu">
-        <a href="#accueil" class="nav-link">Accueil</a>
-        <a href="#apropos" class="nav-link">À propos</a>
-        <a href="#competences" class="nav-link">Compétences</a>
-        <a href="#projets" class="nav-link">Projets</a>
-        <a href="#contact" class="nav-link">Contact</a>
-      </div>
-    </div>
-  </nav>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mon Portfolio</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="Styles/acceuil.css">
+    <link rel="stylesheet" href="Styles/navbar.css">
+    <link rel="stylesheet" href="Styles/projets.css">
+  </head>
+  <body>
+    <nav class="navbar">
+      <ul class="nav-menu">
+        <li class="nav-item"><a href="#accueil" class="nav-link">Accueil</a></li>
+        <li class="nav-item"><a href="#projets" class="nav-link">Projets</a></li>
+        <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+    </nav>
 
-  <!-- Section Hero -->
-  <section id="accueil" class="hero">
-    <div class="hero-content">
-      <h1 class="hero-title">Allan NICOLAS</h1>
-      <h2 class="hero-subtitle">Étudiant en BTS SIO - SLAM</h2>
-      <p class="hero-description">Passionné par le développement et les nouvelles technologies</p>
-      <div class="hero-buttons">
-        <a href="#projets" class="btn btn-primary">Voir mes projets</a>
-        <a href="#contact" class="btn btn-secondary">Me contacter</a>
+    <div class="acceuil-container">
+      <div class="name">Allan<br>NICOLAS</div>
+      <div class="job">Étudiant en BTS SIO</div>
+      <div class="about">
+        <H2>About</H2>
+        <p>Passionné par l'informatique et le développement web. En formation BTS Services Informatiques aux Organisations, je développe mes compétences en programmation et en gestion de projets digitaux.</p>
       </div>
+      <div class="photo"></div>
     </div>
-  </section>
 
-  <!-- Section À propos -->
-  <section id="apropos" class="about">
-    <div class="container">
-      <h2 class="section-title">À propos de moi</h2>
-      <div class="about-content">
-        <div class="about-text">
-          <p>Développeur d'applications web modernes. J'aime créer des solutions innovantes et user-friendly.</p>
-          <p>Toujours en quête d'apprentissage, je me tiens au courant des dernières technologies et meilleures pratiques du développement.</p>
+    <div class="projets-container">
+      <div class="projet">
+        <div class="image-projet">
+          <img src="Images/rouge.jpg" alt="image du projet">
         </div>
-        <div class="about-skills">
-          <h3>Mes spécialités</h3>
-          <ul>
-            <li>Développement Frontend (HTML, CSS, JavaScript)</li>
-            <li>Développement Backend (Python, PHP)</li>
-            <li>Bases de données (SQL)</li>
-            <li>Veille technologique</li>
-          </ul>
+        <div>
+          <h3>Clone YouTube</h3>
+          <p>Un clone de la page d'accueil de YouTube, réalisé en HTML et CSS pour pratiquer la mise en page web.</p>
+          <a href="Cours/HTML_CSS_Cours/Youtube_cour/youtube.html" target="_blank">Voir le projet</a>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- Section Compétences -->
-  <section id="competences" class="skills">
-    <div class="container">
-      <h2 class="section-title">Compétences techniques</h2>
-      <div class="skills-grid">
-        <div class="skill-card">
-          <h3>Frontend</h3>
-          <div class="skill-bar">
-            <div class="skill-progress" style="width: 85%">HTML/CSS - 85%</div>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-progress" style="width: 75%">JavaScript - 75%</div>
-          </div>
-        </div>
-        <div class="skill-card">
-          <h3>Backend</h3>
-          <div class="skill-bar">
-            <div class="skill-progress" style="width: 80%">Python - 80%</div>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-progress" style="width: 70%">PHP - 70%</div>
-          </div>
-        </div>
-        <div class="skill-card">
-          <h3>Outils</h3>
-          <div class="skill-bar">
-            <div class="skill-progress" style="width: 90%">Git - 90%</div>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-progress" style="width: 85%">VS Code - 85%</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section Projets -->
-  <section id="projets" class="projects">
-    <div class="container">
-      <h2 class="section-title">Mes projets</h2>
-      <div class="projects-grid">
-        <div class="project-card">
-          <h3>Jeu d'aventure textuel</h3>
-          <p>Un jeu interactif développé en Python avec une histoire immersive et des choix multiples.</p>
-          <div class="project-tech">
-            <span class="tech-tag">Python</span>
-            <span class="tech-tag">Game Development</span>
-          </div>
-          <a href="#" class="project-link">Voir le projet</a>
-        </div>
-        <div class="project-card">
-          <h3>Site web sécurisé</h3>
-          <p>Développement d'un site web avec focus sur la cybersécurité et les bonnes pratiques.</p>
-          <div class="project-tech">
-            <span class="tech-tag">HTML</span>
-            <span class="tech-tag">CSS</span>
-            <span class="tech-tag">PHP</span>
-          </div>
-          <a href="#" class="project-link">Voir le projet</a>
-        </div>
-        <div class="project-card">
-          <h3>Portfolio personnel</h3>
-          <p>Ce portfolio moderne et responsive que vous visitez actuellement.</p>
-          <div class="project-tech">
-            <span class="tech-tag">HTML</span>
-            <span class="tech-tag">CSS</span>
-            <span class="tech-tag">JavaScript</span>
-          </div>
-          <a href="#" class="project-link">Voir le code</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Section Contact -->
-  <section id="contact" class="contact">
-    <div class="container">
-      <h2 class="section-title">Contactez-moi</h2>
-      <div class="contact-content">
-        <div class="contact-info">
-          <h3>Parlons de votre projet</h3>
-          <p>Je suis toujours intéressé par de nouveaux défis et opportunités.</p>
-          <div class="contact-item">
-            <strong>Email:</strong> allan.nicolas@email.com
-          </div>
-          <div class="contact-item">
-            <strong>LinkedIn:</strong> Allan NICOLAS
-          </div>
-          <div class="contact-item">
-            <strong>GitHub:</strong> github.com/allan-nicolas
-          </div>
-        </div>
-        <form class="contact-form">
-          <input type="text" placeholder="Votre nom" required>
-          <input type="email" placeholder="Votre email" required>
-          <textarea placeholder="Votre message" rows="5" required></textarea>
-          <button type="submit" class="btn btn-primary">Envoyer</button>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <p>&copy; 2025 Allan NICOLAS. Tous droits réservés.</p>
-    </div>
-  </footer>
-</body>
+  </body>
 </html>
