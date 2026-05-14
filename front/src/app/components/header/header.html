@@ -1,0 +1,36 @@
+<!-- Le Header : fixed pour qu'il reste en haut, w-full pour toute la largeur -->
+<header class="fixed top-0 w-full bg-slate-900 text-white shadow-lg z-50">
+  
+  <!-- Container pour centrer le contenu et ajouter du padding -->
+  <nav class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+    
+    <!-- Ton "Logo" ou Nom -->
+    <div class="text-xl font-bold tracking-tight text-indigo-400">
+      Allan NICOLAS<span class="text-white">.DEV</span>
+    </div>
+
+    <!-- Tes liens de navigation mis en ligne grâce à 'flex' -->
+    <ul class="flex items-center gap-x-8 font-medium">
+      <li>
+        <a href="#home" class="hover:text-indigo-400 transition-colors">Accueil</a>
+      </li>
+      <li>
+        <a href="#skills" class="hover:text-indigo-400 transition-colors">Compétences</a>
+      </li>
+      <li>
+        <a href="#projects" class="hover:text-indigo-400 transition-colors">Projets</a>
+      </li>
+      <!-- Un bouton spécial pour le contact -->
+      <li>
+        <a href="#contact" class="bg-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-500 transition-all">
+          Contact
+        </a>
+      </li>
+    </ul>
+
+  </nav>
+</header>
+
+<!-- Important : comme le header est "fixed", il ne prend plus de place. 
+     On ajoute une div vide pour éviter que le Hero ne passe dessous. -->
+<div class="h-16"></div>
