@@ -5,11 +5,12 @@ import { Hero } from "./components/hero/hero";
 import { Projects } from "./components/projects/projects";
 import { Skills } from "./components/skills/skills";
 import { Experience } from "./components/experience/experience";
+import { TechWatch } from "./components/tech-watch/tech-watch";
 
 
 @Component({
   selector: 'app-root',
-  imports: [Header, Footer, Hero, Projects, Skills, Experience],
+  imports: [Header, Footer, Hero, Projects, Skills, Experience, TechWatch],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
