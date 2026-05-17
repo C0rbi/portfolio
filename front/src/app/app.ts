@@ -6,11 +6,13 @@ import { Projects } from "./components/projects/projects";
 import { Skills } from "./components/skills/skills";
 import { Experience } from "./components/experience/experience";
 import { TechWatch } from "./components/tech-watch/tech-watch";
+import { AboutMe } from './components/about-me/about-me';
+import { Certifications } from './components/certifications/certifications';
 
 
 @Component({
   selector: 'app-root',
-  imports: [Header, Footer, Hero, Projects, Skills, Experience, TechWatch],
+  imports: [Header, Footer, Hero, Projects, Skills, Experience, TechWatch, AboutMe, Certifications],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
