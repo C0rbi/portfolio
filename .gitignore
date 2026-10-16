@@ -1,0 +1,9 @@
+# Secrets du docker-compose : jamais sur GitHub
+.env
+
+# Build de l'API
+api/target/
+
+# IntelliJ
+.idea/
+*.iml

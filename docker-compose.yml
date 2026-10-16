@@ -1,0 +1,50 @@
+# =============================================================
+#  Portfolio d'Allan Nicolas : site + API + base MySQL
+#  Lancement : cp .env.example .env (puis le remplir)
+#              docker compose up -d --build
+#  Voir DEPLOIEMENT.md
+# =============================================================
+services:
+  # Base MySQL : les données vivent dans le volume « db-data »
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: portfolio
+      MYSQL_USER: portfolio
+      MYSQL_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD à définir dans .env}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD à définir dans .env}
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  # API Spring Boot : jamais exposée directement, nginx la relaie
+  api:
+    build: ./api
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_NAME: portfolio
+      DB_USER: portfolio
+      DB_PASSWORD: ${DB_PASSWORD}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:?ADMIN_TOKEN à définir dans .env}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Site : nginx sert Angular et relaie /api
+  web:
+    build: ./front
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-80}:80"
+    depends_on:
+      - api
+
+volumes:
+  db-data:
