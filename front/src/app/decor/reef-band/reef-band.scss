@@ -1,0 +1,106 @@
+@use 'core' as *;
+
+// =============================================================
+//  Patate de corail, nautile et napoléon
+//  Hôte : classes globales `decor interlude` (voir _zones.scss). Il ne
+//  mesure rien : sa scène .interlude__stage est centrée sur la frontière
+//  entre les deux sections, dans leur padding.
+// =============================================================
+:host {
+  display: block;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+// --- Patate de corail : posée au bord gauche, son pied se perd dans le bleu ---
+.reef {
+  position: absolute;
+  left: -20px;
+  bottom: 0;
+  width: clamp(120px, 16vw, 240px);
+  mask-image: linear-gradient(to top, transparent, #000 16%);
+}
+
+// Parties vivantes : chacune pivote sur son pied
+.gorgon,
+.tentacle {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.tentacle {
+  --sway-from: -9deg;
+  --sway-to: 9deg;
+}
+
+// --- Nautile : il flotte sur place, au bord droit ---
+.nautilus {
+  position: absolute;
+  right: 6%;
+  top: 18%;
+  width: clamp(70px, 7.6vw, 110px);
+}
+
+// Légende à gauche du nautile ; sous lui quand la place manque
+.nautilus__legend {
+  top: calc(100% + 4px);
+  right: 0;
+
+  @include from($bp-lg) {
+    top: 46%;
+    right: calc(100% + 12px);
+  }
+}
+
+// --- Napoléon ---
+.napoleon {
+  --w: clamp(110px, 14vw, 200px);
+  --y: 16%;
+  --dur: 70s;
+  --delay: -20s;
+  --rest: 34vw;
+}
+
+.napoleon__legend {
+  bottom: calc(100% + 2px);
+  left: 46%;
+}
+
+@include motion-safe {
+  .gorgon {
+    animation: sway 6s $ease-in-out infinite alternate;
+  }
+
+  // Décalage de chaque tentacule : en ligne dans le gabarit
+  .tentacle {
+    animation: sway 3s $ease-in-out infinite alternate;
+  }
+
+  .clown {
+    animation: clown 6s $ease-in-out infinite alternate;
+  }
+
+  .nautilus__float {
+    --amp: -18px;
+    animation: hover-y 12s $ease-in-out infinite alternate;
+  }
+
+  .napoleon__bob {
+    animation: bob 5s $ease-in-out infinite alternate;
+  }
+}
+
+// Le poisson-clown va et vient au-dessus de son anémone
+@keyframes clown {
+  from {
+    transform: translate(14px, -6px);
+  }
+  to {
+    transform: translate(4px, 8px);
+  }
+}

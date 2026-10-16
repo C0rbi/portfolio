@@ -1,0 +1,245 @@
+// =============================================================
+//  Zones de la descente : sable, puis lagon
+//  L'accueil se lit comme une coupe du lagon de Nouméa. Chaque
+//  zone pose son fond ; les sections n'ont plus de fond propre.
+//  On y trouve aussi les briques partagées par les décors :
+//  intermèdes, objets qui traversent, traces de pas, bulles,
+//  légendes de carnet et sondes de carte marine.
+// =============================================================
+@use 'sass:math';
+@use 'core' as *;
+
+// Jetons « eau » : redéclarés en entier, car une custom property qui en
+// référence une autre est calculée là où elle est déclarée.
+@mixin sea-tokens {
+  --paper: #e0f5f1;
+  --paper-alt: #eef8f7;
+  --paper-deep: #d5eef0;
+  --line: #cfe5e9;
+  --line-strong: #a9cdd6;
+  --rule: #0a5f69;
+  --shadow-xs: 0 1px 2px rgba(8, 70, 92, 0.07);
+  --shadow-sm: 0 2px 12px rgba(8, 70, 92, 0.08);
+  --shadow-md: 0 16px 34px -16px rgba(8, 70, 92, 0.3);
+  --shadow-lg: 0 34px 64px -30px rgba(8, 70, 92, 0.4);
+}
+
+// Jetons seuls, sans fond : pour le footer
+.tint-sea {
+  @include sea-tokens;
+}
+
+// =============================================================
+//  Zones
+//  Jamais d'overflow ici : le sticky de la fiche projet en dépend.
+// =============================================================
+.zone {
+  position: relative;
+  isolation: isolate;
+}
+
+// Le contenu passe toujours au-dessus du décor
+.zone > :not(.decor) {
+  position: relative;
+  z-index: 1;
+}
+
+.zone--sand {
+  background: linear-gradient(180deg, var(--sand-0) 0%, var(--sand-1) 60%, var(--sand-2) 100%);
+
+  // Rides de sable statiques, cantonnées aux gouttières.
+  // Les deux longues rides ont la même tangente aux deux bords de la
+  // tuile : aucune cassure tous les 240 px. Le masque est calé sur le
+  // conteneur (1180 px centré) et non sur des pourcentages : les rides
+  // s'arrêtent avant la colonne de texte, et disparaissent quand il
+  // n'y a plus de gouttière (mobile, tablette).
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='120'%3E%3Cg fill='none' stroke='%23d9c08f' stroke-width='1.1' stroke-linecap='round'%3E%3Cpath d='M0 26C30 19 90 19 120 26S210 33 240 26'/%3E%3Cpath d='M0 79C40 79 80 89 120 89S200 79 240 79'/%3E%3Cpath d='M36 54c20-5 36 1 54-2'/%3E%3Cpath d='M150 114c16-4 30 1 44-2'/%3E%3C/g%3E%3C/svg%3E")
+      0 0 / 240px 120px;
+    mask-image: linear-gradient(
+      90deg,
+      #000 calc(50% - 650px),
+      transparent calc(50% - 570px) calc(50% + 570px),
+      #000 calc(50% + 650px)
+    );
+  }
+}
+
+.zone--sea {
+  @include sea-tokens;
+  background: linear-gradient(180deg, var(--sea-0) 0%, var(--sea-1) 28%, var(--sea-2) 62%, var(--sea-3) 100%);
+}
+
+// =============================================================
+//  Sondes de carte marine (affichées par .section-head__top::after)
+//  « \2212 » est le vrai signe moins (U+2212) ; l'espace qui suit
+//  l'échappement est absorbé.
+// =============================================================
+app-about-me {
+  --sonde: '+2 m';
+}
+
+app-experience {
+  --sonde: '+1 m';
+}
+
+app-projects {
+  --sonde: '\2212 2 m';
+}
+
+app-skills {
+  --sonde: '\2212 6 m';
+}
+
+app-certifications {
+  --sonde: '\2212 11 m';
+}
+
+app-tech-watch {
+  --sonde: '\2212 16 m';
+}
+
+app-footer {
+  --sonde: '\2212 22 m';
+}
+
+// =============================================================
+//  Décors
+//  Un décor ne gêne jamais le clic ; seuls ses vrais contrôles
+//  (phare, bouteille…) récupèrent le pointeur.
+// =============================================================
+.decor {
+  pointer-events: none;
+}
+
+.decor :is(a, button, [popover]) {
+  pointer-events: auto;
+}
+
+// Intermède : hôte de hauteur nulle, scène centrée sur la frontière
+// entre deux sections. Elle tient dans leur padding cumulé, donc
+// jamais sous du texte.
+.interlude {
+  display: block;
+  position: relative;
+  z-index: 0;
+  height: 0;
+}
+
+.interlude__stage {
+  position: absolute;
+  inset-inline: 0;
+  top: math.div(-$stage-h-sm, 2);
+  height: $stage-h-sm;
+  overflow: hidden;
+  contain: layout paint;
+
+  @include from($bp-md) {
+    top: math.div(-$stage-h-md, 2);
+    height: $stage-h-md;
+  }
+}
+
+// Objet qui traverse l'écran : un élément HTML qui contient son propre SVG.
+// La pose de repos (--rest) est le style de base, vue aussi en mouvement réduit.
+.mover {
+  position: absolute;
+  top: var(--y, 50%);
+  left: 0;
+  width: var(--w, 120px);
+  transform: translateX(var(--rest, 60vw));
+
+  > svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  // Le SVG est souvent enveloppé (mover > nage > fuite > svg) : nageoires,
+  // queues et poissons qui s'écartent ne doivent jamais être rognés.
+  svg {
+    overflow: visible;
+  }
+}
+
+.mover--rev {
+  transform: translateX(var(--rest, 30vw)) scaleX(-1);
+}
+
+@include motion-safe(global) {
+  .mover {
+    animation: cross-x var(--dur, 40s) linear var(--delay, 0s) infinite;
+    will-change: transform;
+  }
+
+  .mover--rev {
+    animation-name: cross-x-rev;
+  }
+
+  // Traversée unique : le décor la libère lui-même (ex. .is-swimming du
+  // fond du lagon, voir lagoon-floor.ts).
+  .mover--once {
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+  }
+}
+
+// Trace de pas : un seul élément HTML, coloré par masque
+.foot {
+  position: absolute;
+  width: var(--fw, 12px);
+  aspect-ratio: 1 / 2;
+  background-color: var(--sand-shadow);
+  opacity: 0.7;
+  mask: var(--foot) center / contain no-repeat;
+  rotate: var(--r, 0deg);
+}
+
+.foot--r {
+  scale: -1 1;
+}
+
+// Bulle montante (tortue, fond du lagon, footer)
+.bubble {
+  position: absolute;
+  left: var(--x, 50%);
+  bottom: var(--b, 0);
+  width: var(--s, 8px);
+  aspect-ratio: 1;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff 0 18%, rgba(255, 255, 255, 0.15) 40%);
+  opacity: 0.55;
+  transform: translate(-50%, 0);
+
+  @include motion-safe(global) {
+    opacity: 0;
+    animation: bubble-rise var(--d, 6s) $ease-out var(--delay, 0s) infinite;
+  }
+}
+
+// Légende façon carnet de terrain (décor, aria-hidden via la scène)
+.legend {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  white-space: nowrap;
+
+  em {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-style: italic;
+  }
+
+  @include upto($bp-md) {
+    display: none;
+  }
+}

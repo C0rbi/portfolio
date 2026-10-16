@@ -1,0 +1,89 @@
+@use 'core' as *;
+
+// =============================================================
+//  Lumière sous la surface
+//  Couche absolue en haut du lagon, sous les sections. Le masque
+//  l'éteint en douceur : rien au raccord avec le rivage (pas de
+//  bord net), puis plus rien passé le milieu de la couche.
+// =============================================================
+:host {
+  display: block;
+  position: absolute;
+  inset: 0 0 auto;
+  height: min(1100px, 40%);
+  overflow: hidden;
+  mask-image: linear-gradient(transparent, #000 90px, #000 55%, transparent);
+
+  // Caustiques : deux réseaux de lumière qui glissent l'un sur l'autre
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -200px;
+    background: var(--caustic) 0 0 / 200px 200px;
+    opacity: 0.22;
+  }
+
+  &::after {
+    background-size: 280px 280px;
+    opacity: 0.16;
+  }
+}
+
+// --- Rayons : inclinés ensemble, la lumière vient du haut à droite ---
+.rays {
+  position: absolute;
+  inset: 0;
+  transform: skewX(-14deg);
+  transform-origin: 0 0;
+}
+
+.ray {
+  position: absolute;
+  top: 0;
+  height: 90%;
+  // Un seul dégradé : clair au point d'entrée, éteint sur les bords et en bas
+  background: radial-gradient(50% 100% at 50% 0, rgba(255, 255, 255, 0.85), transparent);
+  opacity: 0.28;
+}
+
+@include motion-safe {
+  :host::before,
+  :host::after {
+    will-change: transform;
+    animation: caustic-a 26s $ease-in-out infinite alternate;
+  }
+
+  :host::after {
+    animation-name: caustic-b;
+    animation-duration: 34s;
+  }
+
+  // Durée et décalage de chaque rayon : en ligne dans le gabarit
+  .ray {
+    animation: ray 9s $ease-in-out infinite alternate;
+  }
+}
+
+@keyframes caustic-a {
+  to {
+    transform: translate3d(-200px, -100px, 0);
+  }
+}
+
+@keyframes caustic-b {
+  to {
+    transform: translate3d(160px, -120px, 0);
+  }
+}
+
+@keyframes ray {
+  from {
+    opacity: 0.15;
+    transform: scaleX(1);
+  }
+  to {
+    opacity: 0.4;
+    transform: scaleX(1.2);
+  }
+}

@@ -1,0 +1,236 @@
+@use 'core' as *;
+
+// =============================================================
+//  Rivage : la jonction vivante entre le sable et le lagon
+//  Toutes les mesures verticales sont en unités --s (1/230 de la
+//  hauteur de la bande) : le dessin garde ses proportions de 150
+//  à 240 px de haut. Le bas de la bande est toujours de l'eau en
+//  --sea-0, comme le haut de la zone lagon qui suit.
+// =============================================================
+:host {
+  --h: clamp(150px, 16vw, 240px);
+  --s: calc(var(--h) / 230);
+  --px: 22%; // abscisse de la piste de pas
+  --gut: 20px; // gouttière du conteneur (.shell)
+  display: block;
+  position: relative;
+  height: var(--h);
+  overflow: hidden;
+  background: linear-gradient(var(--sand-2) 45%, var(--sea-0) 100%);
+
+  @include from($bp-md) {
+    --px: 30%;
+    --gut: 40px;
+  }
+
+  > * {
+    position: absolute;
+  }
+}
+
+// --- Sable ---
+.shore__wrack {
+  top: calc(var(--s) * 18);
+  left: 0;
+  width: 100%;
+  height: calc(var(--s) * 18);
+}
+
+.shore__wet {
+  inset: calc(var(--s) * 40) 0 0;
+  background: linear-gradient(transparent, var(--sand-wet) 45%);
+  opacity: 0.8;
+}
+
+// Traces dans le sable mouillé : plus sombres que sur le sable sec
+.shore__print {
+  --fw: calc(var(--s) * 13);
+  left: calc(var(--px) + var(--dx) * var(--s));
+  top: calc(var(--dy) * var(--s));
+  translate: -50% -50%;
+  background-color: var(--sand-deep);
+  opacity: 0.5;
+}
+
+// --- Eau ---
+// Pose de repos (mouvement réduit) : un peu au-dessus de la ligne d'eau,
+// la mer lèche la dernière trace.
+.shore__waves {
+  inset: calc(var(--s) * 156) 0 calc(var(--s) * -124);
+  transform: translateY(calc(var(--s) * -8));
+}
+
+// Couches de 200 % (400 % sur mobile, pour que les langues d'eau ne
+// soient pas écrasées en largeur) : le motif se répète à mi-longueur.
+.shore__water,
+.shore__next {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 400%;
+
+  @include from($bp-md) {
+    width: 200%;
+  }
+
+  svg {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    max-width: none; // le reset borne les svg à 100 %
+  }
+}
+
+// Nappe d'eau, et juste derrière l'écume une pellicule plus turquoise
+// qui se fond dans --sea-0 : c'est elle qui fait ressortir le blanc.
+.shore__sheet {
+  top: 0;
+  height: 100%;
+  fill: var(--sea-0);
+}
+
+.shore__film {
+  fill: #c9ece6;
+  mask-image: linear-gradient(#000 calc(var(--s) * 18), transparent calc(var(--s) * 62));
+}
+
+.shore__crest {
+  top: 0;
+  height: calc(var(--s) * 40);
+}
+
+// Bande d'écume festonnée, cernée d'un trait d'encre de carnet
+.shore__foam {
+  fill: #fff;
+  stroke: var(--lagoon);
+  stroke-opacity: 0.22;
+  stroke-width: 0.9;
+}
+
+.shore__ink {
+  fill: none;
+  stroke: var(--lagoon);
+  stroke-opacity: 0.5;
+  stroke-width: 1.1;
+}
+
+.shore__bubble {
+  position: absolute;
+  left: var(--x);
+  top: calc(var(--y) * var(--s));
+  width: var(--b);
+  aspect-ratio: 1;
+  border: 1px solid rgba(10, 95, 105, 0.3);
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.75);
+  translate: -50% -50%;
+}
+
+// La vague suivante : un trait d'écume coupé, souligné d'encre
+.shore__next svg {
+  top: calc(var(--s) * 62);
+  height: calc(var(--s) * 14);
+}
+
+.shore__swell {
+  stroke: var(--lagoon);
+  stroke-opacity: 0.2;
+  translate: 0 1.2px;
+}
+
+.shore__swell-foam {
+  stroke: #fff;
+  stroke-width: 2.6;
+  stroke-dasharray: 140 50 70 40;
+  stroke-linecap: round;
+}
+
+// Sonde du rivage : une étiquette posée sur l'eau, alignée sur le bord
+// droit du conteneur, avec son fil à plomb comme les sondes de section.
+.shore__label {
+  right: max(var(--gut), calc(50% - 550px));
+  bottom: 10px;
+  padding: 2px 6px 2px 16px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+  background:
+    linear-gradient(currentColor 0 0) 7px 2px / 1px 9px no-repeat,
+    radial-gradient(circle, currentColor 0 2.5px, transparent 3px) 4px 10px / 7px 7px no-repeat,
+    var(--sea-0);
+}
+
+// =============================================================
+//  Mouvement : « la mer efface mes pas »
+//  Le ressac revient toutes les 8 s, par séries de quatre vagues de
+//  plus en plus hautes (cycle de 32 s). Chaque vague atteint une trace
+//  de plus et l'efface à son sommet. La pause hors écran fige tout
+//  ensemble : vagues et effacements restent synchronisés.
+// =============================================================
+@include motion-safe {
+  .shore__waves {
+    animation: shore-surf 32s ease-in-out infinite;
+  }
+
+  .shore__water {
+    animation: wave-loop 22s linear infinite;
+  }
+
+  .shore__next {
+    animation: wave-loop 16s linear infinite reverse;
+  }
+
+  .shore__wet {
+    animation: shore-wet 8s ease-in-out infinite;
+  }
+
+  .shore__print {
+    animation: erase 8s linear calc(var(--i) * 8s) 1 both;
+  }
+}
+
+@keyframes shore-surf {
+  0%,
+  25%,
+  50%,
+  75%,
+  100% {
+    transform: none;
+  }
+  12.5% {
+    transform: translateY(calc(var(--s) * -46));
+  }
+  37.5% {
+    transform: translateY(calc(var(--s) * -70));
+  }
+  62.5% {
+    transform: translateY(calc(var(--s) * -94));
+  }
+  87.5% {
+    transform: translateY(calc(var(--s) * -116));
+  }
+}
+
+// Le sable fonce juste après le retrait de la vague, puis sèche
+@keyframes shore-wet {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  58% {
+    opacity: 1;
+  }
+}
+
+// L'effacement tombe au sommet de la vague (50 % du cycle de 8 s)
+@keyframes erase {
+  0%,
+  45% {
+    opacity: 0.7;
+  }
+  55%,
+  100% {
+    opacity: 0;
+  }
+}

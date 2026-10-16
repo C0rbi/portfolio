@@ -1,0 +1,26 @@
+<figure class="code">
+  <figcaption class="code__bar">
+    <span class="code__file">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M9 1.5H4.5A1.5 1.5 0 0 0 3 3v10a1.5 1.5 0 0 0 1.5 1.5h7A1.5 1.5 0 0 0 13 13V5.5L9 1.5Z"
+              stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
+        <path d="M9 1.5V5.5H13" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
+      </svg>
+      {{ file() }}
+    </span>
+    <span class="code__lang">{{ label() }}</span>
+  </figcaption>
+
+  <div class="code__body" tabindex="0" role="region" [attr.aria-label]="regionLabel()">
+    @for (line of lines(); track line.number) {
+      <div class="code__line">
+        <span class="code__num" aria-hidden="true">{{ line.number }}</span>
+        <span class="code__text">@for (token of line.tokens; track $index) {<span [class]="'tk tk--' + token.kind">{{ token.text }}</span>}</span>
+      </div>
+    }
+  </div>
+
+  @if (caption()) {
+    <p class="code__caption">{{ caption() }}</p>
+  }
+</figure>

@@ -1,0 +1,135 @@
+<!--
+  Intermède du sable, entre « Profil » et « Parcours ».
+  Toute la scène tient dans la bande de padding entre les deux sections.
+  Les traces de pas sont dessinées une fois en « unités » (--u, --v) et
+  mises à l'échelle par --k selon la largeur : la piste garde sa forme.
+-->
+<div class="interlude__stage steps">
+  <!-- Étoile de mer, échouée au bord gauche -->
+  <svg class="steps__star" viewBox="0 0 40 40">
+    <path
+      d="M16 15Q15.2 8.5 18.1 4.8Q20 1.3 21.9 4.8Q24.8 8.5 24 15Q29.9 12.2 34.3 13.8Q38.3 14.6 35.5 17.5Q32.9 21.4 26.5 22.6Q30.9 27.3 30.8 32.1Q31.3 36 27.7 34.3Q23.1 33 20 27.3Q16.9 33 12.3 34.3Q8.7 36 9.2 32.1Q9.1 27.3 13.5 22.6Q7.1 21.4 4.5 17.5Q1.7 14.6 5.7 13.8Q10.1 12.2 16 15Z"
+      style="fill: var(--fx-coral)" stroke="#d98a6f" stroke-width="1" stroke-linejoin="round"
+    />
+    <g fill="#fbd9cc">
+      <circle cx="20" cy="13" r="1" /><circle cx="20" cy="9.5" r="1" /><circle cx="20" cy="6.3" r=".8" />
+      <circle cx="27.1" cy="18.2" r="1" /><circle cx="30.5" cy="17.1" r="1" /><circle cx="33.5" cy="16.1" r=".8" />
+      <circle cx="24.4" cy="26.6" r="1" /><circle cx="26.5" cy="29.4" r="1" /><circle cx="28.3" cy="32" r=".8" />
+      <circle cx="15.6" cy="26.6" r="1" /><circle cx="13.5" cy="29.4" r="1" /><circle cx="11.7" cy="32" r=".8" />
+      <circle cx="12.9" cy="18.2" r="1" /><circle cx="9.5" cy="17.1" r="1" /><circle cx="6.5" cy="16.1" r=".8" />
+      <circle cx="20" cy="20.5" r="1.6" />
+    </g>
+  </svg>
+
+  <!-- Piste : pied droit, pied gauche (.foot--r)… dans l'ordre de la marche -->
+  <i class="foot scroll-anim" style="--i: 0; --u: 4; --v: 7.5; --r: 64deg"></i>
+  <i class="foot foot--r scroll-anim" style="--i: 1; --u: 56; --v: -35; --r: 64deg"></i>
+  <i class="foot scroll-anim" style="--i: 2; --u: 124; --v: -45; --r: 72deg"></i>
+  <i class="foot foot--r scroll-anim" style="--i: 3; --u: 182; --v: -77; --r: 74deg"></i>
+  <i class="foot scroll-anim" style="--i: 4; --u: 250; --v: -77; --r: 83deg"></i>
+  <i class="foot foot--r scroll-anim" style="--i: 5; --u: 314; --v: -101; --r: 84deg"></i>
+  <i class="foot scroll-anim" style="--i: 6; --u: 380; --v: -89; --r: 92deg"></i>
+  <i class="foot foot--r scroll-anim" style="--i: 7; --u: 447; --v: -102; --r: 92deg"></i>
+
+  <!-- Terrier du crabe fantôme : boulettes de sable, puis le trou -->
+  <div class="burrow">
+    <svg viewBox="0 0 60 26">
+      <g style="fill: var(--sand-shadow)">
+        <circle cx="7" cy="16" r="1.7" /><circle cx="11.5" cy="20.5" r="1.4" /><circle cx="4.5" cy="11" r="1.2" />
+        <circle cx="50" cy="18.5" r="1.6" /><circle cx="55" cy="13.5" r="1.3" /><circle cx="46" cy="22.5" r="1.2" />
+        <circle cx="14" cy="7" r="1.1" /><circle cx="52.5" cy="8.5" r="1" />
+      </g>
+      <ellipse cx="30" cy="13.5" rx="16" ry="8" style="fill: var(--sand-2)" />
+      <ellipse cx="30" cy="13.5" rx="11.5" ry="5.6" fill="#c9ad78" />
+      <path d="M18.6 13.2c1.4-3.6 6-5.6 11.4-5.6s10 2 11.4 5.6c-2.6-1.9-6.6-3-11.4-3s-8.8 1.1-11.4 3Z" fill="#a98a55" />
+    </svg>
+    <!-- Les yeux qui dépassent du trou, de temps en temps -->
+    <span class="burrow__peek">
+      <svg viewBox="0 0 20 14" fill="none" stroke-linecap="round">
+        <path d="M7.5 14 6.8 6M12.5 14l.7-8" style="stroke: var(--sand-deep)" stroke-width="1.5" />
+        <ellipse cx="6.6" cy="4.4" rx="1.9" ry="2.8" style="fill: var(--ink-2)" />
+        <ellipse cx="13.4" cy="4.4" rx="1.9" ry="2.8" style="fill: var(--ink-2)" />
+      </svg>
+    </span>
+  </div>
+
+  <!-- Crabe fantôme (Ocypode) : il court de côté vers son trou -->
+  <div class="crab">
+    <svg viewBox="0 0 64 40" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <g class="crab__legs" style="stroke: var(--sand-deep)" stroke-width="1.7">
+        <path d="M21.5 18.5 13 14.5 5.5 17" />
+        <path d="M21 21.5 10.5 20.5 3 24.5" />
+        <path d="M21 24.5 11 27 5 32.5" />
+        <path d="M22.5 27.5 15.5 32.5 12 38" />
+      </g>
+      <g class="crab__legs crab__legs--r" style="stroke: var(--sand-deep)" stroke-width="1.7">
+        <path d="M42.5 18.5 51 14.5 58.5 17" />
+        <path d="M43 21.5 53.5 20.5 61 24.5" />
+        <path d="M43 24.5 53 27 59 32.5" />
+        <path d="M41.5 27.5 48.5 32.5 52 38" />
+      </g>
+      <!-- Pinces : la gauche, plus forte -->
+      <path d="M23 16.5C19 15.5 17 13.5 17 11" style="stroke: var(--sand-deep)" stroke-width="2.2" />
+      <path
+        d="M13.2 10.2C12.6 6.4 15.6 4 19 5c2 .6 2.6 2.8 1.3 4.3L17 10.9c-1.4.7-3.2.5-3.8-.7Z"
+        style="fill: var(--fx-crab); stroke: var(--sand-deep)" stroke-width="1.1"
+      />
+      <path d="M41 16.5C44.5 15.6 46 14 46 12" style="stroke: var(--sand-deep)" stroke-width="1.9" />
+      <path
+        d="M44.2 11.6c-.6-2.7 1.4-4.4 3.9-3.8 1.6.4 2 2 1 3l-2.3 1.4c-1 .5-2.3.4-2.6-.6Z"
+        style="fill: var(--fx-crab); stroke: var(--sand-deep)" stroke-width="1.1"
+      />
+      <!-- Carapace et son sillon en H -->
+      <path
+        d="M21.5 14.5C27 12.2 37 12.2 42.5 14.5 45.6 19 45.2 25.6 41.6 29.6 36 32.6 28 32.6 22.4 29.6 18.8 25.6 18.4 19 21.5 14.5Z"
+        style="fill: var(--fx-crab); stroke: var(--sand-deep)" stroke-width="1.2"
+      />
+      <path
+        d="M27.5 19.5c3 1.4 6 1.4 9 0M29 22v4.5M35 22v4.5"
+        style="stroke: var(--sand-deep)" stroke-opacity=".55" stroke-width=".9"
+      />
+      <!-- Yeux sur pédoncules -->
+      <path d="M27.5 14 26.5 7.5M36.5 14l1-6.5" style="stroke: var(--sand-deep)" stroke-width="1.5" />
+      <ellipse cx="26.3" cy="6.4" rx="1.9" ry="2.8" style="fill: var(--ink-2)" />
+      <ellipse cx="37.7" cy="6.4" rx="1.9" ry="2.8" style="fill: var(--ink-2)" />
+    </svg>
+  </div>
+  <span class="legend steps__legend steps__legend--crab"><em>Ocypode</em> · crabe fantôme</span>
+
+  <!-- Coquillages : troca et porcelaine (reflet nacré) -->
+  <svg class="steps__troca" viewBox="0 0 30 32" stroke-linecap="round" stroke-linejoin="round">
+    <path
+      d="M15 2.2c1 0 1.8.8 2.6 2.4L26.6 22c1.6 3.2-4.6 6.4-11.6 6.4S1.8 25.2 3.4 22L12.4 4.6c.8-1.6 1.6-2.4 2.6-2.4Z"
+      style="fill: var(--fx-shell); stroke: var(--sand-deep)" stroke-width="1"
+    />
+    <g fill="none" style="stroke: var(--fx-coral-2)" stroke-width="1.7" stroke-opacity=".85">
+      <path d="M13.2 7.6l1.6 2.6M16.4 7.4l1.2 2.8" />
+      <path d="M10.4 12.6l2.2 3.4M14.4 12.8l1.8 3.6M18.6 12.6l1.4 3.4" />
+      <path d="M7.6 18.2l2.6 3.8M12 18.6l2.2 4M16.4 18.6l2 4M20.8 18.4l1.6 3.6" />
+    </g>
+    <path
+      d="M11.6 6.4c2.2.8 4.6.8 6.8 0M9 11.4c3.8 1.3 8.2 1.3 12 0M6.2 16.8c5.4 1.8 12.2 1.8 17.6 0M3.6 22.2c6.8 2.4 16 2.4 22.8 0"
+      fill="none" style="stroke: var(--sand-deep)" stroke-width=".9"
+    />
+  </svg>
+
+  <svg class="steps__cowrie" viewBox="0 0 40 26" stroke-linecap="round" stroke-linejoin="round">
+    <path
+      d="M3 14.8C3 7.6 11.4 3 21 3c9.6 0 16 5 16 11.3 0 4.6-3.8 7.4-9 8.4-2.6.5-5 .6-7.6.6-2.8 0-5.4-.2-8-.8C6.4 21.6 3 19.2 3 14.8Z"
+      style="fill: var(--fx-shell); stroke: var(--sand-deep)" stroke-width="1"
+    />
+    <g style="fill: var(--fx-nautilus-stripe)" fill-opacity=".26">
+      <circle cx="12" cy="9" r="1.6" /><circle cx="17" cy="6.5" r="1.3" /><circle cx="24" cy="6.2" r="1.7" />
+      <circle cx="29.5" cy="8.7" r="1.3" /><circle cx="20.5" cy="10.5" r="1.1" /><circle cx="8.6" cy="13.2" r="1.2" />
+      <circle cx="32.8" cy="12.6" r="1.1" /><circle cx="26" cy="11.6" r="1" />
+    </g>
+    <!-- Ouverture dentée, sur le dessous -->
+    <path d="M6.8 18.2c5.6 4 21.6 4.2 27.6-.2-6 2.4-21.2 2.4-27.6.2Z" fill="#9b7a45" stroke="#9b7a45" stroke-width="1" />
+    <path
+      d="M11 19.6l.2 1.2M14.4 20.4l.1 1.3M17.8 20.8v1.3M21.2 20.9v1.3M24.6 20.7l-.1 1.3M28 20.1l-.2 1.2M31.2 19.2l-.3 1"
+      fill="none" stroke="#fbf4e4" stroke-width=".8"
+    />
+    <ellipse class="steps__glint" cx="15" cy="6.8" rx="5.5" ry="1.6" fill="#fff" transform="rotate(-14 15 6.8)" />
+  </svg>
+  <span class="legend steps__legend steps__legend--shell"><em>Cypraea</em> · porcelaine</span>
+</div>

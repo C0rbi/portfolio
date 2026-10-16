@@ -1,0 +1,150 @@
+@use 'core' as *;
+
+:host {
+  display: block;
+}
+
+// ============================================================
+//  Panneau mobile : une coupe du ciel à l'eau, en plein écran
+//  Le ciel derrière la barre, le sable sous les sections de la
+//  plage, puis la surface (la vague) et le lagon dessous.
+//  La hauteur d'une ligne est connue (marge + 1,3 × corps + filet) :
+//  la surface se calcule en CSS, sans mesure JS. `--n` (posé par le
+//  gabarit) compte les lignes au-dessus de l'eau.
+// ============================================================
+.drawer {
+  --fs: clamp(1.9rem, 9vw, 2.6rem);
+  --y: calc(100px + var(--n, 2) * (45px + 1.3 * var(--fs)) - 5px);
+  position: fixed;
+  inset: 0;
+  z-index: 190;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 100px 24px 48px;
+  // Défile si l'écran est trop court (paysage, petits téléphones) :
+  // le fond suit alors le contenu (`local`).
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: linear-gradient(
+      var(--sky-1),
+      var(--sky-2) 70px,
+      var(--sand-0) 130px,
+      var(--sand-1) calc(var(--y) - 26px),
+      var(--sea-0) calc(var(--y) + 26px),
+      var(--sea-1) calc(var(--y) + 280px),
+      var(--sea-2)
+    )
+    local;
+  // Couleur pleine sous le dégradé : en Contraste élevé, les dégradés sont
+  // effacés, et le panneau doit rester opaque au-dessus de la page.
+  background-color: var(--sea-2);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-12px);
+  transition:
+    opacity 0.6s $ease-soft,
+    transform 0.7s $ease-out,
+    visibility 0s linear 0.6s;
+
+  @include from($bp-lg) {
+    display: none;
+  }
+
+  &.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+  }
+}
+
+.drawer__nav {
+  li {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(14, 42, 56, 0.12);
+
+    &.is-surface {
+      border-bottom-color: transparent;
+    }
+  }
+
+  a {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding-block: 22px;
+    font-family: var(--font-display);
+    font-size: var(--fs);
+    font-weight: 500;
+    font-variation-settings: 'SOFT' 20, 'WONK' 1, 'opsz' 40;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    transition: color 0.5s $ease-soft;
+    @include focus-ring;
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+}
+
+// Les liens montent les uns après les autres à l'ouverture. `both` : pendant
+// le délai, chaque lien attend en position basse, même en mode forcé. Au
+// repos, ils sont en place : à la fermeture, ils restent visibles pendant le
+// fondu du panneau, dans tous les modes.
+.drawer.is-open .drawer__nav a {
+  @include motion-safe {
+    animation: rise-in 0.6s $ease-out calc(115ms + var(--i, 0) * 55ms) both;
+  }
+}
+
+.drawer__num {
+  @include eyebrow;
+  font-size: 0.6875rem;
+  color: var(--accent);
+}
+
+// Sonde de la section, à droite, comme sur une carte marine
+.drawer__sonde {
+  margin-left: auto;
+  font-size: 0.875rem;
+  font-style: italic;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+
+// Surface de l'eau, entre la plage et le lagon
+.drawer__wave {
+  position: absolute;
+  inset: auto 0 0;
+  width: 100%;
+  height: 8px;
+  fill: none;
+  stroke: var(--lagoon-bright);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+
+  path {
+    vector-effect: non-scaling-stroke;
+  }
+}
+
+.drawer__foot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+// L'adresse reste là pour ceux qui préfèrent leur messagerie
+.drawer__mail {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 3px;
+  @include focus-ring;
+}

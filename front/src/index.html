@@ -2,10 +2,44 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <title>Portfolio | Allan.N</title>
+  <title>Allan Nicolas — Développeur Full Stack | Portfolio BTS SIO SLAM</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="portfolio-icon.png">
+  <meta name="description"
+        content="Portfolio d'Allan Nicolas, étudiant en BTS SIO option SLAM à Nouméa et alternant à la CSB. Développement full stack Angular, Spring Boot et PostgreSQL.">
+  <meta name="author" content="Allan Nicolas">
+  <meta name="theme-color" content="#a9dbf3">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:title" content="Allan Nicolas — Développeur Full Stack">
+  <meta property="og:description"
+        content="Étudiant en BTS SIO SLAM, alternant à la CSB. Angular, Spring Boot, PostgreSQL.">
+  <!-- Image de partage (1200×630). Une URL relative est ignorée par LinkedIn et
+       Facebook : la remplacer par https://<domaine>/og-lagon.png une fois le
+       site en ligne. -->
+  <meta property="og:image" content="og-lagon.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Portfolio d'Allan Nicolas : une coupe du lagon de Nouméa, du ciel au fond">
+
+  <link rel="icon" type="image/png" href="portfolio-icon.png">
+
+  <!-- Animations permises ? Décidé avant le premier rendu, sinon les entrées
+       animées clignoteraient. MotionService prend ensuite le relais. -->
+  <script>
+    (function () {
+      var forced = false;
+      try { forced = localStorage.getItem('lagon-anime') === '1'; } catch (e) {}
+      var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduced || forced) document.documentElement.classList.add('motion-ok');
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..700,0..100,0..1&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap">
 </head>
 <body>
   <app-root></app-root>

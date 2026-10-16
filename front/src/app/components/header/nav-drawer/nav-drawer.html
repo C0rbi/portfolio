@@ -1,0 +1,37 @@
+<!-- Panneau de navigation mobile : une petite coupe, du ciel à l'eau -->
+<div
+  id="mobile-drawer"
+  class="drawer"
+  [class.is-open]="open()"
+  [attr.inert]="open() ? null : ''"
+  [style.--n]="surface() + 1"
+>
+  <nav class="drawer__nav" aria-label="Navigation mobile">
+    <ul>
+      @for (link of links(); track link.id; let i = $index) {
+        <li [style.--i]="i" [class.is-surface]="i === surface()">
+          <a routerLink="/" [fragment]="link.id" (click)="closed.emit()">
+            <span class="drawer__num">0{{ i + 1 }}</span>
+            {{ link.label }}
+            <span class="drawer__sonde" aria-hidden="true">{{ link.sonde }}</span>
+          </a>
+          @if (i === surface()) {
+            <!-- Surface de l'eau : au-dessus, le sable ; en dessous, le lagon -->
+            <svg class="drawer__wave" viewBox="0 0 320 8" preserveAspectRatio="none" aria-hidden="true">
+              <path
+                d="M0 4q5-4 10 0t10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0"
+              />
+            </svg>
+          }
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <div class="drawer__foot">
+    <button type="button" class="btn btn--accent" aria-haspopup="dialog" (click)="ecrire.emit()">
+      Me contacter
+    </button>
+    <a class="drawer__mail" [href]="'mailto:' + email()" (click)="closed.emit()">{{ email() }}</a>
+  </div>
+</div>

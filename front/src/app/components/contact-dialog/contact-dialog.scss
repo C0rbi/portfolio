@@ -1,0 +1,94 @@
+@use 'core' as *;
+
+// =============================================================
+//  Fenêtre « Écrire un message » : <dialog> natif, ouvert en modal.
+//  Ni marge intérieure ni fond : la carte, c'est le formulaire.
+//  Un clic dont la cible est le <dialog> vient donc du voile.
+// =============================================================
+.cdialog {
+  width: min(580px, 100% - 32px);
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: $radius-lg;
+  background: transparent;
+  // Ombre portée par la fenêtre : posée sur la carte, le défilement
+  // interne (overflow) la couperait.
+  box-shadow: 0 30px 70px -24px rgba(14, 42, 56, 0.5);
+  color: var(--ink);
+  overflow: auto;
+  overscroll-behavior: contain;
+
+  // Voile d'encre marine, assez léger pour deviner le lagon derrière
+  &::backdrop {
+    background-color: rgba(14, 42, 56, 0.42);
+  }
+}
+
+.cdialog__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background-color: var(--surface);
+  color: var(--ink-2);
+  transition:
+    color $dur-fast $ease-soft,
+    border-color $dur-fast $ease-soft;
+  @include focus-ring($radius: 50%);
+
+  &:hover {
+    border-color: var(--line-strong);
+    color: var(--ink);
+  }
+}
+
+// Ouverture : la carte remonte un peu et le voile se teinte ; la
+// fermeture refait le chemin à l'envers (overlay et display discrets).
+@include motion-safe {
+  .cdialog {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+    transition:
+      opacity 0.3s $ease-soft,
+      transform 0.4s $ease-spring,
+      overlay 0.4s allow-discrete,
+      display 0.4s allow-discrete;
+
+    &[open] {
+      opacity: 1;
+      transform: none;
+    }
+
+    &::backdrop {
+      background-color: rgba(14, 42, 56, 0);
+      transition:
+        background-color 0.3s $ease-soft,
+        overlay 0.4s allow-discrete,
+        display 0.4s allow-discrete;
+    }
+
+    &[open]::backdrop {
+      background-color: rgba(14, 42, 56, 0.42);
+    }
+  }
+
+  @starting-style {
+    .cdialog[open] {
+      opacity: 0;
+      transform: translateY(16px) scale(0.98);
+    }
+
+    .cdialog[open]::backdrop {
+      background-color: rgba(14, 42, 56, 0);
+    }
+  }
+}

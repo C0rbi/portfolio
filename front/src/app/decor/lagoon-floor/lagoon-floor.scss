@@ -1,0 +1,520 @@
+@use 'core' as *;
+
+// =============================================================
+//  Fond du lagon (−22 m)
+//  Bande dans le flux du footer, entre l'eau et le sable. Les
+//  tailles suivent la largeur ; la pose de repos est le style de
+//  base (vue aussi en mouvement réduit), les boucles vivent dans
+//  motion-safe.
+// =============================================================
+:host {
+  position: relative;
+  display: block;
+  height: clamp(150px, 18vw, 260px);
+  overflow: hidden;
+  background: linear-gradient(var(--floor-water), var(--floor-water) 35%, var(--floor) 70%);
+
+  @supports (overflow: clip) {
+    overflow: clip;
+  }
+}
+
+// Lumière qui danse sur le sable (motif partagé --caustic)
+:host::before {
+  content: '';
+  position: absolute;
+  inset: 0 -160px 0 0;
+  z-index: 1;
+  opacity: 0.3;
+  background: var(--caustic) 0 0 / 170px 170px;
+  mask-image: linear-gradient(transparent 50%, #000 85%);
+}
+
+.floor__scene {
+  position: absolute;
+  inset: 0;
+
+  > * {
+    position: absolute;
+    z-index: 2;
+  }
+}
+
+// Seul SVG étiré (preserveAspectRatio="none") : ses traits, eux, ne
+// s'étirent pas.
+.floor__dunes {
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+
+  path {
+    vector-effect: non-scaling-stroke;
+  }
+}
+
+// --- Mère loche, à gauche, à la place du corail table ---
+// Le dessin regarde vers la gauche (comme dans un intermède) : .loche__flip
+// le retourne pour qu'elle sorte la tête vers le large.
+$loche-w: clamp(110px, 12vw, 180px);
+
+// Posée un peu haut : sa légende (deux lignes) tient dessous, comme celle
+// du bénitier.
+.floor__loche {
+  left: 1%;
+  bottom: 21%;
+  width: $loche-w;
+  aspect-ratio: 200 / 120;
+}
+
+.loche__flip {
+  position: absolute;
+  inset: 0;
+  scale: -1 1;
+
+  > * {
+    position: absolute;
+  }
+}
+
+.loche__back,
+.loche__front {
+  inset: 0;
+}
+
+// Pose de repos : la tête dépasse juste du trou. Seul l'avant du poisson
+// est dessiné : l'arrière se fond dans le noir au lieu d'être coupé net.
+.loche__swim {
+  left: -8%;
+  top: 48%;
+  width: 56%;
+  mask-image: linear-gradient(90deg, #000 55%, transparent 90%);
+}
+
+// Plus la loche recule, plus elle disparaît dans le noir du trou
+.loche__shade {
+  left: 0;
+  top: 47%;
+  width: 57%;
+  height: 53%;
+  background: linear-gradient(90deg, transparent 10%, rgba(11, 33, 42, 0.5) 40%, rgba(11, 33, 42, 0.9) 75%);
+}
+
+.loche__jaw {
+  transform-box: fill-box;
+  transform-origin: 100% 40%;
+}
+
+.floor__holo {
+  left: 32%;
+  bottom: 10%;
+  width: clamp(54px, 6vw, 86px);
+}
+
+.floor__fish {
+  width: clamp(16px, 1.6vw, 24px);
+
+  &--a {
+    left: calc(1% + #{$loche-w} * 0.7);
+    bottom: 58%;
+  }
+
+  &--b {
+    left: 3%;
+    bottom: 64%;
+    scale: -1 1;
+  }
+}
+
+.floor__weed {
+  bottom: 7%;
+  width: clamp(20px, 2.4vw, 36px);
+  transform-origin: 50% 100%;
+
+  // Dès 1024 px, la légende de la loche passe dessous : on lui laisse la place
+  &--1 {
+    left: calc(1% + #{$loche-w} + 6px);
+
+    @include from($bp-lg) {
+      left: calc(2% + 190px);
+    }
+  }
+
+  &--2 {
+    left: calc(58% - clamp(24px, 2.6vw, 38px));
+    width: clamp(16px, 1.9vw, 28px);
+  }
+
+  &--3 {
+    right: 3%;
+
+    @include upto($bp-md) {
+      display: none;
+    }
+  }
+}
+
+// --- Bénitier et sa colonne de bulles ---
+$clam-w: clamp(66px, 7.5vw, 112px);
+
+.floor__clam {
+  right: 3%;
+  bottom: 12%;
+  width: $clam-w;
+
+  @include from($bp-md) {
+    right: 10%;
+  }
+
+  > svg {
+    width: 100%;
+    overflow: visible;
+  }
+
+  // Liseré lagon : une bulle blanche se perd sinon dans l'eau claire
+  .bubble {
+    --rise: -120px;
+    box-shadow: 0 0 0 1px rgba(10, 95, 105, 0.16);
+  }
+}
+
+// --- Tricot rayé : un .mover qui ne traverse qu'une fois ---
+.floor__krait {
+  --y: 30%;
+  --w: clamp(120px, 15vw, 210px);
+  --dur: 24s;
+  --rest: 24vw;
+  z-index: 3;
+
+  // Il attend hors champ que le visiteur arrive (voir `swim` dans le .ts)
+  &:not(.is-swimming) {
+    animation-play-state: paused !important;
+  }
+
+  // « Calme plat » : pas de traversée figée hors champ, il se pose.
+  @include when-still {
+    animation: none;
+  }
+}
+
+// --- Légendes du carnet : seulement quand le fond a de la place ---
+// (la typo vient de la classe globale « legend » ; ici, seulement la pose)
+.floor__legend {
+  bottom: 2%;
+
+  @include upto($bp-lg) {
+    display: none;
+  }
+
+  &--loche {
+    left: 2%;
+  }
+
+  &--holo {
+    left: calc(32% + clamp(54px, 6vw, 86px) / 2);
+    translate: -50% 0;
+  }
+
+  // centrée sous le bénitier
+  &--clam {
+    right: calc(10% + #{$clam-w} / 2);
+    translate: 50% 0;
+  }
+
+  &--bottle {
+    left: calc(58% + clamp(52px, 4.8vw, 70px) + 8px);
+    bottom: 14%;
+  }
+}
+
+// =============================================================
+//  Bouteille à la mer (bouton)
+// =============================================================
+.bottle {
+  position: absolute;
+  left: 58%;
+  bottom: 5%;
+  z-index: 4;
+  width: clamp(52px, 4.8vw, 70px);
+  min-height: 44px;
+  padding: 0;
+  @include focus-ring;
+
+  svg {
+    width: 100%;
+    overflow: visible;
+  }
+}
+
+.bottle__glass,
+.bottle__cork {
+  transform-box: fill-box;
+}
+
+.bottle__glass {
+  transform-origin: 50% 66%;
+}
+
+.bottle__cork {
+  transform-origin: 50% 50%;
+}
+
+.bottle__shine {
+  opacity: 0.7;
+}
+
+// Info-bulle au survol et au focus, au-dessus du goulot
+.bottle__tip {
+  position: absolute;
+  left: 66%;
+  bottom: calc(100% + 6px);
+  padding: 5px 10px;
+  border-radius: $radius-pill;
+  background-color: var(--surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  opacity: 0;
+  translate: -50% 4px;
+  transition:
+    opacity $dur-fast $ease-soft,
+    translate $dur-fast $ease-out;
+
+  .bottle:is(:hover, :focus-visible) & {
+    opacity: 1;
+    translate: -50% 0;
+  }
+}
+
+// Le bouchon saute quand le message est ouvert
+:host:has(.note:popover-open) .bottle__cork {
+  opacity: 0;
+  transform: translateY(-18px) rotate(20deg);
+}
+
+// =============================================================
+//  Le message (popover natif)
+// =============================================================
+.note {
+  // Le reset global met margin à 0 : on rend au popover son centrage.
+  margin: auto;
+  max-width: min(92vw, 420px);
+  padding: 28px;
+  border: 0;
+  border-radius: $radius-md;
+  // Feuille de carnet longtemps roulée : marge rouge, bords encore
+  // un peu ombrés là où elle s'enroulait.
+  background:
+    linear-gradient(90deg, transparent 16px, rgba(232, 97, 58, 0.32) 16px 17.5px, transparent 17.5px),
+    linear-gradient(rgba(184, 149, 90, 0.2), transparent 18px calc(100% - 18px), rgba(184, 149, 90, 0.2)),
+    #fbf7ee;
+  box-shadow: var(--shadow-lg);
+  color: var(--ink);
+  opacity: 0;
+  transform: scale(0.96) rotate(-2deg);
+
+  &:popover-open {
+    opacity: 1;
+    transform: rotate(-1deg);
+  }
+
+  &::backdrop {
+    background-color: rgba(14, 42, 56, 0.18);
+  }
+}
+
+.note__title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.note__text {
+  margin-top: 12px;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.note__mail {
+  display: inline-block;
+  margin-top: 14px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: underline 1px;
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+  @include focus-ring;
+}
+
+.note__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.note__status {
+  min-height: 1.5em;
+  margin-top: 12px;
+  color: var(--lagoon);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.note__sign {
+  text-align: right;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-style: italic;
+  color: var(--accent);
+}
+
+// =============================================================
+//  Mouvement
+// =============================================================
+@include motion-safe {
+  :host::before {
+    will-change: transform;
+    animation: floor-light 18s $ease-in-out infinite alternate;
+  }
+
+  .floor__fish {
+    --amp: -7px;
+    animation: hover-y 3s $ease-in-out infinite alternate;
+
+    &--b {
+      --amp: 6px;
+      animation-duration: 4s;
+      animation-delay: -1.2s;
+    }
+  }
+
+  .floor__weed {
+    --sway-from: -4deg;
+    --sway-to: 4deg;
+    animation: sway 5s $ease-in-out infinite alternate;
+
+    &--2 {
+      animation-duration: 6.2s;
+      animation-delay: -2s;
+    }
+
+    &--3 {
+      animation-duration: 7s;
+      animation-delay: -3.5s;
+    }
+  }
+
+  .clam__mantle {
+    animation: mantle 5s $ease-in-out infinite alternate;
+  }
+
+  // La loche sort la tête, ouvre deux fois la bouche, puis rentre
+  .loche__swim {
+    animation: loche-peek 22s $ease-in-out infinite;
+  }
+
+  .loche__jaw {
+    animation: loche-gape 22s linear infinite;
+  }
+
+  .floor__krait > svg {
+    animation: krait-wiggle 1.2s $ease-in-out infinite alternate;
+  }
+
+  .bottle__glass {
+    --sway-from: -3deg;
+    --sway-to: 3deg;
+    animation: sway 5s $ease-in-out infinite alternate;
+  }
+
+  .bottle__shine {
+    --glint: 1;
+    animation: glint 4.6s $ease-in-out infinite;
+  }
+
+  .bottle__cork {
+    transition:
+      transform 0.5s $ease-spring,
+      opacity 0.5s $ease-soft;
+  }
+
+  .note {
+    transition:
+      opacity 0.35s $ease-soft,
+      transform 0.45s $ease-spring,
+      overlay 0.45s allow-discrete,
+      display 0.45s allow-discrete;
+  }
+
+  @starting-style {
+    .note:popover-open {
+      opacity: 0;
+      transform: scale(0.9) rotate(-4deg);
+    }
+  }
+}
+
+@keyframes floor-light {
+  to {
+    transform: translate3d(-160px, 0, 0);
+  }
+}
+
+// Au fond du trou, une sortie, un coup d'œil, puis retour à l'abri
+@keyframes loche-peek {
+  0%,
+  34% {
+    transform: translateX(72%);
+  }
+  46% {
+    transform: translateX(-6%);
+  }
+  52%,
+  74% {
+    transform: translateX(-26%);
+  }
+  88%,
+  100% {
+    transform: translateX(72%);
+  }
+}
+
+@keyframes loche-gape {
+  0%,
+  58%,
+  62%,
+  67%,
+  100% {
+    transform: none;
+  }
+  60%,
+  64% {
+    transform: rotate(-12deg);
+  }
+}
+
+@keyframes mantle {
+  from {
+    opacity: 0.8;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes krait-wiggle {
+  from {
+    transform: skewX(-8deg);
+  }
+  to {
+    transform: skewX(8deg);
+  }
+}

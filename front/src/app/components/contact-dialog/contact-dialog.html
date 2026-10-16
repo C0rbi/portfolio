@@ -1,0 +1,16 @@
+<dialog
+  #dialog
+  class="cdialog"
+  aria-labelledby="cform-titre"
+  (close)="fermee()"
+  (pointerdown)="appui($event)"
+  (click)="clic($event)"
+>
+  <button type="button" class="cdialog__close" aria-label="Fermer la fenêtre" (click)="contact.fermer()">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="m3.5 3.5 9 9m0-9-9 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+    </svg>
+  </button>
+
+  <app-contact-form />
+</dialog>

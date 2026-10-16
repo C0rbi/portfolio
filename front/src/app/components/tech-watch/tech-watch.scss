@@ -1,0 +1,285 @@
+@use 'core' as *;
+
+:host {
+  display: block;
+}
+
+.watch__grid {
+  display: grid;
+  gap: 22px;
+
+  @include from($bp-lg) {
+    grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+    align-items: start;
+  }
+}
+
+// ============================================================
+//  Carte de sujet
+// ============================================================
+.topic {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 30px 26px 32px;
+  border: 1px solid var(--line);
+  border-radius: $radius-lg;
+  background-color: var(--surface);
+  box-shadow: var(--shadow-xs);
+  transition: 0.7s ease-out;
+  transition-property: transform, box-shadow, border-color;
+
+  @include from($bp-md) {
+    padding: 38px 36px 40px;
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.topic--main {
+  border-color: #0a5f6938; // --lagoon à 22 %
+  background-image: linear-gradient(160deg, #e3f4f6, var(--surface) 55%);
+
+  // Mobile : le titre remonte vers la droite. Le sonar rapetisse et
+  // s'enfonce dans le coin (centre à 18 px des bords, rayon 77 px), et
+  // le titre démarre sous son cercle, quelle que soit la largeur.
+  @include upto($bp-md) {
+    .sonar {
+      top: -92px;
+      right: -92px;
+      scale: 0.7;
+    }
+
+    .topic__title {
+      margin-top: 42px;
+    }
+  }
+
+  // De 1024 à 1279 px, la carte partage la ligne avec la veille secondaire :
+  // « quantiques & » passait sous les anneaux. Le sonar se replie dans le
+  // coin comme en mobile ; le titre, lui, garde sa place.
+  @include from($bp-lg) {
+    @include upto($bp-xl) {
+      .sonar {
+        top: -92px;
+        right: -92px;
+        scale: 0.7;
+      }
+    }
+  }
+}
+
+// ============================================================
+//  Sonar du sujet principal, dans le coin supérieur droit
+//  Repos (aussi en mouvement réduit) : anneaux de portée, croisée,
+//  point central, faisceau fixe et deux contacts allumés.
+//  En mouvement : le faisceau tourne en 6 s, les échos partent du
+//  centre et chaque contact s'allume quand le faisceau le touche.
+//  Le tout reste dans le coin : jamais sous le titre.
+// ============================================================
+// Teintes en hexadécimal avec alpha : #0a5f69 = --lagoon, #17a7ad = --lagoon-bright
+.sonar {
+  position: absolute;
+  z-index: -1;
+  top: -70px;
+  right: -70px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  // Boîte carrée : les dégradés radiaux sont donc des cercles
+  background:
+    radial-gradient(var(--lagoon-bright) 0 3px, #17a7ad33 3.5px 7px, transparent 7.5px),
+    linear-gradient(#0a5f691a 0 0) 50% / 1px 100% no-repeat,
+    linear-gradient(#0a5f691a 0 0) 50% / 100% 1px no-repeat,
+    repeating-radial-gradient(transparent 0 32px, #0a5f6924 33px, transparent 34px);
+
+  // Les délais des échos et la position des contacts (coin haut-gauche,
+  // d'où les 3 px retranchés) sont posés en ligne dans le gabarit
+  * {
+    position: absolute;
+    border-radius: 50%;
+
+    @include when-still {
+      animation-play-state: paused;
+    }
+  }
+
+  // Hors écran (`is-inview` posée par InViewDirective), le sonar se fige.
+  // Le !important est nécessaire : sans lui, les règles `:host-context(.motion-ok)`
+  // du mode « Animer le lagon », plus spécifiques, l'emporteraient
+  // (même principe que `.decor:not(.is-inview)` dans _animations.scss).
+  &:not(.is-inview) * {
+    animation-play-state: paused !important;
+  }
+
+  // Échos
+  i {
+    inset: 62px;
+    border: 1px solid #0a5f694d;
+    opacity: 0;
+  }
+
+  // Contacts
+  b {
+    left: var(--x);
+    top: var(--y);
+    padding: 3px; // pastille de 6 px
+    background-color: var(--lagoon-bright);
+    box-shadow: 0 0 0 3px #17a7ad33;
+    opacity: 0.8;
+  }
+
+  @include motion-safe {
+    .sonar__beam {
+      animation: spin-slow 6s linear infinite;
+    }
+
+    i {
+      animation: pulse-ring 4.5s ease-out infinite;
+    }
+
+    // Même période que le faisceau ; le délai (négatif) cale l'éclat
+    // sur son passage
+    b {
+      animation: blip 6s linear var(--t) infinite;
+    }
+  }
+}
+
+// Faisceau : bord d'attaque net, traîne qui s'estompe
+.sonar__beam {
+  inset: 0;
+  background: conic-gradient(transparent 0 280deg, #17a7ad33 359deg, #0a5f6940 0);
+  rotate: 262deg;
+}
+
+@keyframes blip {
+  0%,
+  50%,
+  100% {
+    opacity: 0;
+  }
+
+  2% {
+    opacity: 1;
+  }
+}
+
+.topic__kind {
+  @include eyebrow;
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: $radius-pill;
+  background-color: var(--paper-alt);
+  color: var(--ink-3);
+  font-size: 0.6875rem;
+
+  .topic--main & {
+    background-color: var(--accent);
+    color: #fff;
+  }
+}
+
+.topic__title {
+  max-width: 22ch;
+  margin-top: 18px;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3vw, 1.95rem);
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 24, 'WONK' 1, 'opsz' 40;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  color: var(--ink);
+}
+
+.topic__tagline {
+  margin-top: 12px;
+  color: var(--ink-2);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-style: italic;
+  font-variation-settings: 'SOFT' 40, 'opsz' 20;
+}
+
+.topic__body {
+  margin-top: 18px;
+  color: var(--ink-2);
+  font-size: 0.9063rem;
+  line-height: 1.75;
+}
+
+.topic__sources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+}
+
+.topic__sources-label {
+  @include eyebrow;
+  font-size: 0.6875rem;
+  color: var(--ink-3);
+}
+
+// ============================================================
+//  Méthode de veille
+// ============================================================
+.method {
+  display: grid;
+  gap: 1px;
+  margin-top: 22px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: $radius-lg;
+  background-color: var(--line);
+
+  @include from($bp-md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.method__item {
+  padding: 26px 24px 28px;
+  background-color: var(--surface);
+  transition: background-color 0.6s ease;
+
+  &:hover {
+    background-color: var(--paper);
+  }
+}
+
+.method__step {
+  @include eyebrow;
+  display: block;
+  margin-bottom: 12px;
+  font-size: 0.625rem;
+  color: var(--accent);
+}
+
+.method__title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 20, 'opsz' 24;
+  color: var(--ink);
+}
+
+.method__text {
+  margin-top: 8px;
+  color: var(--ink-2);
+  font-size: 0.8438rem;
+  line-height: 1.65;
+}

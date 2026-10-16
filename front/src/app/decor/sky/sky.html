@@ -1,0 +1,30 @@
+<!--
+  Nuages : la parallaxe (pilotée par le défilement) est sur l'enveloppe
+  .par, la dérive lente sur le nuage lui-même. Un seul transform par
+  élément. Sous 1024 px, seul le premier nuage reste ; de 1024 à 1279 px,
+  le nuage lointain (b) disparaît, faute de place à côté du texte.
+-->
+<div class="par scroll-anim par--a" style="--par: -60px">
+  <svg class="cloud" viewBox="0 0 124 50" style="--dur: 34s; --drift: 40px">
+    <path class="cloud__shade" d="M18 46h86a16 16 0 0 0 2-31.9A22 22 0 0 0 64 8 18 18 0 0 0 33 18 14 14 0 0 0 18 46Z" />
+    <path transform="translate(2.4 -1.8) scale(.96)" d="M18 46h86a16 16 0 0 0 2-31.9A22 22 0 0 0 64 8 18 18 0 0 0 33 18 14 14 0 0 0 18 46Z" />
+  </svg>
+</div>
+<div class="par scroll-anim par--b" style="--par: -40px">
+  <svg class="cloud" viewBox="0 0 124 50" style="--dur: 42s; --drift: -30px">
+    <path class="cloud__shade" d="M18 46h86a16 16 0 0 0 2-31.9A22 22 0 0 0 64 8 18 18 0 0 0 33 18 14 14 0 0 0 18 46Z" />
+    <path transform="translate(2.4 -1.8) scale(.96)" d="M18 46h86a16 16 0 0 0 2-31.9A22 22 0 0 0 64 8 18 18 0 0 0 33 18 14 14 0 0 0 18 46Z" />
+  </svg>
+</div>
+<div class="par scroll-anim par--c" style="--par: -80px">
+  <svg class="cloud" viewBox="0 0 124 50" style="--dur: 50s; --drift: 50px">
+    <path class="cloud__shade" d="M18 46h86a16 16 0 0 0 2-31.9A22 22 0 0 0 64 8 18 18 0 0 0 33 18 14 14 0 0 0 18 46Z" />
+    <path transform="translate(2.4 -1.8) scale(.96)" d="M18 46h86a16 16 0 0 0 2-31.9A22 22 0 0 0 64 8 18 18 0 0 0 33 18 14 14 0 0 0 18 46Z" />
+  </svg>
+</div>
+
+<!-- Deux sternes près du premier nuage (dès 1024 px) -->
+<div class="terns">
+  <svg class="tern" viewBox="0 0 20 8"><path d="M0 7Q5 0 10 6Q15 0 20 7" /></svg>
+  <svg class="tern tern--2" viewBox="0 0 20 8"><path d="M0 7Q5 0 10 6Q15 0 20 7" /></svg>
+</div>

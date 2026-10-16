@@ -1,0 +1,127 @@
+@use 'core' as *;
+
+:host {
+  display: block;
+}
+
+// Page courte : l'eau remplit au moins l'écran, comme les mentions légales
+.zone {
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+.admin {
+  padding-top: calc(var(--nav-h) + 56px);
+}
+
+.admin__login {
+  display: grid;
+  gap: 10px;
+  max-width: 420px;
+
+  label {
+    @include eyebrow;
+    color: var(--ink-2);
+  }
+
+  input {
+    padding: 12px 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: $radius-sm;
+    background-color: var(--surface);
+
+    &:focus-visible {
+      outline: 2px solid var(--lagoon);
+      outline-offset: 2px;
+    }
+  }
+
+  .btn {
+    justify-self: start;
+    margin-top: 6px;
+  }
+}
+
+.admin__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin__count {
+  flex: 1 1 240px;
+  color: var(--ink-2);
+}
+
+.admin__empty,
+.admin__error {
+  margin-top: 24px;
+  color: var(--ink-2);
+}
+
+.admin__error {
+  color: var(--accent);
+}
+
+.admin__list {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.msg {
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--lagoon);
+  border-radius: $radius-md;
+  background-color: var(--surface);
+
+  &.is-read {
+    border-left-color: var(--line-strong);
+  }
+}
+
+.msg__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 16px;
+}
+
+.msg__from {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  overflow-wrap: anywhere;
+}
+
+.msg__date {
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+}
+
+.msg__new {
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: $radius-pill;
+  background-color: var(--lagoon-soft);
+  color: var(--lagoon);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.msg__body {
+  margin-top: 12px;
+  color: var(--ink-2);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.msg__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}

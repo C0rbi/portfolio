@@ -1,0 +1,532 @@
+@use 'core' as *;
+
+:host {
+  // Courbes du site en variables locales : la feuille reste légère
+  --spring: #{$ease-spring};
+  --soft: #{$ease-soft};
+  --out: #{$ease-out};
+  display: block;
+}
+
+// ============================================================
+//  Barre de navigation flottante
+//  Transparente sur le ciel du hero, elle devient un verre
+//  compact dès que l'on descend.
+// ============================================================
+.nav {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 200;
+  padding-block: 14px;
+  transition: padding 0.6s var(--out);
+
+  @include from($bp-md) {
+    padding-block: 20px;
+  }
+
+  &.is-scrolled {
+    padding-block: 8px;
+
+    @include from($bp-md) {
+      padding-block: 12px;
+    }
+
+    .nav__inner {
+      background-color: rgba(255, 255, 255, 0.86);
+      border-color: rgba(14, 42, 56, 0.08);
+      box-shadow: 0 12px 30px -18px rgba(8, 70, 92, 0.35);
+      backdrop-filter: blur(12px);
+    }
+
+    // Le rôle s'efface, le profondimètre prend sa place
+    .brand__role {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+
+    .brand__depth {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+// --- Filet de progression : ses couleurs suivent les zones ---
+// Révélé par clip-path (et non étiré) : le soleil reste à gauche,
+// le fond sableux à droite, quelle que soit l'avancée.
+.nav__progress {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  height: 3px;
+}
+
+.nav__progress-bar {
+  display: block;
+  height: 100%;
+  clip-path: inset(0 100% 0 0);
+  background: linear-gradient(90deg, #ffd76a, #e9cf9c 16%, #8fe0d6 34%, #17a7ad 62%, #0a5f69 88%, #b8955a);
+}
+
+.nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  max-width: $shell-max + 40px;
+  // Hauteur minimale, pas fixe : avec le texte agrandi (200 %), la marque
+  // grandit et la barre la suit au lieu de la rogner.
+  min-height: 56px;
+  margin-inline: auto;
+  padding-inline: 20px;
+  border: 1px solid transparent;
+  border-radius: $radius-pill;
+  transition: 0.6s var(--soft);
+  transition-property: background-color, border-color, box-shadow;
+
+  @include from($bp-md) {
+    min-height: 64px;
+    padding-inline: 14px;
+  }
+}
+
+// Anneau de focus des liens et boutons : il suit leur propre arrondi
+// (rond, pilule) au lieu de les redessiner.
+.nav__link,
+%nav-control {
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+
+// ============================================================
+//  Signature : un galet d'encre, et le profondimètre
+// ============================================================
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  @include focus-ring;
+}
+
+// Galet poli : forme irrégulière, reflet mouillé en haut à gauche.
+// 42 × 37 px au corps normal, moitié fixe, moitié en rem : avec le texte
+// agrandi, il grandit deux fois moins vite que lui. « AN » y tient, et la
+// barre tient encore à 360 px avec le texte à 200 %.
+.brand__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: calc(21px + 1.3125rem);
+  height: calc(18.5px + 1.15625rem);
+  border-radius: 46% 54% 50% 50% / 56% 48% 52% 44%;
+  background: radial-gradient(circle at 32% 26%, #24495b, var(--ink) 62%);
+  box-shadow: inset 0 -2px rgba(0, 0, 0, 0.18);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+
+  &,
+  span {
+    transition: transform 0.7s var(--spring);
+  }
+
+  span:last-child {
+    color: var(--sun);
+  }
+
+  .brand:hover & {
+    transform: rotate(-6deg);
+
+    span:first-child {
+      transform: translate(-1px, -1px);
+    }
+
+    span:last-child {
+      transform: translate(1px, 1px);
+    }
+  }
+}
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand__name {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 20, 'opsz' 20;
+  letter-spacing: -0.01em;
+}
+
+// Rôle et profondeur superposés : l'un fond, l'autre apparaît
+.brand__sub {
+  display: grid;
+
+  > * {
+    grid-area: 1 / 1;
+    transition: 0.55s var(--out);
+    transition-property: opacity, transform;
+  }
+
+  // Sur téléphone, pas de rôle : la ligne ne s'ouvre qu'avec la profondeur,
+  // et le nom reste centré sur le galet en haut de page.
+  @include upto($bp-sm) {
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.55s var(--out);
+
+    .is-scrolled & {
+      grid-template-rows: 1fr;
+    }
+
+    > * {
+      min-height: 0;
+      overflow: hidden;
+    }
+  }
+}
+
+.brand__role {
+  align-self: center;
+  font: 600 0.5938rem/1.15 var(--font-mono);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+
+  @include upto($bp-sm) {
+    display: none;
+  }
+}
+
+.brand__depth {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding-top: 2px;
+  font: 0.6875rem/1.15 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--ink-2);
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.brand__depth-value {
+  font-weight: 600;
+}
+
+.brand__icon {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+
+.brand__icon--foot {
+  fill: var(--sand-deep);
+  stroke: none;
+}
+
+.brand__icon--sea {
+  fill: var(--lagoon-soft);
+  stroke: var(--lagoon);
+}
+
+// L'icône change avec la zone : elle éclot, sans à-coup
+@keyframes depth-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+// ============================================================
+//  Liens principaux et repère glissant
+// ============================================================
+.nav__menu {
+  display: none;
+
+  @include from($bp-lg) {
+    display: block;
+  }
+}
+
+.nav__list {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  // Pastille positionnée par le composant via --pill-x / --pill-w,
+  // teintée selon la zone traversée
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: var(--pill-w, 0px);
+    height: 34px;
+    margin-top: -17px;
+    border-radius: $radius-pill;
+    background-color: var(--accent-soft);
+    opacity: var(--pill-opacity, 0);
+    transform: translateX(var(--pill-x, 0px));
+    transition:
+      transform 0.65s var(--spring),
+      width 0.65s var(--spring),
+      opacity 0.5s var(--soft),
+      background-color 0.8s var(--soft);
+
+    [data-zone='sand'] & {
+      background-color: var(--gold-soft);
+    }
+
+    [data-zone='sea'] & {
+      background-color: var(--lagoon-soft);
+    }
+  }
+}
+
+.nav__link {
+  position: relative;
+  display: block;
+  padding: 8px 16px;
+  border-radius: $radius-pill;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink-2);
+  transition: color 0.5s var(--soft);
+
+  &:hover {
+    color: var(--ink);
+  }
+
+  &.is-active {
+    color: var(--accent);
+    font-weight: 600;
+  }
+}
+
+// ============================================================
+//  Actions à droite
+// ============================================================
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+// Bordure teintée d'encre : juste sur le ciel, le sable et l'eau
+%nav-control {
+  border: 1px solid rgba(14, 42, 56, 0.16);
+  background-color: var(--surface);
+  transition: 0.5s var(--soft);
+  transition-property: background-color, border-color, color, transform;
+
+  &:hover {
+    border-color: var(--lagoon);
+  }
+}
+
+.nav__cta {
+  @extend %nav-control;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: $radius-pill;
+  font-size: 0.8125rem;
+  font-weight: 600;
+
+  @include from($bp-md) {
+    display: inline-flex;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+// Pastille qui respire : le petit détail vivant de la barre
+.nav__cta-dot {
+  position: relative;
+  flex: none;
+  width: 8px;
+  height: 8px;
+
+  &,
+  &::after {
+    border-radius: 50%;
+    background-color: var(--lagoon-bright);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+}
+
+// ============================================================
+//  Calme plat : deux vagues qui se couchent quand on le presse
+// ============================================================
+.nav__calm {
+  @extend %nav-control;
+  display: grid;
+  place-items: center;
+  // Rond, jamais écrasé quand la barre manque de place (texte agrandi)
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--ink);
+
+  path {
+    vector-effect: non-scaling-stroke;
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 0.6s var(--spring);
+  }
+
+  &[aria-pressed='true'] {
+    border-color: var(--lagoon);
+    background-color: var(--lagoon-soft);
+    color: var(--lagoon);
+  }
+
+  // « Calme plat » choisi : la houle se couche sans s'effacer. Une houle
+  // basse, jamais deux traits droits que l'on prendrait pour le menu.
+  // Sous reduce, les vagues restent dessinées, simplement immobiles.
+  &.is-flat path {
+    transform: scaleY(0.4);
+  }
+}
+
+// Fenêtre sur la houle : bords fondus, elle entre et sort sans coupure nette
+.nav__calm-sea {
+  position: relative;
+  display: block;
+  width: 24px;
+  height: 17px;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 16% 84%, transparent);
+}
+
+// Une animation sur un <g> n'est pas composée par Chrome (style et mise en
+// page recalculés à chaque frame) : chaque vague est son propre <svg>, que
+// le GPU déplace seul. Elle avance d'une période (8 unités × 1,2 px), en boucle.
+.calm__swell {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  --drift: -9.6px;
+}
+
+// ============================================================
+//  Boucles décoratives de la barre : seulement si le visiteur
+//  accepte le mouvement, et figées en « Calme plat ».
+// ============================================================
+@include motion-safe {
+  .nav__cta-dot::after {
+    animation: pulse-ring 2.4s var(--out) infinite;
+  }
+
+  .brand__icon {
+    animation: depth-pop 0.6s var(--spring);
+  }
+
+  .calm__swell {
+    animation: drift-x 4.8s linear infinite;
+  }
+
+  .calm__swell--low {
+    animation-duration: 6.4s;
+  }
+}
+
+.nav__cta-dot::after,
+.calm__swell {
+  @include when-still {
+    animation-play-state: paused;
+  }
+}
+
+// ============================================================
+//  Bouton menu (mobile)
+// ============================================================
+.burger {
+  @extend %nav-control;
+  display: grid;
+  place-content: center;
+  gap: 6px;
+  // Jamais écrasé non plus par le texte agrandi
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  color: var(--ink);
+
+  @include from($bp-lg) {
+    display: none;
+  }
+
+  // Traits à la couleur du bouton : encre, puis papier une fois ouvert
+  span {
+    width: 18px;
+    height: 1.5px;
+    border-radius: 2px;
+    background-color: currentColor;
+    transition: transform 0.6s var(--spring);
+  }
+
+  &.is-open {
+    border-color: var(--ink);
+    background-color: var(--ink);
+    color: var(--paper);
+
+    span:first-child {
+      transform: translateY(3.75px) rotate(45deg);
+    }
+
+    span:last-child {
+      transform: translateY(-3.75px) rotate(-45deg);
+    }
+  }
+}
+
+// ============================================================
+//  Contraste élevé (forced-colors) : les fonds sont effacés,
+//  les bordures et le soulignement sont gardés.
+// ============================================================
+@media (forced-colors: active) {
+  // Traits du burger en bordure (seulement ici : à 1 dppx, une bordure de
+  // 1,5 px est arrondie à 1 px, plus maigre que le trait habituel)
+  .burger span {
+    height: 0;
+    border-top: 1.5px solid;
+  }
+
+  // La pastille disparaît : le lien actif est souligné
+  .nav__link.is-active {
+    text-decoration: underline 2px;
+    text-underline-offset: 6px;
+  }
+}

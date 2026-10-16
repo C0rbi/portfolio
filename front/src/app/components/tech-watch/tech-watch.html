@@ -1,52 +1,59 @@
-<section id="tech-watch" class="py-20 bg-slate-900 text-white border-t border-slate-800">
-  <div class="max-w-4xl mx-auto px-6">
-    
-    <!-- Titre Principal -->
-    <h2 class="text-3xl font-bold mb-16 text-center">
-      Veille <span class="text-indigo-500">Technologique</span>
-    </h2>
-
-    <div class="relative border-l border-slate-700 ml-3 md:ml-0">
-      
-      <!-- Veille 1 : Ordinateurs Quantiques & Cryptographie Post-Quantique -->
-      <div class="mb-12 ml-8 relative">
-        <div class="absolute -left-[41px] top-1 w-5 h-5 bg-indigo-500 rounded-full border-4 border-slate-900 shadow-[0_0_10px_rgba(99,102,241,0.5)]"></div>
-        <span class="text-xs font-bold uppercase tracking-widest text-indigo-400">Sujet principal</span>
-        <h3 class="text-xl font-bold mt-1 text-white">Ordinateurs Quantiques & Cryptographie Post-Quantique</h3>
-        <p class="text-slate-300 font-medium italic text-sm">Impact de la seconde révolution quantique sur la cybersécurité.</p>
-        
-        <div class="bg-slate-800/40 p-5 mt-4 rounded-2xl border border-slate-800">
-          <p class="text-slate-400 text-sm leading-relaxed mb-4">
-            Analyse des menaces que représentent les ordinateurs quantiques pour les algorithmes de chiffrement actuels (RSA, ECC) et étude des solutions de cryptographie post-quantique.
-          </p>
-          
-          <!-- Tags / Outils de veille -->
-          <div class="flex flex-wrap gap-2">
-            <span class="text-[10px] bg-indigo-500/10 text-indigo-300 px-2 py-1 rounded border border-indigo-500/20">Feedly</span>
-            <span class="text-[10px] bg-indigo-500/10 text-indigo-300 px-2 py-1 rounded border border-indigo-500/20">Google Alerts</span>
-            <span class="text-[10px] bg-indigo-500/10 text-indigo-300 px-2 py-1 rounded border border-indigo-500/20">Youtube</span>
-          </div>
-        </div>
+<section class="section watch" id="tech-watch">
+  <div class="shell">
+    <header class="section-head" appReveal>
+      <div class="section-head__top">
+        <span class="section-head__num">06</span>
+        <span class="section-head__rule"></span>
+        <span class="section-head__label">Veille technologique</span>
       </div>
+      <h2 class="section-title">Les sujets que je <em>surveille</em>.</h2>
+      <p class="section-lede">
+        Deux sujets que je suis toute l'année, l'un en profondeur, l'autre au fil de l'actualité.
+      </p>
+    </header>
 
-      <!-- Veille 2 : Cybersecurity Trends -->
-      <div class="mb-12 ml-8 relative">
-        <div class="absolute -left-[41px] top-1 w-5 h-5 bg-slate-700 rounded-full border-4 border-slate-900"></div>
-        <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Veille secondaire</span>
-        <h3 class="text-xl font-bold mt-1 text-white">Cybersécurité & Vulnérabilités Web</h3>
-        <p class="text-slate-300 font-medium italic text-sm">Évolution des menaces web et protection des données.</p>
-        <p class="text-slate-400 mt-3 text-sm leading-relaxed mb-4">
-          Suivi constant des vulnérabilités OWASP (CSRF, XSS, SQLi) et des nouvelles méthodes de sécurisation des architectures Spring Boot et Angular.
-        </p>
+    <div class="watch__grid">
+      @for (topic of topics; track topic.title; let i = $index) {
+        <article class="topic" [class.topic--main]="topic.main" appReveal [revealDelay]="i * 120">
+          @if (topic.main) {
+            <!-- Sonar : anneaux de portée, faisceau, échos et deux contacts
+                 qui s'allument au passage du faisceau. En pause hors écran. -->
+            <span class="sonar" appInView aria-hidden="true">
+              <span class="sonar__beam"></span>
+              <i></i><i style="animation-delay: 1.5s"></i><i style="animation-delay: 3s"></i>
+              <b style="--x: 67px; --y: 147px; --t: -0.74s"></b>
+              <b style="--x: 23px; --y: 129px; --t: -0.23s"></b>
+            </span>
+          }
 
-        <!-- Tags / Outils de veille -->
-          <div class="flex flex-wrap gap-2">
-            <span class="text-[10px] bg-indigo-500/10 text-indigo-300 px-2 py-1 rounded border border-indigo-500/20">Feedly</span>
-            <span class="text-[10px] bg-indigo-500/10 text-indigo-300 px-2 py-1 rounded border border-indigo-500/20">Google Alerts</span>
-            <span class="text-[10px] bg-indigo-500/10 text-indigo-300 px-2 py-1 rounded border border-indigo-500/20">Youtube</span>
+          <span class="topic__kind">{{ topic.kind }}</span>
+          <h3 class="topic__title">{{ topic.title }}</h3>
+          <p class="topic__tagline">{{ topic.tagline }}</p>
+          <p class="topic__body">{{ topic.body }}</p>
+
+          <div class="topic__sources">
+            <span class="topic__sources-label">Sources</span>
+            <ul>
+              @for (source of topic.sources; track source) {
+                <li class="chip" [class.chip--accent]="topic.main">{{ source }}</li>
+              }
+            </ul>
           </div>
-      </div>
-
+        </article>
+      }
     </div>
+
+    <!-- Méthode de veille : titre pour les lecteurs d'écran, qui place
+         les étapes (h4) sous un h3 dans le plan de la page -->
+    <h3 class="sr-only">Ma méthode de veille</h3>
+    <ol class="method" appReveal [revealDelay]="140">
+      @for (step of method; track step.step) {
+        <li class="method__item">
+          <span class="method__step">{{ step.step }}</span>
+          <h4 class="method__title">{{ step.title }}</h4>
+          <p class="method__text">{{ step.text }}</p>
+        </li>
+      }
+    </ol>
   </div>
 </section>

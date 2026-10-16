@@ -1,0 +1,67 @@
+<!--
+  Rivage : du sable sec (en haut) à l'eau du lagon (en bas).
+  Couches, de la plus basse à la plus haute : laisse de mer, sable mouillé,
+  dernières traces de pas, puis l'eau (nappe, bande d'écume, vague suivante)
+  et l'étiquette de profondeur.
+  Les SVG pleine largeur ne s'animent qu'en bloc : leurs couches font 200 %
+  de large (400 % sur mobile), se répètent à mi-longueur et glissent d'une
+  demi-largeur (wave-loop).
+  Aucune référence #id : ce décor sert aussi sur la fiche projet.
+-->
+
+<!-- Laisse de mer : la limite des plus hautes vagues (statique) -->
+<svg class="shore__wrack" viewBox="0 0 1440 18" preserveAspectRatio="none" fill="none" stroke-linecap="round">
+  <path
+    d="M0 9c60-3 110 2 170 0s120-5 190-1 130 4 200 1 140-6 210-2 120 5 190 2 130-4 200-1 100 2 140 1 90-1 140 0"
+    style="stroke: var(--sand-deep)" stroke-opacity=".35" stroke-dasharray="26 7 9 5" vector-effect="non-scaling-stroke"
+  />
+  <path
+    d="M96 8.4l9 1.6M318 6.8l7-2M402 9.6l12 .4M611 7.4l8 2M842 9l10-1.4M1019 7.8l6 2.2M1206 9.4l11-.8M1333 8.6l7 1.4"
+    style="stroke: var(--fx-palm-dark)" stroke-opacity=".3" stroke-width="2.2" vector-effect="non-scaling-stroke"
+  />
+</svg>
+
+<!-- Sable mouillé : il fonce juste après le retrait de chaque vague -->
+<div class="shore__wet"></div>
+
+<!-- Les quatre dernières traces : on marche vers l'eau. --i donne l'ordre
+     d'effacement (0, la plus proche de l'eau, part avec la 1re vague) -->
+<i class="foot foot--r shore__print" style="--i: 3; --dx: 6; --dy: 70; --r: 160deg"></i>
+<i class="foot shore__print" style="--i: 2; --dx: -4; --dy: 94; --r: 154deg"></i>
+<i class="foot foot--r shore__print" style="--i: 1; --dx: 22; --dy: 118; --r: 158deg"></i>
+<i class="foot shore__print" style="--i: 0; --dx: 12; --dy: 142; --r: 152deg"></i>
+
+<!-- Le jet de rive monte et redescend (ressac). Dedans, l'eau et son écume
+     glissent d'un côté, la vague suivante de l'autre. -->
+<div class="shore__waves">
+  <div class="shore__water">
+    <svg class="shore__sheet" viewBox="0 0 2880 198" preserveAspectRatio="none">
+      <path d="M0 15C37.2 7.3 62 4 136.4 4C210.8 4 272.8 7.6 310 16C335.2 10.4 377.2 8 427.6 8C478 8 494.8 10 520 14.5C562 6.5 604 3 688 3C772 3 828 7.2 870 17C900 10.4 915 7.5 975 7.5C1035 7.5 1090 9.5 1120 14C1158.4 7.4 1212.8 4.5 1289.6 4.5C1366.4 4.5 1401.6 7.7 1440 15C1477.2 7.3 1502 4 1576.4 4C1650.8 4 1712.8 7.6 1750 16C1775.2 10.4 1817.2 8 1867.6 8C1918 8 1934.8 10 1960 14.5C2002 6.5 2044 3 2128 3C2212 3 2268 7.2 2310 17C2340 10.4 2355 7.5 2415 7.5C2475 7.5 2530 9.5 2560 14C2598.4 7.4 2652.8 4.5 2729.6 4.5C2806.4 4.5 2841.6 7.7 2880 15V198H0Z" />
+    </svg>
+    <svg class="shore__sheet shore__film" viewBox="0 0 2880 198" preserveAspectRatio="none">
+      <path d="M0 15C37.2 7.3 62 4 136.4 4C210.8 4 272.8 7.6 310 16C335.2 10.4 377.2 8 427.6 8C478 8 494.8 10 520 14.5C562 6.5 604 3 688 3C772 3 828 7.2 870 17C900 10.4 915 7.5 975 7.5C1035 7.5 1090 9.5 1120 14C1158.4 7.4 1212.8 4.5 1289.6 4.5C1366.4 4.5 1401.6 7.7 1440 15C1477.2 7.3 1502 4 1576.4 4C1650.8 4 1712.8 7.6 1750 16C1775.2 10.4 1817.2 8 1867.6 8C1918 8 1934.8 10 1960 14.5C2002 6.5 2044 3 2128 3C2212 3 2268 7.2 2310 17C2340 10.4 2355 7.5 2415 7.5C2475 7.5 2530 9.5 2560 14C2598.4 7.4 2652.8 4.5 2729.6 4.5C2806.4 4.5 2841.6 7.7 2880 15V198H0Z" />
+    </svg>
+    <svg class="shore__crest" viewBox="0 0 2880 40" preserveAspectRatio="none">
+      <path class="shore__foam" d="M0 15C37.2 7.3 62 4 136.4 4C210.8 4 272.8 7.6 310 16C335.2 10.4 377.2 8 427.6 8C478 8 494.8 10 520 14.5C562 6.5 604 3 688 3C772 3 828 7.2 870 17C900 10.4 915 7.5 975 7.5C1035 7.5 1090 9.5 1120 14C1158.4 7.4 1212.8 4.5 1289.6 4.5C1366.4 4.5 1401.6 7.7 1440 15C1477.2 7.3 1502 4 1576.4 4C1650.8 4 1712.8 7.6 1750 16C1775.2 10.4 1817.2 8 1867.6 8C1918 8 1934.8 10 1960 14.5C2002 6.5 2044 3 2128 3C2212 3 2268 7.2 2310 17C2340 10.4 2355 7.5 2415 7.5C2475 7.5 2530 9.5 2560 14C2598.4 7.4 2652.8 4.5 2729.6 4.5C2806.4 4.5 2841.6 7.7 2880 15L2880 25.8Q2858.8 26.7 2837.6 14.1Q2814.2 17.7 2790.8 12.4Q2774.1 16.3 2757.4 9.9Q2737.3 18.2 2717.3 9.5Q2701.7 17.9 2686.1 15.3Q2661.5 24.8 2637 16.4Q2618.1 21.4 2599.1 17.7Q2582.4 23.2 2565.7 21.5Q2542.3 27 2518.9 14.2Q2497.7 18.5 2476.5 12.8Q2449.8 24.7 2423 15.6Q2408.5 22.3 2394.1 14.4Q2374 21.8 2353.9 20.2Q2337.2 30 2320.5 25.9Q2298.2 26.6 2275.9 17.2Q2258.1 22.8 2240.2 13.2Q2215.7 18.3 2191.2 8.7Q2175.6 12.9 2160 7.4Q2138.8 19.1 2117.6 12.6Q2098.7 18.9 2079.8 13.1Q2051.9 21.6 2024 15.1Q2009.5 23.4 1995 18.8Q1971.6 21.9 1948.2 17.3Q1931.5 21.7 1914.8 14.4Q1889.2 20.8 1863.5 14.9Q1843.5 23.3 1823.4 16Q1807.8 26.5 1792.2 21Q1769.9 28.6 1747.6 23.9Q1729.8 26.8 1712 17.5Q1685.2 20 1658.5 12.5Q1645.1 18.4 1631.7 9.1Q1610.5 14.7 1589.3 9.9Q1572.6 17.4 1555.9 12.6Q1531.4 21.9 1506.9 12.9Q1492.4 21.3 1477.9 18.9Q1458.9 30 1440 25.8Q1418.8 24.5 1397.6 14.1Q1374.2 15.5 1350.8 12.4Q1334.1 19.6 1317.4 9.9Q1297.3 16 1277.3 9.5Q1261.7 21.2 1246.1 15.3Q1221.5 22.6 1197 16.4Q1178.1 19.2 1159.1 17.7Q1142.4 26.5 1125.7 21.5Q1102.3 24.8 1078.9 14.2Q1057.7 21.8 1036.5 12.8Q1009.8 22.5 983 15.6Q968.5 20.1 954.1 14.4Q934 25.1 913.9 20.2Q897.2 27.8 880.5 25.9Q858.2 29.9 835.9 17.2Q818.1 20.6 800.2 13.2Q775.7 16.1 751.2 8.7Q735.6 16.2 720 7.4Q698.8 16.9 677.6 12.6Q658.7 22.2 639.8 13.1Q611.9 19.4 584 15.1Q569.5 21.2 555 18.8Q531.6 25.2 508.2 17.3Q491.5 19.5 474.8 14.4Q449.2 24.1 423.5 14.9Q403.5 21.1 383.4 16Q367.8 24.3 352.2 21Q329.9 31.9 307.6 23.9Q289.8 24.6 272 17.5Q245.2 23.3 218.5 12.5Q205.1 16.2 191.7 9.1Q170.5 12.5 149.3 9.9Q132.6 20.7 115.9 12.6Q91.4 19.7 66.9 12.9Q52.4 24.6 37.9 18.9Q18.9 27.8 0 25.8Z" vector-effect="non-scaling-stroke" />
+      <path class="shore__ink" d="M0 15C37.2 7.3 62 4 136.4 4C210.8 4 272.8 7.6 310 16C335.2 10.4 377.2 8 427.6 8C478 8 494.8 10 520 14.5C562 6.5 604 3 688 3C772 3 828 7.2 870 17C900 10.4 915 7.5 975 7.5C1035 7.5 1090 9.5 1120 14C1158.4 7.4 1212.8 4.5 1289.6 4.5C1366.4 4.5 1401.6 7.7 1440 15C1477.2 7.3 1502 4 1576.4 4C1650.8 4 1712.8 7.6 1750 16C1775.2 10.4 1817.2 8 1867.6 8C1918 8 1934.8 10 1960 14.5C2002 6.5 2044 3 2128 3C2212 3 2268 7.2 2310 17C2340 10.4 2355 7.5 2415 7.5C2475 7.5 2530 9.5 2560 14C2598.4 7.4 2652.8 4.5 2729.6 4.5C2806.4 4.5 2841.6 7.7 2880 15" vector-effect="non-scaling-stroke" />
+    </svg>
+    <!-- Bulles d'écume : 4 positions, recopiées à +50 % pour une boucle sans à-coup -->
+    <i class="shore__bubble" style="--x: 2.1%; --y: 19.9; --b: 6px"></i>
+    <i class="shore__bubble" style="--x: 52.1%; --y: 19.9; --b: 6px"></i>
+    <i class="shore__bubble" style="--x: 14.2%; --y: 28; --b: 7px"></i>
+    <i class="shore__bubble" style="--x: 64.2%; --y: 28; --b: 7px"></i>
+    <i class="shore__bubble" style="--x: 26.4%; --y: 18.4; --b: 4.5px"></i>
+    <i class="shore__bubble" style="--x: 76.4%; --y: 18.4; --b: 4.5px"></i>
+    <i class="shore__bubble" style="--x: 39.2%; --y: 26.5; --b: 4px"></i>
+    <i class="shore__bubble" style="--x: 89.2%; --y: 26.5; --b: 4px"></i>
+  </div>
+
+  <div class="shore__next">
+    <svg viewBox="0 0 2880 14" preserveAspectRatio="none" fill="none">
+      <path class="shore__swell" d="M0 7q120 -3.5 240 0t240 0q120 -3.5 240 0t240 0q120 -3.5 240 0t240 0q120 -3.5 240 0t240 0q120 -3.5 240 0t240 0q120 -3.5 240 0t240 0" vector-effect="non-scaling-stroke" />
+      <path class="shore__swell-foam" d="M0 7q120 -3.5 240 0t240 0q120 -3.5 240 0t240 0q120 -3.5 240 0t240 0q120 -3.5 240 0t240 0q120 -3.5 240 0t240 0q120 -3.5 240 0t240 0" vector-effect="non-scaling-stroke" />
+    </svg>
+  </div>
+</div>
+
+<span class="shore__label">0 m · surface</span>

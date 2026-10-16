@@ -1,0 +1,207 @@
+<!--
+  Fond du lagon (−22 m). Toute la scène est masquée aux lecteurs d'écran ;
+  seuls la bouteille et son message sont exposés. Aucune référence #id dans
+  les SVG : le footer est sur toutes les pages (<base href="/">).
+  Astuce de poids : les bosses et les taches sont des pointillés ronds
+  (stroke-dasharray="0 n") posés sur un seul tracé.
+-->
+<div class="floor__scene" aria-hidden="true">
+  <!-- Dunes : seul SVG pleine largeur, il ne s'anime jamais -->
+  <svg class="floor__dunes" viewBox="0 0 1440 260" preserveAspectRatio="none">
+    <path d="M0 116C170 96 310 96 460 110S760 134 920 116S1230 86 1440 104V260H0Z" fill="var(--floor)" fill-opacity=".55" />
+    <path d="M0 178C150 160 300 156 440 168S710 190 870 178S1190 150 1440 166V260H0Z" fill="var(--floor)" />
+    <g fill="none" stroke-linecap="round">
+      <path d="M0 116C170 96 310 96 460 110S760 134 920 116S1230 86 1440 104" stroke="#fff" stroke-opacity=".5" />
+      <path d="M0 178C150 160 300 156 440 168S710 190 870 178S1190 150 1440 166" stroke="var(--sand-deep)" stroke-opacity=".5" />
+      <path d="M70 217q42-10 84 0M236 240q52-11 104 0M660 246q46-10 92 0M720 216q42-9 84 0M1000 238q50-11 100 0M1300 230q46-10 92 0" stroke="var(--sand-shadow)" stroke-width="1.2" />
+      <path d="M70 214q42-10 84 0M236 237q52-11 104 0M660 243q46-10 92 0M720 213q42-9 84 0M1000 235q50-11 100 0M1300 227q46-10 92 0" stroke="#f4eedd" stroke-width="1.6" />
+    </g>
+  </svg>
+
+  <!--
+    Mère loche (Epinephelus fuscoguttatus), à la place du corail table :
+    tapie sous son rocher, elle sort la tête de temps en temps. Le dessin
+    regarde vers la gauche ; .loche__flip le retourne vers le large.
+  -->
+  <div class="floor__loche">
+    <div class="loche__flip">
+
+    <svg class="loche__back" viewBox="0 0 200 120">
+      <path d="M2 120C2 96 4 70 6 56c4 4 16 4 30 2 24-2 48 0 60 10 10 8 14 30 16 52z" fill="#2f5b68" />
+    </svg>
+
+    <div class="loche__swim">
+      <svg viewBox="0 0 150 84">
+        <g stroke="var(--ink)" stroke-opacity=".5" stroke-linejoin="round" stroke-linecap="round" stroke-width=".9">
+          <!-- Dorsale épineuse et pelvienne, derrière le corps -->
+          <path d="M54 16 58 5l5 9 5-10 5 9 5-10 5 9 6-9 5 9 6-8 5 9 6-8 5 9 6-7 5 9 6-6 17 2v10c-22-4-46-7-68-7-10 0-20 0-28 1z" fill="#a47852" />
+          <path d="M54 64c4 8 12 13 20 13-4-4-8-9-10-14z" fill="#a47852" />
+          <!-- Corps massif, grosse tête, ventre plus clair -->
+          <path d="M8 40c2-8 10-15 22-20 16-7 40-9 66-8 20 1 38 4 54 8v48c-22 4-48 6-70 4-22-2-42-6-56-12-8-3-13-7-15-11z" fill="#c39a6b" />
+          <path d="M24 60c14 6 34 10 56 12 22 2 48 0 70-4v-8c-20 4-46 6-68 4-20-2-40-5-58-10z" fill="#e6c9a0" fill-opacity=".55" stroke="none" />
+          <!-- Robe marbrée : grandes taches brunes et petits points noirs -->
+          <path d="M36 26c5-4 13-4 16 0 3 5-2 10-8 10s-11-5-8-10zM60 20c7-3 15-2 18 3 2 6-4 11-11 10s-12-8-7-13zM88 18c8-2 17 1 18 7 1 6-6 10-13 9s-11-11-5-16zM118 22c8-1 16 3 16 9s-8 9-14 7-9-11-2-16zM72 44c7-2 14 1 15 7 0 6-7 9-13 7s-8-11-2-14zM100 42c8-3 16 1 17 7 0 7-8 9-14 7s-9-11-3-14zM126 46c7-2 15 1 15 7s-7 9-13 7-8-11-2-14zM56 52c6-1 12 2 12 7s-6 7-11 5-6-10-1-12zM20 36c3-3 8-2 9 1s-2 6-6 6-5-4-3-7zM110 58c6-1 12 2 12 6s-6 6-10 5-6-9-2-11z" fill="#7a5434" fill-opacity=".7" stroke="none" />
+          <path d="M22 30h.1M28 40h.1M34 34h.1M44 22h.1M48 30h.1M52 40h.1M58 30h.1M64 36h.1M70 24h.1M76 30h.1M84 26h.1M90 34h.1M96 22h.1M102 30h.1M108 36h.1M114 28h.1M122 34h.1M128 26h.1M134 38h.1M140 30h.1M62 58h.1M70 64h.1M86 60h.1M94 54h.1M118 52h.1M132 58h.1M142 50h.1M40 50h.1M30 48h.1M46 58h.1" stroke="#4a3020" stroke-opacity=".7" stroke-width="1.8" />
+          <!-- Opercule et ses épines -->
+          <path d="M44 22c-4 10-4 24 2 34M56 18c-6 12-6 30 2 42M55 30l3 2M54 38l3 1.5M55 46l3 1" fill="none" stroke-opacity=".4" />
+          <!-- Bouche : l'intérieur, puis la mâchoire inférieure, qui s'ouvre -->
+          <path d="M3 42.5c9 .5 21 1.5 31 2.5-10 2-22 2-31-1z" fill="#3a2418" stroke="none" />
+          <path class="loche__jaw" d="M2.5 42.5c.5 2 3.5 4 7.5 5 8 1.5 17 .5 24-2.5-10-1-22-2-31.5-2.5z" fill="#c39a6b" />
+          <path d="M8 41c8 1 16 2 26 3M34 44c2-3 2-7 0-10" fill="none" stroke-opacity=".7" stroke-width="1.1" />
+          <!-- Pectorale -->
+          <path d="M62 42c8-6 22-6 30 0 4 4 2 10-4 12-8 2-20 0-26-6z" fill="#a97f55" />
+          <path d="M64 44l24-3M64 46l26 1M65 48l22 4" fill="none" stroke-opacity=".3" />
+          <!-- Œil, petit et haut placé -->
+          <circle cx="30" cy="29" r="4.4" fill="var(--fx-shell)" />
+          <circle cx="29.4" cy="29.2" r="2.7" fill="var(--ink)" stroke="none" />
+          <circle cx="28.6" cy="28.2" r=".9" fill="#fff" stroke="none" />
+        </g>
+      </svg>
+    </div>
+
+    <span class="loche__shade"></span>
+
+    <svg class="loche__front" viewBox="0 0 200 120">
+      <g stroke="var(--ink)" stroke-opacity=".5" stroke-linejoin="round" stroke-linecap="round">
+        <!-- Rocher : son surplomb abrite le trou, ouvert à gauche -->
+        <path d="M196 120c2-16-4-40-18-56-14-16-38-34-66-38-28-4-56 0-76 10-16 8-28 14-30 20 4 4 16 4 30 2 24-2 48 0 60 10 10 8 14 30 16 52z" fill="#cbb895" />
+        <path d="M40 38c22-10 52-12 78-8 22 4 42 14 56 30-18-10-40-17-62-19-26-2-50 0-72-3z" fill="#fff" fill-opacity=".25" stroke="none" />
+        <path d="M150 40c-4 10-2 18 4 26M118 96c6 6 8 14 6 24" fill="none" stroke-opacity=".3" />
+        <path d="M128 48h.1M146 56h.1M160 76h.1M138 84h.1M170 98h.1M122 70h.1M150 104h.1M104 42h.1M86 36h.1M64 40h.1" stroke-width="3" stroke-opacity=".22" />
+        <!-- Un bouquet d'Acropora et une algue sur le dessus -->
+        <path d="M118 28c-2-8-1-14 2-20M124 27c2-7 6-12 10-15M112 30c-5-5-8-10-9-16" fill="none" stroke-width="7" />
+        <path d="M118 28c-2-8-1-14 2-20M124 27c2-7 6-12 10-15M112 30c-5-5-8-10-9-16" fill="none" stroke="var(--fx-coral)" stroke-opacity="1" stroke-width="5.2" />
+        <path d="M120 8h.1M134 12h.1M103 14h.1" stroke="var(--fx-shell)" stroke-opacity="1" stroke-width="3.6" />
+        <path d="M152 38c-2-8 0-14 4-18M157 40c1-7 4-12 9-15M147 39c-3-5-4-10-3-15" fill="none" stroke="var(--fx-weed)" stroke-opacity="1" stroke-width="2" />
+        <!-- Sable au pied du rocher : il cache le ventre de la loche -->
+        <path d="M0 120v-6c20-4 50-5 80-3 40 2 80-1 120 3v6z" fill="var(--floor)" stroke="none" />
+      </g>
+    </svg>
+    </div>
+  </div>
+
+  <!-- Holothurie (bêche-de-mer), couchée sur le sable -->
+  <svg class="floor__holo" viewBox="0 0 90 30">
+    <ellipse cx="48" cy="26.5" rx="40" ry="3" fill="var(--ink)" fill-opacity=".1" />
+    <g fill="none" stroke-linecap="round">
+      <path d="M11 15C18 9 32 7 48 7.5s31 2 37 8" stroke="var(--ink)" stroke-opacity=".55" stroke-width="4.6" stroke-dasharray="0 5.4" />
+      <path d="M8 17C10 9 30 8 48 8.5s33 2 38 7.5c4 5 0 10-10 10H20C11 26 6 23 8 17Z" fill="var(--fx-wood)" stroke="var(--ink)" stroke-opacity=".55" />
+      <path d="M11 15C18 9 32 7 48 7.5s31 2 37 8" stroke="var(--fx-wood)" stroke-width="3.2" stroke-dasharray="0 5.4" />
+      <path d="M16 14c10-3 34-5 58 0" stroke="var(--fx-trunk)" stroke-width="2.8" stroke-dasharray="0 11" />
+      <path d="M12 22.5c10 1.8 34 2.4 62 1.2 5-.2 9-1.4 11-3" stroke="var(--fx-trunk)" stroke-width="1.8" />
+      <path d="M8 18c-2.5-1-4-3-4-5.4M7.6 20c-3 .4-5-.6-6-2.4M8.4 22c-2 1.4-4 1.6-5.6 1" stroke="var(--ink)" stroke-opacity=".5" stroke-width=".9" />
+    </g>
+  </svg>
+
+  <!-- Deux demoiselles près du rocher de la loche -->
+  @for (f of ['a', 'b']; track f) {
+    <svg class="floor__fish" [class]="'floor__fish--' + f" viewBox="0 0 40 20">
+      <path d="M2 10C8 2 22 1 30 7l8-5-2 8 2 8-8-5C22 19 8 18 2 10Z" fill="var(--fx-chromis)" stroke="var(--ink)" stroke-opacity=".5" stroke-width=".9" stroke-linejoin="round" />
+      <path d="M5 11.5c6 4.5 16 5.5 23 2-7 .6-16-.2-23-2Z" fill="var(--fx-chromis-belly)" />
+      <circle cx="8.5" cy="8.6" r="1.5" fill="var(--ink)" />
+    </svg>
+  }
+
+  <!-- Herbiers : trois touffes, chacune balancée d'un bloc -->
+  @for (w of [1, 2, 3]; track w) {
+    <svg class="floor__weed" [class]="'floor__weed--' + w" viewBox="0 0 40 80">
+      <g stroke="var(--ink)" stroke-opacity=".45" stroke-width=".8" stroke-linejoin="round">
+        <path d="M19 80c-1-24 0-48 4-72 3 24 3 48 1 72ZM15 80C11 70 6 63 0 58c8 3 14 11 18 22Z" fill="var(--fx-palm-dark)" />
+        <path d="M17 80C15 62 9 44 3 26c8 15 15 34 18 54ZM23 80c2-20 7-38 15-52-5 16-8 34-10 52ZM25 80c3-9 8-16 14-19-4 5-8 12-10 19Z" fill="var(--fx-weed)" />
+      </g>
+    </svg>
+  }
+
+  <!-- Bénitier (Tridacna) : le manteau respire, les bulles en partent -->
+  <div class="floor__clam">
+    <svg viewBox="0 0 120 72">
+      <g class="clam__mantle" fill="none" stroke-linecap="round">
+        <path d="M10 46C8 34 18 24 32 26c5-7 14-10 22-6 6-5 16-5 22 0 8-4 17-1 22 6 14-2 24 8 22 20Z" fill="var(--fx-clam)" stroke="var(--ink)" stroke-opacity=".5" stroke-linejoin="round" />
+        <path d="M15 39c5-6 11-8 17-6 6-6 14-7 21-3 6-5 14-5 20 0 7-4 14-3 20 3 6-2 11 1 13 6" stroke="var(--lagoon-near)" stroke-width="1.6" />
+        <path d="M24 37c10-6 22-8 36-8s26 2 36 8M40 42c6-2 13-3 20-3s14 1 20 3" stroke="var(--fx-clam-dot)" stroke-width="3.2" stroke-dasharray="0 10" />
+      </g>
+      <path d="M4 46q5.5-10 11 0t11 0 11 0 11 0 11 0 11 0 11 0 11 0 11 0 11 0C116 60 96 70 60 70S4 60 4 46Z" fill="var(--fx-shell)" stroke="var(--ink)" stroke-opacity=".55" stroke-linejoin="round" />
+      <path d="M9.5 44c4 10 11 18 20 23m2-23c2 10 6 18 12 25m10-25c1 10 2 18 4 26m18-26c-1 10-3 18-4 26m26-26c-3 10-9 18-15 24" fill="none" stroke="var(--sand-deep)" stroke-opacity=".7" stroke-width=".9" stroke-linecap="round" />
+      <path d="M9 59c11 6 30 9 51 9s40-3 51-9c-5 7-24 11-51 11S14 66 9 59Z" fill="var(--ink)" fill-opacity=".09" />
+      <path d="M0 72c8-5 22-6 34-3s30 3 48 0 30-1 38 3Z" fill="var(--floor)" stroke="var(--sand-deep)" stroke-opacity=".5" />
+    </svg>
+    <span class="bubble" style="--x: 44%; --b: 62%; --s: 7px; --d: 6.4s; --delay: -1s; --dx: -6px"></span>
+    <span class="bubble" style="--x: 52%; --b: 70%; --s: 5px; --d: 7.6s; --delay: -3.4s; --dx: 8px"></span>
+    <span class="bubble" style="--x: 48%; --b: 92%; --s: 9px; --d: 8.8s; --delay: -5.2s; --dx: -10px"></span>
+    <span class="bubble" style="--x: 58%; --b: 118%; --s: 6px; --d: 6.9s; --delay: -2.2s; --dx: 6px"></span>
+    <span class="bubble" style="--x: 40%; --b: 146%; --s: 4px; --d: 9s; --delay: -6.6s"></span>
+    <span class="bubble" style="--x: 54%; --b: 176%; --s: 7px; --d: 7.2s; --delay: -4.4s; --dx: 10px"></span>
+  </div>
+
+  <!-- Tricot rayé (Laticauda) : une seule traversée, quand on arrive au fond -->
+  <div class="mover mover--once floor__krait" [class.is-swimming]="swim()">
+    <svg viewBox="0 0 300 60">
+      <g fill="none" stroke-linecap="round" stroke-width="9">
+        <path d="M18 32C40 16 62 16 84 30s44 16 66 2 44-16 66-4 38 12 56 2" stroke="var(--ink)" stroke-opacity=".55" stroke-width="11.5" />
+        <path d="M18 32C40 16 62 16 84 30s44 16 66 2 44-16 66-4 38 12 56 2" stroke="#e8eef0" />
+        <path d="M18 32C40 16 62 16 84 30s44 16 66 2 44-16 66-4 38 12 56 2" stroke="var(--fx-tricot)" stroke-dasharray="8 8" stroke-linecap="butt" />
+      </g>
+      <path d="M21 27C14 21 4 23 1 31c3 7 13 9 20 4Z" fill="var(--fx-tricot)" />
+      <path d="M268 25c9-4 19-3 25 3 2 2 2 4 0 5-6 5-16 5-25 2Z" fill="var(--fx-tricot)" stroke="var(--ink)" />
+      <path d="M281 33.5c4 1 8.5.8 11.5-1" fill="none" stroke="var(--sun)" stroke-width="1.8" stroke-linecap="round" />
+      <circle cx="285" cy="28.5" r="1.3" fill="#e8eef0" />
+    </svg>
+  </div>
+
+  <!-- Légendes du carnet (masquées sous 1024 px) -->
+  <p class="legend floor__legend floor__legend--loche"><em>Epinephelus fuscoguttatus</em><br />mère loche</p>
+  <p class="legend floor__legend floor__legend--holo"><em>Holothuria</em> · bêche-de-mer</p>
+  <p class="legend floor__legend floor__legend--clam"><em>Tridacna</em> · bénitier</p>
+  <p class="legend floor__legend floor__legend--bottle"><em>Epistula vitrea</em> · à ouvrir</p>
+</div>
+
+<!-- Bouteille à la mer : un vrai bouton, qui ouvre un popover natif -->
+<button type="button" class="bottle" popovertarget="bottle-note" aria-label="Lire le message de la bouteille à la mer">
+  <svg viewBox="0 0 64 110" aria-hidden="true">
+    <g transform="rotate(18 26 100)">
+      <g class="bottle__glass" stroke="var(--ink)" stroke-opacity=".6" stroke-linejoin="round">
+        <rect class="bottle__cork" x="21" y="4" width="10" height="13" rx="2.5" fill="var(--fx-trunk)" />
+        <path d="M20.5 20v9c0 5-9.5 7-9.5 15v50c0 4 2.5 6 6 6h18c3.5 0 6-2 6-6V44c0-8-9.5-10-9.5-15v-9Z" fill="var(--fx-glass)" fill-opacity=".8" stroke-width="1.1" />
+        <rect x="16.5" y="49" width="19" height="40" rx="3.5" fill="#fbf7ee" stroke="var(--sand-deep)" stroke-width=".8" />
+        <path d="M19.5 50c3 2.6 10 2.6 13 0" fill="none" stroke="var(--sand-deep)" stroke-width=".8" />
+        <path d="M16.5 69h19" stroke="var(--accent-bright)" stroke-width="2.2" stroke-opacity="1" />
+        <rect x="18.5" y="15.5" width="15" height="5" rx="2.2" fill="var(--fx-glass)" />
+        <path class="bottle__shine" d="M15 50v38m-.5-45c1-3 3-5 6-7" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="2.2" stroke-linecap="round" />
+      </g>
+    </g>
+    <path d="M0 75c7-6 15-9 25-8s17-3 25-3 12 3 14 5v41H0Z" fill="var(--floor)" />
+    <g fill="none" stroke-linecap="round">
+      <path d="M0 75c7-6 15-9 25-8s17-3 25-3 12 3 14 5" stroke="var(--sand-deep)" stroke-opacity=".6" />
+      <path d="M27 70c4 1.6 12 1.6 17-.6" stroke="var(--ink)" stroke-opacity=".14" stroke-width="2.4" />
+      <path d="M8 86q5-2 10 0m16 6q6-2 12 0m-28 8q4-1.6 8 0" stroke="var(--sand-shadow)" stroke-width="1.2" />
+    </g>
+  </svg>
+  <span class="bottle__tip" aria-hidden="true">Lire le message</span>
+</button>
+
+<div
+  id="bottle-note"
+  popover
+  class="note"
+  role="dialog"
+  aria-labelledby="bottle-note-title"
+  (toggle)="onToggle($event)"
+  (focusout)="onFocusOut($event)"
+>
+  <h3 class="note__title" id="bottle-note-title">Message trouvé à −22&nbsp;m</h3>
+  <p class="note__text">
+    Merci d'être descendu jusqu'au fond&nbsp;! Un stage ou une question&nbsp;:
+    écrivez-moi, je remonte vite à la surface.
+  </p>
+  <a class="note__mail" [href]="'mailto:' + email()">{{ email() }}</a>
+
+  <div class="note__actions">
+    <button #copyButton type="button" class="btn btn--accent" (click)="copy()">Copier l'adresse</button>
+    <button type="button" class="btn btn--ghost" popovertarget="bottle-note" popovertargetaction="hide">
+      Refermer
+    </button>
+  </div>
+
+  <p class="note__status" aria-live="polite">{{ status() }}</p>
+  <p class="note__sign" aria-hidden="true">Allan</p>
+</div>

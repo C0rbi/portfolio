@@ -1,0 +1,212 @@
+@use 'core' as *;
+
+:host {
+  display: block;
+}
+
+.about__grid {
+  display: grid;
+  gap: 56px;
+
+  @include from($bp-lg) {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
+    gap: 72px;
+    align-items: start;
+  }
+}
+
+.about__text {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 62ch;
+  color: var(--ink-2);
+  font-size: 1.0313rem;
+  line-height: 1.78;
+
+  strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+}
+
+// Premier paragraphe mis en avant, avec une lettrine dessinée
+.about__intro {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.6vw, 1.5rem);
+  font-weight: 400;
+  font-variation-settings: 'SOFT' 24, 'opsz' 40;
+  line-height: 1.48;
+
+  &::first-letter {
+    float: left;
+    margin: 0.06em 0.12em 0 0;
+    color: var(--accent);
+    font-size: 3.1em;
+    font-weight: 600;
+    font-variation-settings: 'SOFT' 0, 'WONK' 1, 'opsz' 144;
+    line-height: 0.82;
+  }
+}
+
+// --- Fiche d'identité ---
+.about__facts {
+  display: grid;
+  gap: 1px;
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: $radius-md;
+  background-color: var(--line);
+  overflow: hidden;
+
+  @include from($bp-sm) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.about__fact {
+  padding: 18px 20px;
+  background-color: var(--surface);
+  transition: background-color 0.55s $ease-soft;
+
+  &:hover {
+    background-color: var(--paper-alt);
+  }
+
+  dt {
+    @include eyebrow;
+    margin-bottom: 6px;
+    font-size: 0.625rem;
+    color: var(--ink-3);
+  }
+
+  dd {
+    margin: 0;
+    color: var(--ink);
+    font-size: 0.9063rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+}
+
+// ============================================================
+//  Aperçu du CV
+// ============================================================
+.about__cv {
+  margin: 0;
+  // Largeur fixée d'emblée : l'image en lazy-load ne fait plus sauter
+  // la page en se chargeant (la figure ne dépend plus de son contenu).
+  width: 100%;
+  max-width: 340px;
+
+  @include upto($bp-lg) {
+    margin-inline: auto;
+  }
+}
+
+// Feuille scotchée dans le carnet (rubans : classe globale .taped).
+// Légèrement de biais, comme collée à la main.
+.cv {
+  position: relative;
+  display: block;
+  rotate: -1.2deg;
+  @include focus-ring;
+}
+
+// Cadre décoratif décalé derrière la feuille
+.cv__frame {
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid var(--accent);
+  border-radius: $radius-md;
+  transform: translate(14px, 14px);
+  transition: transform 0.75s $ease-spring;
+
+  .cv:hover &,
+  .cv:focus-visible & {
+    transform: translate(7px, 7px);
+  }
+}
+
+.cv__sheet {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: $radius-md;
+  background-color: var(--surface);
+  box-shadow: var(--shadow-md);
+  transition:
+    transform 0.75s $ease-spring,
+    box-shadow 0.75s $ease-soft;
+
+  img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1.414;
+    object-fit: cover;
+    object-position: top center;
+    filter: grayscale(1) contrast(1.04);
+    transition:
+      filter 0.8s $ease-soft,
+      transform 0.8s $ease-out;
+  }
+
+  // Tenue par les rubans, la feuille se soulève par le bas
+  transform-origin: 50% 0;
+
+  .cv:hover &,
+  .cv:focus-visible & {
+    transform: rotate(1.4deg) translateY(-3px);
+    box-shadow: var(--shadow-lg);
+
+    img {
+      filter: none;
+      transform: scale(1.03);
+    }
+  }
+}
+
+.cv__overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background-color: rgba(14, 42, 56, 0.22);
+  opacity: 0;
+  transition: opacity 0.6s $ease-soft;
+
+  .cv:hover &,
+  .cv:focus-visible & {
+    opacity: 1;
+  }
+}
+
+.cv__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 17px;
+  border-radius: $radius-pill;
+  background-color: var(--accent);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+  transform: translateY(8px);
+  transition: transform 0.65s $ease-spring;
+
+  .cv:hover &,
+  .cv:focus-visible & {
+    transform: none;
+  }
+}
+
+.cv__caption {
+  @include eyebrow;
+  margin-top: 26px;
+  font-size: 0.625rem;
+  color: var(--ink-3);
+  text-align: center;
+}

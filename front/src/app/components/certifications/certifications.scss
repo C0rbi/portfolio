@@ -1,0 +1,217 @@
+@use 'core' as *;
+
+:host {
+  display: block;
+}
+
+.certs {
+  display: grid;
+  gap: 20px;
+
+  @include from($bp-sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  // Neuf formations : trois rangées de trois, sans carte orpheline
+  @include from($bp-md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+// ============================================================
+//  Carte de certification
+// ============================================================
+.cert {
+  --tone: var(--accent);
+  --tone-soft: var(--accent-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 26px 24px 28px;
+  border: 1px solid var(--line);
+  border-radius: $radius-lg;
+  background-color: var(--surface);
+  box-shadow: var(--shadow-xs);
+  transition:
+    transform 0.7s $ease-out,
+    box-shadow 0.7s $ease-soft,
+    border-color 0.7s $ease-soft;
+
+  &.is-done {
+    --tone: var(--lagoon);
+    --tone-soft: var(--lagoon-soft);
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+// ============================================================
+//  Manomètre de plongée
+//  Cadran teinté, lunette blanche cerclée d'un filet, 16 graduations,
+//  arc de progression et index d'encre en face de la fin de l'arc.
+// ============================================================
+.cert__ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  // La lunette déborde de 7 px : la marge l'aligne sur le texte
+  margin: 7px;
+  border-radius: 50%;
+  background-color: var(--paper-alt);
+
+  // Lunette, filet extérieur et ombre intérieure qui creuse le cadran
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 6px #fff,
+      0 0 0 7px rgba(14, 42, 56, 0.12),
+      inset 0 1px 4px rgba(8, 70, 92, 0.16);
+  }
+}
+
+// Le tracé démarre en haut plutôt qu'à droite. Seul le cadran tourne :
+// la coche de « Validée » reste droite.
+.ring {
+  transform: rotate(-90deg);
+}
+
+// 2π × 29,5 = 185,35 = 16 × (1,2 + 10,38)
+.ring__ticks {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 3;
+  stroke-dasharray: 1.2 10.38;
+  opacity: 0.5;
+}
+
+.ring__track {
+  fill: none;
+  stroke: var(--paper-deep);
+  stroke-width: 5;
+}
+
+// L'arc et l'index se mettent en place quand la carte entre à l'écran :
+// l'animation est posée dès le départ mais reste figée sur sa première
+// image. En mouvement réduit, elle saute directement à la fin.
+.ring__value,
+.cert__index {
+  animation: ring-draw 1.5s $ease-out both;
+  animation-play-state: paused;
+
+  .cert.is-revealed & {
+    animation-play-state: running;
+  }
+}
+
+.ring__value {
+  fill: none;
+  stroke: var(--tone);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+// Index : petit triangle d'encre posé dans la lunette, pointe vers le cadran
+.cert__index {
+  position: absolute;
+  inset: -6px;
+  rotate: var(--angle, 0deg);
+  animation-name: index-sweep;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    translate: -50% 0;
+    border: 3.5px solid transparent;
+    border-top: 5px solid var(--ink);
+    border-bottom: 0;
+  }
+}
+
+// Les valeurs d'arrivée sont celles posées en ligne par le composant.
+@keyframes ring-draw {
+  from {
+    stroke-dashoffset: 163.363;
+  }
+}
+
+@keyframes index-sweep {
+  from {
+    rotate: 0deg;
+  }
+}
+
+.cert__pct {
+  position: absolute;
+  display: flex;
+  align-items: baseline;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 20, 'opsz' 20;
+  color: var(--ink);
+
+  small {
+    font-size: 0.625rem;
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+
+  svg {
+    color: var(--lagoon);
+  }
+}
+
+// --- Contenu ---
+.cert__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.cert__state {
+  @include eyebrow;
+  align-self: flex-start;
+  padding: 4px 10px;
+  margin-bottom: 12px;
+  border-radius: $radius-pill;
+  background-color: var(--tone-soft);
+  color: var(--tone);
+  font-size: 0.6875rem;
+}
+
+.cert__title {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 20, 'opsz' 24;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.cert__issuer {
+  margin-top: 5px;
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.cert__note {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}

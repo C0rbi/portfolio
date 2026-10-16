@@ -1,0 +1,350 @@
+@use 'core' as *;
+
+:host {
+  display: block;
+}
+
+// Le footer est le fond du lagon : il prend la suite de l'eau (--sea-3)
+// sur toutes les pages, puis se pose sur le sable du fond.
+.footer {
+  position: relative;
+  overflow: hidden;
+}
+
+.footer__water {
+  padding-block: 88px 40px;
+  background: linear-gradient(180deg, var(--sea-3) 0%, var(--floor-water) 100%);
+
+  @include from($bp-md) {
+    padding-block: 120px 48px;
+  }
+}
+
+// Padding plutôt que marge : la marge de la signature traverserait le
+// bloc et laisserait voir le fond de page entre le lagon et le sable.
+.footer__sand {
+  padding-top: 32px;
+  background-color: var(--floor);
+}
+
+// En-tête, accroche, liste. Pas d'écart entre les rangées : l'en-tête
+// garde sa marge globale de 18 px avant le titre.
+.footer__top {
+  display: grid;
+  gap: 0 48px;
+
+  @include from($bp-lg) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+    column-gap: 72px;
+    align-items: start;
+
+    // Sur toute la largeur : la sonde rejoint le bord droit, et le titre
+    // et la liste démarrent à la même hauteur.
+    > .section-head__top {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+// ============================================================
+//  Accroche
+// ============================================================
+.footer__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 500;
+  font-variation-settings: 'SOFT' 24, 'WONK' 1, 'opsz' 60;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  color: var(--ink);
+
+  em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: 'SOFT' 60, 'WONK' 1, 'opsz' 60;
+  }
+}
+
+.footer__text {
+  max-width: 44ch;
+  margin-top: 20px;
+  color: var(--ink-2);
+  font-size: 1rem;
+  line-height: 1.72;
+}
+
+// Bouton « Écrire un message » et lieu, côte à côte
+.footer__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 20px;
+  margin-top: 28px;
+}
+
+.footer__place {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: $radius-pill;
+  background-color: rgba(255, 255, 255, 0.6);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-2);
+}
+
+.footer__place-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--lagoon-bright);
+  box-shadow: 0 0 0 3px rgba(20, 161, 168, 0.18);
+}
+
+// ============================================================
+//  Liste de contacts
+// ============================================================
+.contact {
+  border-top: 1px solid var(--line-strong);
+
+  // Sous l'accroche (une seule colonne) : l'écart que donnait la grille
+  @include upto($bp-lg) {
+    margin-top: 48px;
+  }
+
+  li {
+    border-bottom: 1px solid var(--line-strong);
+  }
+}
+
+.contact__row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 16px;
+  padding: 19px 4px;
+  overflow: hidden;
+  isolation: isolate;
+  @include focus-ring;
+
+  // Fond qui balaie la ligne de gauche à droite au survol
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--surface);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.7s $ease-out;
+  }
+
+  &:hover::before,
+  &:focus-visible::before {
+    transform: scaleX(1);
+  }
+
+  @include from($bp-sm) {
+    grid-template-columns: 130px minmax(0, 1fr) 24px;
+    padding-inline: 14px;
+  }
+
+  // De 1024 à 1279 px, la liste n'a que sa demi-colonne : on resserre
+  // pour que l'adresse mail tienne sur une ligne. Pas moins de 118 px,
+  // sinon « Curriculum vitæ » se couperait.
+  @include from($bp-lg) {
+    @include upto($bp-xl) {
+      grid-template-columns: 118px minmax(0, 1fr) 24px;
+      gap: 12px;
+      padding-inline: 8px;
+    }
+  }
+
+  // Sur petit écran, le libellé passe au-dessus : l'adresse mail
+  // dispose alors de toute la largeur et ne se coupe plus.
+  @include upto($bp-sm) {
+    grid-template-columns: minmax(0, 1fr) 24px;
+    row-gap: 5px;
+
+    .contact__label {
+      grid-area: 1 / 1;
+    }
+
+    .contact__value {
+      grid-area: 2 / 1;
+    }
+
+    .contact__icon {
+      grid-area: 1 / 2 / span 2;
+    }
+  }
+}
+
+.contact__label {
+  @include eyebrow;
+  font-size: 0.625rem;
+  color: var(--ink-3);
+  transition: color 0.55s $ease-soft;
+
+  .contact__row:hover & {
+    color: var(--accent);
+  }
+}
+
+.contact__value {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+  transition: transform 0.65s $ease-out;
+
+  .contact__row:hover & {
+    transform: translateX(5px);
+  }
+}
+
+.contact__icon {
+  display: grid;
+  place-items: center;
+  color: var(--ink-3);
+  opacity: 0;
+  transform: translate(-6px, 6px);
+  transition:
+    opacity 0.6s $ease-soft,
+    transform 0.65s $ease-spring,
+    color 0.55s $ease-soft;
+
+  .contact__row:hover &,
+  .contact__row:focus-visible & {
+    color: var(--accent);
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// ============================================================
+//  Signature géante, comme tracée du doigt dans le sable
+// ============================================================
+.footer__wordmark {
+  font-family: var(--font-display);
+  font-size: clamp(3.4rem, 15.5vw, 12rem);
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 0, 'WONK' 1, 'opsz' 144;
+  letter-spacing: -0.045em;
+  line-height: 0.86;
+  text-align: center;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--sand-deep);
+  transition: color 0.8s $ease-soft;
+  user-select: none;
+
+  &:hover {
+    color: rgba(184, 149, 90, 0.14);
+  }
+}
+
+// ============================================================
+//  Bas de page
+// ============================================================
+.footer__bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 36px;
+  padding-block: 26px 34px;
+  border-top: 1px dashed var(--sand-deep);
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+
+  @include from($bp-md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+}
+
+.footer__built {
+  order: 3;
+
+  @include from($bp-md) {
+    order: 0;
+  }
+}
+
+.footer__tech {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.footer__top-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  padding: 8px 16px;
+  border: 1px solid rgba(184, 149, 90, 0.55);
+  white-space: nowrap;
+  border-radius: $radius-pill;
+  background-color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  color: var(--ink-2);
+  transition:
+    color 0.55s $ease-soft,
+    border-color 0.55s $ease-soft,
+    transform 0.6s $ease-spring;
+  @include focus-ring($radius: null);
+
+  svg {
+    transition: transform 0.6s $ease-spring;
+  }
+
+  &:is(:hover, :focus-visible) {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+
+  &:hover {
+    transform: translateY(-3px);
+
+    svg {
+      transform: translateY(-3px);
+    }
+  }
+}
+
+// Flèche et bulles : les bulles remontent au-dessus de la flèche
+.footer__top-arrow {
+  position: relative;
+  display: grid;
+
+  // Au repos : cachées et figées ; elles ne jouent qu'au survol et au
+  // focus. En mouvement réduit, elles n'existent pas.
+  .bubble {
+    --rise: -40px;
+    display: none;
+    border-color: var(--lagoon-bright);
+    background: radial-gradient(circle at 30% 30%, #fff 0 22%, rgba(23, 167, 173, 0.2) 45%);
+
+    @include motion-safe {
+      display: block;
+      visibility: hidden;
+      animation-play-state: paused;
+    }
+
+    .footer__top-link:is(:hover, :focus-visible) & {
+      visibility: visible;
+      animation-play-state: running;
+
+      // « Calme plat » : rien ne remonte, même au survol
+      @include when-still {
+        visibility: hidden;
+      }
+    }
+  }
+}

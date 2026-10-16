@@ -1,0 +1,126 @@
+@use 'core' as *;
+
+// =============================================================
+//  Formulaire de contact : la carte de la fenêtre « Écrire un
+//  message ». Écume claire en haut, champs blancs, libellés
+//  au-dessus, erreurs en corail sous le champ : tout reste lisible
+//  au moins à 4,5:1.
+// =============================================================
+:host {
+  display: block;
+}
+
+.cform {
+  position: relative;
+  display: grid;
+  gap: 16px;
+  padding: 24px 20px;
+  border-radius: $radius-lg;
+  background: linear-gradient(180deg, var(--sea-0), var(--surface) 160px);
+
+  @include from($bp-sm) {
+    padding: 30px 32px 32px;
+  }
+}
+
+// Place laissée à droite pour la croix de la fenêtre
+.cform__title {
+  padding-right: 48px;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+  font-variation-settings: 'SOFT' 20, 'opsz' 24;
+}
+
+.cform__row {
+  display: grid;
+  gap: 16px;
+
+  @include from($bp-md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.cform__field {
+  display: grid;
+  gap: 6px;
+
+  label {
+    @include eyebrow;
+    font-size: 0.6875rem;
+    color: var(--ink-2);
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: $radius-sm;
+    background-color: var(--surface);
+    color: var(--ink);
+    line-height: 1.5;
+    transition: border-color $dur-fast $ease-soft;
+
+    &:focus-visible {
+      outline: 2px solid var(--lagoon);
+      outline-offset: 2px;
+    }
+
+    &[aria-invalid='true'] {
+      border-color: var(--accent);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 132px;
+  }
+}
+
+.cform__err {
+  color: var(--accent);
+  font-size: 0.8125rem;
+}
+
+// Hors de l'écran, mais toujours dans le formulaire (un robot le voit)
+.cform__trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.cform__note {
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+// Garde la parenthèse collée au lien (qui est en inline-block)
+.cform__nowrap {
+  white-space: nowrap;
+}
+
+.cform__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+
+  .btn[disabled] {
+    opacity: 0.7;
+    cursor: progress;
+  }
+}
+
+.cform__status {
+  flex: 1 1 220px;
+  color: var(--lagoon);
+  font-size: 0.875rem;
+
+  &.is-error {
+    color: var(--accent);
+  }
+}

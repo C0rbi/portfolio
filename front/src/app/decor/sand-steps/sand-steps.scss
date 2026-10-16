@@ -1,0 +1,262 @@
+@use 'core' as *;
+
+// =============================================================
+//  Intermède du sable : traces de pas, crabe fantôme, coquillages
+//  Hôte : classes globales `decor interlude` (voir _zones.scss). Il ne
+//  mesure rien : sa scène est centrée sur la frontière entre « Profil »
+//  et « Parcours », dans leur padding, donc jamais sous du texte.
+// =============================================================
+:host {
+  display: block;
+}
+
+// La scène sert aussi de « view-timeline » : les traces s'impriment
+// au fil du défilement. Les positions sont réglées ici par largeur :
+// --ox/--oy (départ de la piste), --k (échelle), --hx/--hy (terrier).
+.steps {
+  --ox: 9%;
+  --oy: 80%;
+  --k: 0.56;
+  --fw: 12px;
+  --hx: 84%;
+  --hy: 76%;
+  --cs: 1; // échelle du crabe et de son terrier
+  view-timeline: --steps block;
+
+  @include from($bp-md) {
+    --ox: 19%;
+    --oy: 78%;
+    --k: 0.9;
+    --fw: 15px;
+    --hx: 68%;
+    --hy: 70%;
+    --cs: 1.3;
+  }
+
+  @include from($bp-xl) {
+    --ox: 22%;
+    --k: 1.2;
+    --fw: 18px;
+    --cs: 1.5;
+  }
+
+  > * {
+    position: absolute;
+  }
+}
+
+// =============================================================
+//  Traces de pas (classe globale .foot) : la piste est dessinée en
+//  unités, puis mise à l'échelle sans se déformer.
+// =============================================================
+.foot {
+  left: calc(var(--ox) + var(--u) * var(--k) * 1px);
+  top: calc(var(--oy) + var(--v) * var(--k) * 1px);
+  translate: -50% -50%;
+}
+
+// Chrome : chaque trace s'imprime à son tour pendant le défilement, et
+// s'efface quand on remonte. Pas de pause hors écran (.scroll-anim).
+@supports (animation-timeline: view()) {
+  @include motion-safe {
+    .foot {
+      animation: print-in linear both;
+      animation-timeline: --steps; // toujours APRÈS le raccourci
+      animation-range: cover calc(12% + var(--i) * 5%) cover calc(24% + var(--i) * 5%);
+    }
+  }
+}
+
+// Repli (Firefox) : les traces apparaissent en cascade à la première vue.
+@supports not (animation-timeline: view()) {
+  @include motion-safe {
+    .foot {
+      opacity: 0;
+      transition: opacity 0.5s calc(var(--i) * 140ms);
+    }
+
+    :host(.is-seen) .foot {
+      opacity: 0.7;
+    }
+  }
+}
+
+@keyframes print-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 0.7;
+    transform: none;
+  }
+}
+
+// =============================================================
+//  Crabe fantôme et son terrier
+//  Pose de repos : le crabe guette à côté de son trou. En mouvement,
+//  il traverse une seule fois, de côté, puis plonge dans le trou ;
+//  ensuite, ses yeux en ressortent de temps en temps. Le départ est
+//  donné par la classe crab-go (scène visible à 60 %, voir le .ts).
+// =============================================================
+.burrow {
+  left: var(--hx);
+  top: var(--hy);
+  width: calc(var(--cs) * 44px);
+  translate: -50% -50%;
+}
+
+.burrow__peek {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: 30%;
+  aspect-ratio: 20 / 14;
+  translate: -50% 0;
+  overflow: hidden;
+
+  svg {
+    transform: translateY(105%);
+  }
+}
+
+// Au repos, le bord droit du crabe touche la margelle du trou (--off)
+.crab {
+  --off: calc(var(--cs) * 11px);
+  left: var(--hx);
+  top: var(--hy);
+  width: calc(var(--cs) * 40px);
+  translate: calc(-100% - var(--off)) -72%;
+}
+
+// Chaque groupe de pattes pivote autour de son attache sur la carapace
+.crab__legs {
+  --s: 1;
+  transform-box: fill-box;
+  transform-origin: 100% 40%;
+}
+
+.crab__legs--r {
+  --s: -1;
+  transform-origin: 0 40%;
+}
+
+@include motion-safe {
+  // Course : un sprint, un arrêt pour guetter, un second sprint, le plongeon
+  :host(.crab-go) .crab {
+    animation: crab-run 3.2s 0.3s both;
+  }
+
+  // Les pattes s'agitent pendant les deux sprints seulement
+  :host(.crab-go) .crab__legs {
+    animation:
+      crab-legs 0.18s 0.3s 6 alternate ease-in-out,
+      crab-legs 0.18s 1.9s 7 alternate ease-in-out;
+  }
+
+  :host(.crab-go) .burrow__peek svg {
+    animation: crab-peek 12s 4.5s ease-in-out infinite;
+  }
+
+  .steps__glint {
+    animation: glint 7s ease-in-out infinite;
+  }
+}
+
+@keyframes crab-run {
+  0% {
+    transform: translateX(-30vw);
+    animation-timing-function: cubic-bezier(0.3, 0.6, 0.35, 1);
+  }
+  35%,
+  50% {
+    transform: translateX(-13vw);
+    animation-timing-function: cubic-bezier(0.3, 0.6, 0.35, 1);
+  }
+  86% {
+    transform: none;
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: translate(calc(50% + var(--off)), 22%) scale(0);
+  }
+}
+
+@keyframes crab-legs {
+  from {
+    transform: rotate(calc(var(--s) * -8deg));
+  }
+  to {
+    transform: rotate(calc(var(--s) * 8deg));
+  }
+}
+
+@keyframes crab-peek {
+  0%,
+  74%,
+  100% {
+    transform: translateY(105%);
+  }
+  80%,
+  93% {
+    transform: none;
+  }
+}
+
+// =============================================================
+//  Coquillages, étoile de mer et légendes de carnet
+// =============================================================
+.steps__star {
+  left: 3%;
+  top: 8%;
+  width: 30px;
+  rotate: 14deg;
+
+  @include from($bp-md) {
+    left: 7%;
+    top: 24%;
+    width: 48px;
+  }
+}
+
+.steps__troca {
+  left: 91%;
+  top: 6%;
+  width: 20px;
+  rotate: -18deg;
+
+  @include from($bp-md) {
+    left: 90.5%;
+    top: 12%;
+    width: 30px;
+  }
+}
+
+.steps__cowrie {
+  left: 66%;
+  top: 8%;
+  width: 30px;
+  rotate: 8deg;
+
+  @include from($bp-md) {
+    left: 84%;
+    top: 28%;
+    width: 46px;
+  }
+}
+
+.steps__glint {
+  opacity: 0.7;
+}
+
+// Légendes sous leur sujet (masquées sous 768 px par la classe globale)
+.steps__legend--crab {
+  left: calc(var(--hx) - 30px);
+  top: calc(var(--hy) + 22px);
+}
+
+// Sous la porcelaine, sans jamais sortir de l'écran (768 px)
+.steps__legend--shell {
+  left: min(83.5%, calc(100% - 150px));
+  top: 56%;
+}

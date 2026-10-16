@@ -1,0 +1,264 @@
+@use 'core' as *;
+
+:host {
+  display: block;
+}
+
+.skills__grid {
+  display: grid;
+  gap: 24px;
+
+  @include from($bp-md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+// ============================================================
+//  Carte de catégorie
+// ============================================================
+.skill {
+  --tone: var(--accent);
+  --tone-soft: var(--accent-soft);
+  position: relative;
+  overflow: hidden;
+  padding: 28px 26px 30px;
+  border: 1px solid var(--line);
+  border-radius: $radius-lg;
+  background-color: var(--surface);
+  box-shadow: var(--shadow-xs);
+  transition:
+    transform 0.7s $ease-out,
+    box-shadow 0.7s $ease-soft,
+    border-color 0.7s $ease-soft;
+
+  &[data-tone='lagoon'] {
+    --tone: var(--lagoon);
+    --tone-soft: var(--lagoon-soft);
+  }
+
+  &[data-tone='gold'] {
+    --tone: var(--gold);
+    --tone-soft: var(--gold-soft);
+  }
+
+  // Voile coloré qui monte depuis le bas au survol
+  &::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 4px;
+    background-color: var(--tone);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.75s $ease-out;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-md);
+
+    &::before {
+      transform: scaleX(1);
+    }
+  }
+}
+
+// Icône dans une bulle : reflet en haut à gauche, liseré clair et
+// fin cerne de la teinte pour la détacher de la carte blanche.
+.skill__icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 30%, #fff 0 22%, var(--tone-soft) 70%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.8),
+    0 0 0 1px color-mix(in srgb, var(--tone) 18%, transparent);
+  color: var(--tone);
+  transition: transform 0.75s $ease-spring;
+
+  // Deux petites bulles s'en échappent au survol
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    right: -2px;
+    width: 9px;
+    aspect-ratio: 1;
+    border: 1.5px solid currentColor;
+    border-radius: 50%;
+    opacity: 0;
+    transition:
+      transform 0.9s $ease-out,
+      opacity 0.6s $ease-soft;
+  }
+
+  &::after {
+    top: 14px;
+    right: -9px;
+    width: 6px;
+  }
+
+  .skill:hover & {
+    transform: translateY(-4px) scale(1.06);
+
+    &::before {
+      opacity: 0.45;
+      transform: translate(4px, -14px);
+    }
+
+    &::after {
+      opacity: 0.35;
+      transform: translate(7px, -24px);
+      transition-delay: 0.08s;
+    }
+  }
+}
+
+.skill__title {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 20, 'opsz' 30;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.skill__caption {
+  margin-top: 6px;
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.skill__list {
+  display: grid;
+  gap: 2px;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.skill__item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 7px 10px;
+  margin-inline: -10px;
+  border-radius: $radius-sm;
+  color: var(--ink-2);
+  font-size: 0.9063rem;
+  transition:
+    background-color 0.5s $ease-soft,
+    color 0.5s $ease-soft,
+    transform 0.55s $ease-out;
+
+  &:hover {
+    background-color: var(--paper-alt);
+    color: var(--ink);
+    transform: translateX(4px);
+  }
+
+  &.is-core {
+    color: var(--ink);
+    font-weight: 600;
+  }
+}
+
+// Point de puce : creux par défaut, plein pour les technos principales
+.skill__bullet {
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 50%;
+  transition:
+    background-color 0.5s $ease-soft,
+    border-color 0.5s $ease-soft,
+    box-shadow 0.5s $ease-soft;
+
+  .skill__item.is-core & {
+    border-color: var(--tone);
+    background-color: var(--tone);
+    box-shadow: 0 0 0 3px var(--tone-soft);
+  }
+}
+
+// Gros numéro en filigrane dans le coin (décoratif, aria-hidden)
+.skill__count {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 0, 'opsz' 60;
+  line-height: 1;
+  color: var(--sea-1);
+  transition: color 0.7s $ease-soft;
+
+  .skill:hover & {
+    color: var(--tone-soft);
+  }
+}
+
+// ============================================================
+//  Méthodes & savoir-faire
+// ============================================================
+.methods {
+  display: grid;
+  gap: 22px;
+  margin-top: 28px;
+  padding: 30px 26px;
+  border: 1px dashed var(--line-strong);
+  border-radius: $radius-lg;
+  background-color: rgba(255, 255, 255, 0.5);
+
+  @include from($bp-lg) {
+    grid-template-columns: 220px minmax(0, 1fr);
+    align-items: center;
+    gap: 36px;
+    padding: 34px 38px;
+  }
+}
+
+.methods__title {
+  font-family: var(--font-display);
+  font-size: 1.1875rem;
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 20, 'opsz' 24;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.methods__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.methods__item {
+  padding: 8px 15px;
+  border: 1px solid var(--line);
+  border-radius: $radius-pill;
+  background-color: var(--surface);
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition:
+    transform 0.6s $ease-spring,
+    border-color 0.55s $ease-soft,
+    color 0.55s $ease-soft;
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}

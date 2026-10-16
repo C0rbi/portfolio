@@ -1,89 +1,84 @@
-<section id="experience" class="py-20 bg-slate-900 text-white">
-  <div class="max-w-4xl mx-auto px-6">
-
-    <!-- Titre Principal -->
-    <h2 class="text-3xl font-bold mb-16 text-center">
-      Mon <span class="text-indigo-500">parcours</span>
-    </h2>
-    
-    <!-- TITRE 1 : PARTIE PROFESSIONNELLE -->
-    <h2 class="text-3xl font-bold mb-12 flex items-center gap-4">
-      <span class="text-indigo-500">01.</span> Experience <span class="text-indigo-500">Professionnelle</span>
-    </h2>
-
-    <div class="relative border-l border-slate-700 ml-3 md:ml-0 mb-20">
-      
-      <!-- CSB - Alternance -->
-      <div class="mb-12 ml-8 relative">
-        <div class="absolute -left-[41px] top-1 w-5 h-5 bg-indigo-500 rounded-full border-4 border-slate-900 shadow-[0_0_10px_rgba(99,102,241,0.5)]"></div>
-        <span class="text-xs font-bold uppercase tracking-widest text-indigo-400">2026 - Present</span>
-        <h3 class="text-xl font-bold mt-1">Alternant a la CSB</h3>
-        <p class="text-slate-300 font-medium italic">CSB (Calédonienne de Services Bancaires) • Nouméa</p>
-        <p class="text-slate-400 mt-3 text-sm leading-relaxed">
-          Développement d'applications bancaires et **gestion monétique**. Configuration technique de parcs **TPE** et maintenance de solutions de paiement.
-        </p>
+<section class="section experience" id="experience">
+  <div class="shell">
+    <header class="section-head experience__head" appReveal>
+      <div>
+        <div class="section-head__top">
+          <span class="section-head__num">02</span>
+          <span class="section-head__rule"></span>
+          <span class="section-head__label">Parcours</span>
+        </div>
+        <h2 class="section-title">Ce que j'ai <em>appris</em>, et où.</h2>
       </div>
 
-      <!-- LAGOON - Stage -->
-      <div class="mb-12 ml-8 relative">
-        <div class="absolute -left-[41px] top-1 w-5 h-5 bg-slate-700 rounded-full border-4 border-slate-900"></div>
-        <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Octobre - Novembre 2025</span>
-        <h3 class="text-xl font-bold mt-1">Stagiaire Développeur Web</h3>
-        <p class="text-slate-300 font-medium italic">Lagoon • Nouméa</p>
-        <p class="text-slate-400 mt-3 text-sm leading-relaxed">
-          Projet **Tenjity** : Refonte de l'interface du site de traduction dynamique de pages web. Amélioration de l'UI/UX et intégration JavaScript.
-        </p>
+      <!-- Filtres : la frise mélange expériences pro et formation -->
+      <div class="filters" role="group" aria-label="Filtrer le parcours">
+        @for (filter of filters; track filter.id) {
+          <button
+            type="button"
+            class="filters__btn"
+            [class.is-active]="activeFilter() === filter.id"
+            [attr.aria-pressed]="activeFilter() === filter.id"
+            (click)="setFilter(filter.id)"
+          >
+            {{ filter.label }}
+            <span class="filters__count">{{ countOf(filter.id) }}</span>
+          </button>
+        }
       </div>
+    </header>
 
-      <!-- SCIE - Stage -->
-      <div class="ml-8 relative">
-        <div class="absolute -left-[41px] top-1 w-5 h-5 bg-slate-700 rounded-full border-4 border-slate-900"></div>
-        <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Novembre - Decembre 2024</span>
-        <h3 class="text-xl font-bold mt-1">Stagiaire Comptable</h3>
-        <p class="text-slate-300 font-medium italic">SCIE • Nouméa</p>
-        <p class="text-slate-400 mt-3 text-sm leading-relaxed">
-          Gestion des cycles fournisseurs et trésorerie : rapprochements bancaires, saisie d’écritures comptables et traitement des frais généraux. Participation au processus d'achat via la gestion des bons de commande et le suivi de la facturation.
-        </p>
-      </div>
-    </div>
+    <ol class="timeline reveal--static" appReveal>
+      <!-- Piste de pas : le rail en pointillés, puis les empreintes, qui
+           se découvrent de haut en bas à l'apparition de la frise -->
+      <span class="timeline__rail" aria-hidden="true">
+        <span class="timeline__steps"><span class="timeline__fill"></span></span>
+      </span>
 
-    <!-- TITRE 2 : PARTIE SCOLAIRE -->
-    <h2 class="text-3xl font-bold mb-12 flex items-center gap-4">
-      <span class="text-emerald-500">02.</span> Experience <span class="text-emerald-500">Scolaire</span>
-    </h2>
+      @for (entry of visibleEntries(); track entry.title; let i = $index) {
+        <li
+          class="tl"
+          [class.tl--formation]="entry.track === 'formation'"
+          [class.tl--upcoming]="entry.upcoming"
+          appReveal
+          [revealDelay]="i * 80"
+        >
+          <div class="tl__period">
+            <span>{{ entry.period }}</span>
+          </div>
 
-    <div class="relative border-l border-slate-700 ml-3 md:ml-0">
-      
-      <!-- BTS SIO -->
-      <div class="mb-12 ml-8 relative">
-        <div class="absolute -left-[41px] top-1 w-5 h-5 bg-emerald-500 rounded-full border-4 border-slate-900 shadow-[0_0_10px_rgba(16,185,129,0.3)]"></div>
-        <span class="text-xs font-bold uppercase tracking-widest text-emerald-400">2024 - 2026</span>
-        <h3 class="text-xl font-bold mt-1">BTS SIO Option SLAM</h3>
-        <p class="text-slate-300 font-medium italic">Lycée / Formation en Alternance</p>
-        <p class="text-slate-400 mt-3 text-sm leading-relaxed">
-          Spécialisation en Solutions Logicielles et Applications Métiers (Développement, BDD, Cybersécurité).
-        </p>
-      </div>
+          <div class="tl__marker" aria-hidden="true">
+            <span class="tl__dot" [class.is-live]="entry.current"></span>
+          </div>
 
-      <!-- DCG -->
-      <div class="mb-12 ml-8 relative">
-        <div class="absolute -left-[41px] top-1 w-5 h-5 bg-slate-800 rounded-full border-4 border-slate-900"></div>
-        <span class="text-xs font-bold uppercase tracking-widest text-slate-500">2023 - 2024</span>
-        <h3 class="text-xl font-bold mt-1">DCG (1ère année)</h3>
-        <p class="text-slate-300 font-medium italic">Diplôme de Comptabilité et de Gestion</p>
-        <p class="text-slate-400 mt-3 text-sm leading-relaxed">
-          Bases en gestion, comptabilité, finance et droit. Une rigueur pour le développement de solutions métier.
-        </p>
-      </div>
+          <article class="tl__card">
+            <div class="tl__top">
+              <h3 class="tl__title">{{ entry.title }}</h3>
+              @if (entry.current) {
+                <span class="tl__live">En cours</span>
+              } @else if (entry.upcoming) {
+                <span class="tl__live tl__live--soon">À venir</span>
+              }
+            </div>
 
-      <!-- BAC STMG -->
-      <div class="ml-8 relative">
-        <div class="absolute -left-[41px] top-1 w-5 h-5 bg-slate-800 rounded-full border-4 border-slate-900"></div>
-        <span class="text-xs font-bold uppercase tracking-widest text-slate-500">2023</span>
-        <h3 class="text-xl font-bold mt-1">Bac STMG Gestion Finance</h3>
-        <p class="text-slate-300 font-medium italic">Lycée - Nouvelle-Calédonie</p>
-      </div>
+            <p class="tl__org">{{ entry.org }}</p>
+            <p class="tl__period-inline">{{ entry.period }}</p>
 
-    </div>
+            @if (entry.description) {
+              <p class="tl__desc">{{ entry.description }}</p>
+            }
+
+            @if (entry.tags?.length) {
+              <ul class="tl__tags">
+                @for (tag of entry.tags; track tag) {
+                  <li class="chip">{{ tag }}</li>
+                }
+              </ul>
+            }
+
+            <span class="tl__kind">{{ entry.track === 'pro' ? 'Expérience' : 'Formation' }}</span>
+          </article>
+        </li>
+      }
+    </ol>
   </div>
 </section>

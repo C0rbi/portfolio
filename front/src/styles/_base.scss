@@ -1,0 +1,395 @@
+// =============================================================
+//  Éléments de base réutilisés par tous les composants
+// =============================================================
+@use 'core' as *;
+
+// Plus de grain papier fixe : en `multiply` au-dessus de tout, il
+// recomposait l'écran à chaque frame et grisait le ciel.
+
+// --- Conteneurs ---
+.shell {
+  @include shell;
+}
+
+.shell--narrow {
+  @include shell($shell-narrow);
+}
+
+// --- Sections ---
+// Pas de fond propre : c'est la zone (sable ou lagon) qui le porte.
+// Le padding accueille aussi les intermèdes de décor (voir _zones).
+.section {
+  position: relative;
+  padding-block: $section-pad-sm;
+
+  @include from($bp-md) {
+    padding-block: $section-pad-md;
+  }
+}
+
+// --- Entête de section : numéro, filet, sur-titre puis grand titre ---
+.section-head {
+  margin-bottom: 56px;
+
+  @include from($bp-md) {
+    margin-bottom: 72px;
+  }
+}
+
+.section-head__top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.section-head__num {
+  @include eyebrow;
+  color: var(--accent);
+  font-size: 0.75rem;
+}
+
+// Filet en vague qui se dessine de gauche à droite à l'apparition.
+// Sa teinte suit la zone : sable sur la plage, lagon dans l'eau.
+.section-head__rule {
+  flex: 0 0 auto;
+  width: clamp(32px, 8vw, 88px);
+  height: 8px;
+  background-color: var(--rule);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='8'%3E%3Cpath d='M0 4 Q4 0 8 4 T16 4' fill='none' stroke='%23000' stroke-width='1.6'/%3E%3C/svg%3E")
+    0 50% / 16px 8px repeat-x;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.2s $ease-out 0.15s;
+
+  .is-revealed & {
+    transform: none;
+  }
+}
+
+.section-head__label {
+  @include eyebrow;
+  color: var(--ink-3);
+}
+
+// Sonde de carte marine, à droite de l'en-tête (« −6 m »), avec un
+// petit fil à plomb. La valeur vient de --sonde, posée par section
+// dans _zones.scss ; sans elle, rien ne s'affiche.
+.section-head__top::after {
+  content: var(--sonde, none);
+  margin-left: auto;
+  padding-left: 14px;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-style: italic;
+  color: var(--ink-3);
+  white-space: nowrap;
+  // fil à plomb : un trait de 10 px et un plomb de 6 px
+  background:
+    linear-gradient(currentColor 0 0) 3px 0 / 1px 10px no-repeat,
+    radial-gradient(circle, currentColor 0 2.5px, transparent 3px) 0 9px / 7px 7px no-repeat;
+
+  @supports (content: 'x' / '') {
+    content: var(--sonde, none) / ''; // décoratif : ignoré des lecteurs d'écran
+  }
+
+  @include upto($bp-sm) {
+    display: none;
+  }
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 6vw, 3.4rem);
+  font-weight: 500;
+  font-variation-settings: 'SOFT' 20, 'WONK' 1, 'opsz' 40;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+  max-width: 18ch;
+
+  em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 40;
+  }
+}
+
+.section-lede {
+  margin-top: 20px;
+  max-width: 58ch;
+  color: var(--ink-2);
+  font-size: 1.0625rem;
+}
+
+// --- Sur-titre autonome ---
+.eyebrow {
+  @include eyebrow;
+  color: var(--ink-3);
+}
+
+// --- Boutons ---
+.btn {
+  --btn-bg: var(--ink);
+  --btn-fg: #fff;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 14px 26px;
+  border-radius: $radius-pill;
+  background-color: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    transform $dur-base $ease-spring,
+    box-shadow $dur-base $ease-soft,
+    color $dur-base $ease-soft;
+
+  @include focus-ring(var(--ink), $radius: null);
+
+  // « L'eau monte » : un grand carré très arrondi attend sous le bouton.
+  // Au survol il remonte, et sa rotation lente fait onduler la surface.
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: -40%;
+    width: 180%;
+    aspect-ratio: 1;
+    border-radius: 42%;
+    background-color: var(--btn-hover, var(--accent));
+    translate: 0 72%;
+    transition: translate 0.7s $ease-out;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+
+    &::before {
+      translate: 0 -12%;
+    }
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
+
+  svg {
+    flex: 0 0 auto;
+    transition: transform $dur-base $ease-out;
+  }
+
+  &:hover svg {
+    transform: translateX(4px);
+  }
+}
+
+// rotate (via transform) et translate se composent sans conflit
+@include motion-safe(global) {
+  .btn:hover::before {
+    animation: spin-slow 5s linear infinite;
+  }
+}
+
+// « Calme plat » : l'eau monte toujours, mais ne tourne plus. Même
+// spécificité (0,3,1) que la branche .motion-ok ci-dessus, placée après :
+// elle l'emporte dans les deux cas.
+.is-still .btn:hover::before {
+  animation-play-state: paused;
+}
+
+// Contraste élevé (Windows) : les fonds disparaissent, un bouton plein
+// n'aurait plus de contour. Pas de bordure transparente en mode normal :
+// elle laisserait voir un liseré de l'eau qui monte au survol.
+@media (forced-colors: active) {
+  .btn {
+    border: 1.5px solid ButtonText;
+  }
+}
+
+.btn--accent {
+  --btn-bg: var(--accent);
+  --btn-hover: var(--lagoon);
+}
+
+// Verre clair : lisible sur le ciel comme sur le sable
+.btn--ghost {
+  --btn-bg: rgba(255, 255, 255, 0.6);
+  --btn-fg: var(--ink);
+  --btn-hover: var(--ink);
+  border: 1.5px solid rgba(14, 42, 56, 0.28);
+
+  &:hover {
+    --btn-fg: #fff;
+    border-color: var(--ink);
+  }
+}
+
+// --- Lien avec soulignement animé ---
+.link-underline {
+  position: relative;
+  display: inline-block;
+  font-weight: 500;
+  color: var(--ink);
+  @include focus-ring;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 1.5px;
+    background-color: var(--accent);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.6s $ease-out;
+  }
+
+  &:hover {
+    color: var(--accent);
+
+    &::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+  }
+}
+
+// --- Lien "voir plus" avec flèche ---
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent);
+  @include focus-ring;
+
+  svg {
+    transition: transform $dur-base $ease-spring;
+  }
+
+  &:hover svg {
+    transform: translateX(5px);
+  }
+}
+
+// --- Pastilles / étiquettes ---
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: $radius-pill;
+  background-color: var(--surface);
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 0.7188rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.chip--accent {
+  border-color: rgba(160, 50, 22, 0.26);
+  background-color: var(--accent-soft);
+  color: var(--accent);
+}
+
+.chip--lagoon {
+  border-color: rgba(10, 95, 105, 0.26);
+  background-color: var(--lagoon-soft);
+  color: var(--lagoon);
+}
+
+.chip--gold {
+  border-color: rgba(110, 79, 10, 0.24);
+  background-color: var(--gold-soft);
+  color: var(--gold);
+}
+
+// --- Carte générique ---
+.card {
+  position: relative;
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: $radius-lg;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 0.6s $ease-out,
+    box-shadow 0.6s $ease-soft,
+    border-color 0.6s $ease-soft;
+}
+
+// --- Ruban adhésif de carnet (CV, capture de la fiche projet) ---
+// Deux bandes translucides, corail à gauche et lagon à droite.
+.taped {
+  position: relative;
+}
+
+.taped::before,
+.taped::after {
+  content: '';
+  position: absolute;
+  z-index: 3;
+  top: -11px;
+  width: 84px;
+  height: 22px;
+  pointer-events: none;
+  background-color: rgba(242, 164, 143, 0.55);
+}
+
+.taped::before {
+  left: 18px;
+  rotate: -6deg;
+}
+
+.taped::after {
+  right: 18px;
+  rotate: 5deg;
+  background-color: rgba(143, 224, 214, 0.6);
+}
+
+// --- Utilitaires ---
+.sr-only {
+  @include sr-only;
+}
+
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 500;
+  padding: 12px 20px;
+  border-radius: $radius-pill;
+  background-color: var(--ink);
+  color: #fff;
+  font-weight: 600;
+  transform: translateY(-160%);
+  transition: transform $dur-fast $ease-out;
+
+  &:focus-visible {
+    transform: none;
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+
+// Cibles de focus programmatique (lien d'évitement, ancres du menu, « Haut
+// de page ») : le focus y est posé par script pour que le Tab suivant parte
+// du bon endroit. Pas d'anneau sur un bloc entier. Sélecteur volontairement
+// restreint : les autres éléments en tabindex -1 gardent leur style.
+:is(main, section, footer)[tabindex='-1']:focus {
+  outline: none;
+}

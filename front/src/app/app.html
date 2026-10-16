@@ -1,12 +1,10 @@
 <app-header></app-header>
 
-<app-hero></app-hero>
-<app-about-me></app-about-me>
-<app-skills></app-skills>
-<app-certifications></app-certifications>
+<main id="main">
+  <router-outlet />
+</main>
 
-<app-experience></app-experience>
-<app-projects></app-projects>
-<app-tech-watch></app-tech-watch>
+<app-footer data-depth="-22"></app-footer>
 
-<app-footer></app-footer>
+<!-- Fenêtre « Écrire un message » : ouverte par « Me contacter », sur toutes les pages -->
+<app-contact-dialog />

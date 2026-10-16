@@ -1,0 +1,169 @@
+@use 'core' as *;
+
+// ============================================================
+//  Ciel du hero
+//  Couche absolue sous le texte (z-index -1 dans le contexte
+//  isolé du hero), au-dessus de son fond dégradé.
+// ============================================================
+:host {
+  @include decor-layer;
+  inset: 0 0 auto;
+  height: 72%;
+  z-index: -1;
+}
+
+// --- Nuages : un seul sous 1024 px, à droite et à demi sorti ---
+.par {
+  position: absolute;
+  top: 9%;
+  right: -30px;
+  width: 110px;
+}
+
+.cloud {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  fill: #fff;
+}
+
+.cloud__shade {
+  fill: #d6ecf8;
+}
+
+.par--b,
+.par--c,
+.terns {
+  display: none;
+}
+
+// --- Dès 1024 px : trois nuages dans la moitié droite, et les sternes ---
+@include from($bp-lg) {
+  // Placés dans les vides laissés par le texte et la barre de navigation
+  .par--a {
+    top: 13%;
+    left: 61%;
+    right: auto;
+    width: 190px;
+    opacity: 0.9;
+  }
+
+  .par--b {
+    display: block;
+    top: 64%; // plus bas, près de l'horizon : un nuage lointain
+    left: 89.5%;
+    right: auto;
+    width: 130px;
+    opacity: 0.8;
+  }
+
+  .par--c {
+    display: block;
+    top: 14%;
+    left: 80%;
+    right: auto;
+    width: 110px;
+    opacity: 0.7;
+  }
+
+  .terns {
+    display: block;
+    position: absolute;
+    top: 19%;
+    left: 55%;
+    width: 48px;
+    height: 30px;
+    --drift: 80px;
+  }
+}
+
+// --- De 1024 à 1279 px : le texte occupe les deux colonnes et, vers
+// 1024 px, l'intro commence juste sous la barre. Le nuage lointain
+// tomberait sur les boutons (ou, plus bas, sur l'horizon) : il disparaît.
+// Les deux autres rapetissent pour tenir, avec les sternes, dans la bande
+// libre entre la barre et l'intro (au moins 16 px de chaque côté ; les
+// bosses du nuage dépassent de sa boîte vers le haut).
+@include from($bp-lg) {
+  @include upto($bp-xl) {
+    .par--a {
+      top: 13%;
+      width: 120px;
+    }
+
+    .par--b {
+      display: none;
+    }
+
+    .par--c {
+      top: 14.5%;
+      width: 90px;
+    }
+
+    .terns {
+      top: 13%;
+    }
+  }
+}
+
+// --- Sternes : deux traits d'encre, les ailes battent doucement ---
+.tern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 22px;
+  overflow: visible;
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  path {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+  }
+}
+
+.tern--2 {
+  top: 16px;
+  left: 28px;
+  width: 16px;
+}
+
+// ============================================================
+//  Animations
+// ============================================================
+@include motion-safe {
+  .cloud {
+    animation: drift-x var(--dur, 40s) $ease-in-out infinite alternate;
+  }
+
+  .terns {
+    animation: drift-x 22s $ease-in-out infinite alternate;
+  }
+
+  .tern path {
+    animation: flap 0.9s $ease-in-out infinite alternate;
+  }
+
+  .tern--2 path {
+    animation-delay: -0.45s;
+  }
+
+  // Parallaxe : les nuages montent un peu moins vite que la page.
+  // `animation-timeline` s'écrit APRÈS le raccourci, qui la remet à auto.
+  @supports (animation-timeline: scroll()) {
+    .par {
+      animation: sky-par linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+    }
+  }
+}
+
+@keyframes sky-par {
+  to {
+    transform: translateY(var(--par, -60px));
+  }
+}

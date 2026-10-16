@@ -1,0 +1,148 @@
+@use 'core' as *;
+
+:host {
+  display: block;
+}
+
+.code {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: $radius-md;
+  background-color: var(--surface);
+  box-shadow: var(--shadow-xs);
+}
+
+// --- Barre de titre ---
+.code__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--line);
+  background-color: var(--paper-alt);
+}
+
+.code__file {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ink-2);
+
+  svg {
+    flex: 0 0 auto;
+    color: var(--ink-3);
+  }
+}
+
+.code__lang {
+  @include eyebrow;
+  font-size: 0.6875rem;
+  color: var(--ink-3);
+}
+
+// --- Corps ---
+// Région focalisable : au clavier, les flèches font défiler le code.
+// L'anneau est tracé vers l'intérieur, sinon l'overflow de .code le rogne.
+.code__body {
+  padding: 18px 0;
+  overflow-x: auto;
+  line-height: 1.65;
+  tab-size: 2;
+  @include focus-ring(var(--accent), -3px);
+}
+
+.code__line {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  // Numéro et code partagent la même ligne de base ; une ligne vide
+  // garde sa hauteur grâce à son jeton espace (voir tokenizeLine).
+  align-items: baseline;
+  min-height: 0;
+  padding-right: 20px;
+  transition: background-color $dur-fast $ease-soft;
+
+  @include from($bp-md) {
+    grid-template-columns: 54px minmax(0, 1fr);
+  }
+
+  &:hover {
+    background-color: var(--paper);
+  }
+}
+
+// Numéros en --ink-3 : lisibles (7,3:1 sur blanc), mais plus discrets
+// que le code grâce à leur petite taille.
+.code__num {
+  padding-right: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: inherit;
+  color: var(--ink-3);
+  text-align: right;
+  user-select: none;
+}
+
+// `font-size: 0` neutralise les blancs que le gabarit insère entre les
+// jetons ; chaque jeton reprend ensuite sa taille réelle.
+.code__text {
+  white-space: pre;
+  font-family: var(--font-mono);
+  font-size: 0;
+}
+
+.tk {
+  font-size: 0.7813rem;
+  color: var(--ink-2);
+
+  @include from($bp-md) {
+    font-size: 0.8125rem;
+  }
+}
+
+.tk--comment {
+  color: var(--ink-3);
+  font-style: italic;
+}
+
+.tk--string {
+  color: var(--gold);
+}
+
+.tk--keyword {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.tk--number {
+  color: var(--accent);
+}
+
+.tk--type {
+  color: var(--lagoon);
+  font-weight: 500;
+}
+
+.tk--annotation {
+  color: var(--lagoon);
+  font-style: italic;
+}
+
+.tk--call {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+// --- Légende ---
+.code__caption {
+  padding: 16px 20px 18px;
+  border-top: 1px solid var(--line);
+  background-color: var(--paper-alt);
+  color: var(--ink-2);
+  font-size: 0.8438rem;
+  line-height: 1.6;
+}

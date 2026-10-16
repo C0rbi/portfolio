@@ -1,0 +1,77 @@
+<form class="cform" [formGroup]="form" (ngSubmit)="envoyer()" novalidate aria-labelledby="cform-titre">
+  <h2 class="cform__title" id="cform-titre">Écrire un message</h2>
+
+  <div class="cform__row">
+    <div class="cform__field">
+      <label for="cform-nom">Nom</label>
+      <input
+        id="cform-nom"
+        type="text"
+        formControlName="nom"
+        autocomplete="name"
+        [attr.aria-invalid]="erreurDe('nom') ? 'true' : null"
+        [attr.aria-describedby]="erreurDe('nom') ? 'cform-nom-err' : null"
+      />
+      @if (erreurDe('nom'); as message) {
+        <p class="cform__err" id="cform-nom-err">{{ message }}</p>
+      }
+    </div>
+
+    <div class="cform__field">
+      <label for="cform-email">Adresse e-mail</label>
+      <input
+        id="cform-email"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        [attr.aria-invalid]="erreurDe('email') ? 'true' : null"
+        [attr.aria-describedby]="erreurDe('email') ? 'cform-email-err' : null"
+      />
+      @if (erreurDe('email'); as message) {
+        <p class="cform__err" id="cform-email-err">{{ message }}</p>
+      }
+    </div>
+  </div>
+
+  <div class="cform__field">
+    <label for="cform-contenu">Message</label>
+    <textarea
+      id="cform-contenu"
+      formControlName="contenu"
+      rows="5"
+      [attr.aria-invalid]="erreurDe('contenu') ? 'true' : null"
+      [attr.aria-describedby]="erreurDe('contenu') ? 'cform-contenu-err' : null"
+    ></textarea>
+    @if (erreurDe('contenu'); as message) {
+      <p class="cform__err" id="cform-contenu-err">{{ message }}</p>
+    }
+  </div>
+
+  <!-- Champ piège : invisible, hors du parcours clavier et des lecteurs d'écran -->
+  <div class="cform__trap" aria-hidden="true">
+    <label for="cform-site">Site web</label>
+    <input id="cform-site" type="text" formControlName="siteWeb" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <p class="cform__note">
+    Votre nom, votre adresse et votre message servent uniquement à vous répondre
+    <span class="cform__nowrap">(<a class="link-underline" routerLink="/mentions-legales">données personnelles</a>).</span>
+  </p>
+
+  <div class="cform__actions">
+    <button type="submit" class="btn btn--accent" [disabled]="etat() === 'envoi'">
+      {{ etat() === 'envoi' ? 'Envoi…' : 'Envoyer le message' }}
+    </button>
+
+    <p class="cform__status" [class.is-error]="etat() === 'erreur'" role="status">
+      @switch (etat()) {
+        @case ('envoye') {
+          Merci, votre message est bien arrivé. Je vous réponds vite.
+        }
+        @case ('erreur') {
+          {{ erreur() }}
+        }
+      }
+    </p>
+  </div>
+</form>

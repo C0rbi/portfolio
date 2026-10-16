@@ -1,0 +1,88 @@
+<!-- En entreprise : une carte courte par mission -->
+<div class="missions__head" appReveal>
+  <h3 class="missions__title">En entreprise</h3>
+  <p class="missions__lede">
+    Trois missions de mon alternance à la CSB et un stage chez Lagoon, en quelques lignes.
+  </p>
+</div>
+
+<ul class="missions__grid">
+  @for (mission of missions; track mission.title; let i = $index) {
+    <li class="mission" appReveal [revealDelay]="i * 90">
+      <p class="mission__org">{{ mission.org }} · {{ mission.period }}</p>
+      <h4 class="mission__title">{{ mission.title }}</h4>
+      <p class="mission__summary">{{ mission.summary }}</p>
+
+      <ul class="mission__stack">
+        @for (tech of mission.stack; track tech) {
+          <li class="chip">{{ tech }}</li>
+        }
+      </ul>
+
+      <p class="mission__skills">
+        <span class="mission__skills-label">Bloc 1</span>
+        @for (code of mission.competences; track code) {
+          <abbr [title]="label(code)">{{ code }}</abbr><span class="sr-only"> : {{ label(code) }}</span>
+        }
+      </p>
+    </li>
+  }
+</ul>
+
+<!-- Synthèse : une ligne par réalisation, une colonne par compétence -->
+<div class="synth" appReveal>
+  <h3 class="missions__title">Compétences du BTS SIO</h3>
+  <p class="missions__lede">
+    Les compétences du bloc 1 (épreuve E5) mobilisées par chaque réalisation, projets et
+    missions confondus.
+  </p>
+
+  <div class="synth__scroll" role="region" aria-label="Tableau des compétences par réalisation" tabindex="0">
+    <table class="synth__table">
+      <caption class="sr-only">Compétences du bloc 1 mobilisées par réalisation</caption>
+      <thead>
+        <tr>
+          <th scope="col">Réalisation</th>
+          @for (c of bloc1; track c.code) {
+            <th scope="col"><abbr [title]="c.label">{{ c.code }}</abbr></th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows; track row.name) {
+          <tr>
+            <th scope="row">
+              <span class="synth__name">{{ row.name }}</span>
+              <span class="synth__context">{{ row.context }}</span>
+            </th>
+            @for (c of bloc1; track c.code) {
+              <td>
+                @if (row.codes.includes(c.code)) {
+                  <span class="synth__yes" aria-hidden="true"></span>
+                  <span class="sr-only">oui</span>
+                } @else {
+                  <span class="sr-only">non</span>
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <dl class="synth__legend">
+    @for (c of bloc1; track c.code) {
+      <div>
+        <dt>{{ c.code }}</dt>
+        <dd>{{ c.label }}</dd>
+      </div>
+    }
+  </dl>
+
+  @if (tableau) {
+    <a class="btn btn--ghost synth__pdf" [href]="tableau" download>
+      Télécharger le tableau de synthèse officiel (PDF)
+    </a>
+  }
+</div>

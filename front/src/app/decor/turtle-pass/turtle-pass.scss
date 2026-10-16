@@ -1,0 +1,99 @@
+@use 'core' as *;
+
+// =============================================================
+//  Tortue verte
+//  Hôte : classes globales `decor interlude` (voir _zones.scss). Il ne
+//  mesure rien : sa scène .interlude__stage est centrée sur la frontière
+//  entre les deux sections, dans leur padding.
+// =============================================================
+:host {
+  display: block;
+}
+
+.turtle {
+  --w: clamp(90px, 11vw, 160px);
+  --y: 24%;
+  --dur: 48s;
+  // Déjà au milieu de l'eau quand la scène s'anime pour la première fois
+  --delay: -22s;
+  --rest: 34vw;
+}
+
+// Le SVG n'est pas l'enfant direct de .mover : on lui rend son débordement,
+// sinon le bout des nageoires serait rogné en fin de battement.
+.turtle__swim > svg {
+  display: block;
+  overflow: visible;
+}
+
+// La légende voyage avec la tortue : on la remet à l'endroit
+.turtle__legend {
+  top: 2px;
+  right: calc(100% - 4px);
+  scale: -1 1;
+}
+
+// Nageoires : chacune pivote sur son attache (fill-box + origine explicite)
+.flipper {
+  --s: 1;
+  transform-box: fill-box;
+}
+
+.flipper--fore {
+  transform-origin: 78% 94%;
+}
+
+.flipper--hind {
+  transform-origin: 90% 90%;
+}
+
+// Côté bas : même geste en miroir
+.flipper--low {
+  --s: -1;
+
+  &.flipper--fore {
+    transform-origin: 78% 6%;
+  }
+
+  &.flipper--hind {
+    transform-origin: 90% 10%;
+  }
+}
+
+// Bulles : en mouvement réduit, elles restent posées en colonne (--rb)
+.bubble {
+  --b: var(--rb);
+  --rise: -150px;
+
+  @include from($bp-md) {
+    --rise: -200px;
+  }
+}
+
+@include motion-safe {
+  .turtle__swim {
+    --amp: 14px;
+    animation: hover-y 9s $ease-in-out infinite alternate;
+  }
+
+  .flipper {
+    animation: paddle 3.2s $ease-in-out infinite alternate;
+  }
+
+  .flipper--hind {
+    animation-delay: -1.6s;
+  }
+
+  .bubble {
+    --b: 0px;
+  }
+}
+
+@keyframes paddle {
+  from {
+    transform: rotate(calc(var(--s) * -16deg));
+  }
+  to {
+    transform: rotate(calc(var(--s) * 12deg));
+  }
+}

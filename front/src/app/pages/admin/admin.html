@@ -1,0 +1,73 @@
+<div class="zone zone--sea">
+  <section class="section admin" data-depth="-4">
+    <div class="shell shell--narrow">
+      <header class="section-head">
+        <div class="section-head__top">
+          <span class="section-head__label">Administration</span>
+        </div>
+        <h1 class="section-title">Messages reçus</h1>
+      </header>
+
+      @if (!jeton()) {
+        <form class="admin__login" (submit)="connecter($event)">
+          <label for="admin-jeton">Jeton d’administration</label>
+          <input
+            id="admin-jeton"
+            type="password"
+            autocomplete="current-password"
+            [value]="saisie()"
+            (input)="saisie.set($any($event.target).value)"
+          />
+          <button type="submit" class="btn btn--accent">Se connecter</button>
+        </form>
+      } @else {
+        <div class="admin__bar">
+          <p class="admin__count" role="status">
+            @if (messages(); as liste) {
+              {{ liste.length }} message{{ liste.length > 1 ? 's' : '' }}, dont {{ nonLus() }} non lu{{ nonLus() > 1 ? 's' : '' }}
+            } @else if (chargement()) {
+              Chargement…
+            }
+          </p>
+          <button type="button" class="btn btn--ghost" (click)="charger()">Actualiser</button>
+          <button type="button" class="btn btn--ghost" (click)="deconnecter()">Se déconnecter</button>
+        </div>
+
+        @if (messages(); as liste) {
+          @if (liste.length === 0) {
+            <p class="admin__empty">Aucun message pour l’instant.</p>
+          }
+          <ul class="admin__list">
+            @for (message of liste; track message.id) {
+              <li class="msg" [class.is-read]="message.lu">
+                <div class="msg__head">
+                  <p class="msg__from">
+                    <strong>{{ message.nom }}</strong>
+                    <a class="link-underline" [href]="'mailto:' + message.email">{{ message.email }}</a>
+                  </p>
+                  <p class="msg__date">
+                    {{ date(message.creeLe) }}
+                    @if (!message.lu) {
+                      <span class="msg__new">Nouveau</span>
+                    }
+                  </p>
+                </div>
+                <p class="msg__body">{{ message.contenu }}</p>
+                <div class="msg__actions">
+                  @if (!message.lu) {
+                    <button type="button" class="btn btn--ghost" (click)="marquerLu(message)">Marquer comme lu</button>
+                  }
+                  <button type="button" class="btn btn--ghost" (click)="supprimer(message)">Supprimer</button>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      }
+
+      @if (erreur()) {
+        <p class="admin__error" role="alert">{{ erreur() }}</p>
+      }
+    </div>
+  </section>
+</div>

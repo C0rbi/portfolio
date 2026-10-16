@@ -1,0 +1,10 @@
+// =============================================================
+//  Feuille de styles globale
+//  Portfolio Allan Nicolas — architecture SCSS, aucun framework.
+//  L'ordre compte : tokens -> reset -> base -> zones -> animations.
+// =============================================================
+@use 'root';
+@use 'reset';
+@use 'base';
+@use 'zones';
+@use 'animations';

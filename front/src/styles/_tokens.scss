@@ -1,0 +1,45 @@
+// =============================================================
+//  Tokens Sass — variables pures, aucun CSS émis.
+//  Ce fichier peut être importé par tous les composants sans
+//  dupliquer la moindre règle dans le bundle final.
+// =============================================================
+
+// --- Points de rupture ---
+$bp-sm: 480px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$bp-xl: 1280px;
+
+// --- Rythme & formes ---
+$shell-max: 1180px;
+$shell-narrow: 880px;
+
+$radius-sm: 10px;
+$radius-md: 18px;
+$radius-lg: 28px;
+$radius-pill: 999px;
+
+// --- Courbes d'animation ---
+// Volontairement douces : pas de depart brutal, pas de rebond marque.
+$ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94); // apparitions, deplacements
+$ease-soft: cubic-bezier(0.4, 0, 0.2, 1); // changements d'etat (couleur, fond)
+$ease-in-out: cubic-bezier(0.45, 0.05, 0.3, 1); // allers-retours, boucles
+$ease-spring: cubic-bezier(0.34, 1.12, 0.64, 1); // leger depassement, sans exces
+
+// --- Durees de reference ---
+$dur-fast: 0.35s;
+$dur-base: 0.55s;
+$dur-slow: 0.9s;
+$dur-reveal: 1.1s;
+
+// --- Hauteur de la barre de navigation ---
+$nav-h: 72px;
+
+// --- Sections et intermèdes ---
+// Les décors vivent dans l'espace entre deux sections : le padding
+// cumulé (2 × 88 px, puis 2 × 128 px) contient toujours la scène
+// d'un intermède (150 px, puis 210 px), sans mesure JS.
+$section-pad-sm: 88px;
+$section-pad-md: 128px;
+$stage-h-sm: 150px;
+$stage-h-md: 210px;

@@ -1,0 +1,80 @@
+<div class="zone zone--sea">
+  <article class="section legal" data-depth="-4">
+    <div class="shell shell--narrow">
+      <header class="section-head">
+        <div class="section-head__top">
+          <span class="section-head__label">Informations</span>
+        </div>
+        <h1 class="section-title">Mentions légales</h1>
+      </header>
+
+      <section class="legal__block">
+        <h2 class="legal__title">Éditeur</h2>
+        <p>
+          Ce site est le portfolio personnel d’Allan Nicolas, étudiant en BTS SIO option SLAM
+          à Nouméa (Nouvelle-Calédonie).
+        </p>
+        <p>Contact&nbsp;: <a class="link-underline" [href]="'mailto:' + email">{{ email }}</a></p>
+      </section>
+
+      @if (hebergeur; as h) {
+        <section class="legal__block">
+          <h2 class="legal__title">Hébergement</h2>
+          <p>
+            {{ h.nom }}<br />
+            {{ h.adresse }}<br />
+            @if (h.telephone) {
+              Téléphone&nbsp;: {{ h.telephone }}<br />
+            }
+            <a class="link-underline" [href]="h.site" target="_blank" rel="noopener">{{ h.site }}</a>
+          </p>
+        </section>
+      }
+
+      <section class="legal__block">
+        <h2 class="legal__title">Données personnelles</h2>
+        <p>
+          Le formulaire de contact enregistre votre nom, votre adresse e-mail et votre message dans
+          une base de données hébergée avec le site, dans le seul but de vous répondre. Ces données
+          ne sont ni partagées, ni utilisées à d’autres fins. Elles sont supprimées une fois
+          l’échange terminé, et au plus tard un an après votre message.
+        </p>
+        <p>
+          Vous pouvez demander à les consulter, à les corriger ou à les supprimer à tout moment en
+          écrivant à <a class="link-underline" [href]="'mailto:' + email">{{ email }}</a>.
+        </p>
+        <p>
+          Pour limiter les envois abusifs, votre adresse IP est gardée en mémoire quelques minutes
+          après un envoi&nbsp;; elle n’est jamais enregistrée.
+        </p>
+        <p>
+          Ce site ne dépose aucun cookie et n’utilise aucun outil de mesure d’audience.
+        </p>
+        <p>
+          Deux préférences d’affichage, «&nbsp;Calme plat&nbsp;» et «&nbsp;Animer le lagon&nbsp;»,
+          sont enregistrées dans le stockage local de votre navigateur. Elles restent sur votre
+          appareil et ne sont jamais transmises.
+        </p>
+        <p>
+          Les polices de caractères sont chargées depuis Google Fonts&nbsp;: votre navigateur
+          contacte donc les serveurs de Google, qui reçoivent votre adresse IP.
+        </p>
+      </section>
+
+      <section class="legal__block">
+        <h2 class="legal__title">Propriété intellectuelle et crédits</h2>
+        <p>
+          Les textes, les illustrations et le code de ce site sont d’Allan Nicolas. Le code source
+          est consultable sur
+          <a class="link-underline" href="https://github.com/C0rbi/portfolio" target="_blank" rel="noopener">GitHub</a>.
+        </p>
+        <p>
+          Les captures de Caillou Tour montrent un fond de carte
+          <a class="link-underline" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© les contributeurs d’OpenStreetMap</a>.
+          Les polices Fraunces, Space Grotesk et JetBrains Mono sont distribuées sous licence SIL
+          Open Font License.
+        </p>
+      </section>
+    </div>
+  </article>
+</div>

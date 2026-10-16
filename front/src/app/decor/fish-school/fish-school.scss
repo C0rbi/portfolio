@@ -1,0 +1,132 @@
+@use 'core' as *;
+
+// =============================================================
+//  Banc farouche
+//  Hôte : classes globales `decor interlude` (voir _zones.scss). Il ne
+//  mesure rien : sa scène .interlude__stage est centrée sur la frontière
+//  entre les deux sections, dans leur padding.
+// =============================================================
+:host {
+  display: block;
+}
+
+// --- Herbiers : les racines se perdent dans le bleu, pas de coupe nette ---
+.weed {
+  position: absolute;
+  bottom: 0;
+  height: calc(var(--h, 1) * 64px);
+  aspect-ratio: 3 / 5;
+  overflow: visible;
+  transform-origin: 50% 100%;
+  mask-image: linear-gradient(to top, transparent, #000 34%);
+
+  @include from($bp-md) {
+    height: calc(var(--h, 1) * 104px);
+  }
+}
+
+// La touffe de droite penche dans l'autre sens
+.weed--right {
+  --sway-from: 2.5deg;
+  --sway-to: -2deg;
+}
+
+// --- Le banc ---
+.school {
+  --y: 26%;
+  --w: clamp(140px, 18vw, 240px);
+  --dur: 34s;
+  // Déjà au milieu de l'eau quand la scène s'anime pour la première fois
+  --delay: -12s;
+  --rest: 56vw;
+}
+
+.school__legend {
+  bottom: calc(100% + 10px);
+  left: 30%;
+
+  // Fil de rappel vers le banc, façon carnet
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 12px;
+    height: 12px;
+    border-left: 1px dotted currentColor;
+  }
+}
+
+// Le SVG du banc n'est pas l'enfant direct de .mover : on lui rend son
+// débordement, sinon un poisson qui s'écarte serait rogné.
+.school__swim > svg {
+  display: block;
+  overflow: visible;
+}
+
+// Fuite : décalage écrit par fish-school.ts (--fx, --fy). Le banc se
+// reforme lentement, mais détale vite.
+.school__flee {
+  transform: translate(var(--fx, 0), var(--fy, 0));
+  transition: transform 1.2s $ease-out;
+
+  &.is-fleeing {
+    transition-duration: 0.45s;
+  }
+}
+
+// Chaque poisson s'écarte un peu de ses voisins pendant la fuite
+.school__fish {
+  transition: translate 1.2s $ease-out;
+
+  .is-fleeing & {
+    translate: calc(var(--sx) * 0.5) calc(var(--sy) * 0.5);
+    transition-duration: 0.45s;
+  }
+}
+
+// Queue : hors du symbole pour pouvoir battre. L'origine est l'attache,
+// au bord droit de la nageoire.
+.school__tail {
+  fill: var(--fx-chromis);
+  fill-opacity: 0.72;
+  stroke: var(--ink);
+  stroke-opacity: 0.3;
+  stroke-width: 0.4;
+  transform-box: fill-box;
+  transform-origin: 100% 50%;
+}
+
+@include motion-safe {
+  .school__swim {
+    --amp: 14px;
+    animation: hover-y 4s $ease-in-out infinite alternate;
+  }
+
+  .weed {
+    animation: sway 5s $ease-in-out infinite alternate;
+  }
+
+  // Sur écran tactile : un sursaut, puis le banc se regroupe
+  .is-startled .school__fish {
+    animation: startle 1.2s $ease-out;
+  }
+
+  // Battements de queue : seulement quand le banc est assez grand pour les voir
+  @include from($bp-md) {
+    .school__tail {
+      animation: tail 0.5s $ease-in-out var(--td, 0s) infinite alternate;
+    }
+  }
+}
+
+@keyframes tail {
+  to {
+    transform: scaleX(0.75);
+  }
+}
+
+@keyframes startle {
+  18% {
+    translate: var(--sx) var(--sy);
+  }
+}

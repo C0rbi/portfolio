@@ -1,0 +1,573 @@
+@use 'core' as *;
+
+// Mixins partagés par plusieurs règles : déclarés une seule fois puis
+// étendus, pour tenir le budget de la feuille. Les font-size propres à
+// chaque règle viennent après et l'emportent.
+%eyebrow {
+  @include eyebrow;
+}
+
+%focus {
+  @include focus-ring;
+}
+
+// Pastilles : l'anneau garde leur arrondi
+%focus-pill {
+  @include focus-ring($radius: null);
+}
+
+:host {
+  display: block;
+}
+
+// ============================================================
+//  Entête de la fiche : le ciel
+//  Pas de padding bas : l'horizon (app-mini-horizon) le termine
+//  et sa plage raccorde la capture.
+// ============================================================
+.phead {
+  padding-top: calc(var(--nav-h) + 44px);
+  background: linear-gradient(180deg, var(--sky-0), var(--sky-1) 55%, var(--sky-2));
+
+  @include from($bp-md) {
+    padding-top: calc(var(--nav-h) + 72px);
+  }
+}
+
+// Le texte passe toujours au-dessus des nuages de l'horizon
+.phead__inner {
+  position: relative;
+  z-index: 1;
+}
+
+.phead__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 30px;
+  padding: 8px 16px 8px 12px;
+  border: 1px solid rgba(14, 42, 56, 0.2);
+  border-radius: $radius-pill;
+  background-color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  transition: $dur-base $ease-soft;
+  @extend %focus-pill;
+
+  svg {
+    transition: transform $dur-base $ease-out;
+  }
+
+  &:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+    background-color: var(--surface);
+
+    svg {
+      transform: translateX(-3px);
+    }
+  }
+}
+
+.phead__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.phead__index {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 20, 'opsz' 40;
+  line-height: 1;
+  color: var(--ink-3);
+}
+
+.phead__role {
+  @extend %eyebrow;
+  font-size: 0.625rem;
+  color: var(--ink-3);
+}
+
+.phead__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 8vw, 5rem);
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 24, 'WONK' 1, 'opsz' 100;
+  letter-spacing: -0.035em;
+  line-height: 0.96;
+  color: var(--ink);
+}
+
+.phead__tagline {
+  max-width: 44ch;
+  margin-top: 16px;
+  color: var(--ink-2);
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.4vw, 1.3rem);
+  font-style: italic;
+  font-variation-settings: 'SOFT' 40, 'opsz' 24;
+  line-height: 1.45;
+}
+
+.phead__stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 26px;
+}
+
+.phead__actions {
+  margin-top: 30px;
+}
+
+// Entrée en cascade du texte de l'entête (délais --in posés dans le gabarit).
+// Volontairement hors motion-safe : « Animer le lagon » ne doit pas
+// rejouer cette entrée sur une page déjà lue.
+@media (prefers-reduced-motion: no-preference) {
+  .phead__title,
+  .phead__tagline,
+  .phead__stack,
+  .phead__actions {
+    animation: fade-up 1s $ease-out var(--in, 0s) both;
+  }
+}
+
+// ============================================================
+//  Capture : une carte postale scotchée, posée sur la plage
+//  Le cadre garde son overflow pour l'image ; la carte qui
+//  l'enveloppe porte le papier blanc, l'ombre et les rubans.
+// ============================================================
+
+// La carte mord un peu sur la plage de l'horizon. L'horizon est
+// positionné : il passe au-dessus de ce fond, et la carte au-dessus
+// de lui. Elle entre ainsi dans le premier écran sur desktop.
+.pshot {
+  margin-top: max(-20px, -1.4vw);
+  background-color: var(--sand-0);
+}
+
+// z-index : la carte (positionnée par .taped) passe au-dessus du sable
+// suivant, qui ne tranche plus son coin ni son ombre.
+.pshot__card {
+  z-index: 1;
+  padding: 10px 10px 0;
+  border-radius: $radius-sm;
+  background-color: var(--surface);
+  box-shadow: var(--shadow-lg);
+  transition: rotate $dur-slow $ease-out;
+
+  @include from($bp-lg) {
+    rotate: -0.6deg;
+
+    &:hover {
+      rotate: 0deg;
+    }
+  }
+}
+
+.pshot__frame {
+  overflow: hidden;
+  border-radius: 5px;
+
+  // Chaque capture garde son ratio naturel, sans recadrage. La place
+  // est réservée par les attributs width/height du gabarit : surtout
+  // pas d'aspect-ratio ici, il écraserait ce ratio.
+  img {
+    width: 100%;
+    height: auto;
+    transition: transform 1.4s $ease-out;
+  }
+
+  &:hover img {
+    transform: scale(1.02);
+  }
+}
+
+// Légende de carnet sous la capture
+.pshot__legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  padding: 12px 6px 14px;
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+
+.pshot__fig {
+  @extend %eyebrow;
+  margin-right: 12px;
+  font-size: 0.625rem;
+  font-style: normal;
+  color: var(--accent);
+}
+
+.pshot__note {
+  color: var(--ink-3);
+}
+
+// ============================================================
+//  Corps de la fiche, sur le sable
+// ============================================================
+.pbody {
+  display: grid;
+  gap: 48px;
+  padding-block: 64px 72px;
+
+  @include from($bp-lg) {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 64px;
+    align-items: start;
+    padding-block: 88px 96px;
+  }
+}
+
+.pbody__main {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  min-width: 0;
+}
+
+.pblock__title {
+  position: relative;
+  margin-bottom: 20px;
+  padding-left: 20px;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 3vw, 1.7rem);
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 20, 'opsz' 30;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+
+  // Petit repère coloré à gauche du titre
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0.18em;
+    bottom: 0.18em;
+    left: 0;
+    width: 3px;
+    border-radius: 3px;
+    background-color: var(--accent);
+  }
+}
+
+.pblock__text {
+  max-width: 68ch;
+  color: var(--ink-2);
+  line-height: 1.8;
+
+  + .pblock__text {
+    margin-top: 16px;
+  }
+}
+
+.pblock__text--lead {
+  margin-bottom: 24px;
+}
+
+// --- Liste de fonctionnalités ---
+.features {
+  display: grid;
+  gap: 2px;
+
+  li {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    align-items: start;
+    gap: 12px;
+    padding: 12px 14px;
+    margin-inline: -14px;
+    border-radius: $radius-sm;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    transition: $dur-base $ease-out;
+  }
+
+  // Sur le sable, un voile blanc se voit mieux qu'un ton sable
+  li:hover {
+    background-color: rgba(255, 255, 255, 0.6);
+    transform: translateX(4px);
+  }
+
+  svg {
+    margin-top: 4px;
+    color: var(--lagoon);
+  }
+}
+
+// --- Extraits de code ---
+.samples {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+// --- Enseignements ---
+.learned {
+  counter-reset: learned;
+  display: grid;
+  gap: 14px;
+
+  li {
+    counter-increment: learned;
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 14px;
+    align-items: baseline;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+
+    &::before {
+      content: '0' counter(learned);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+  }
+}
+
+// ============================================================
+//  Encadré latéral, collant dès 1024 px
+//  Aucun ancêtre ne doit porter d'overflow, sinon le sticky
+//  cesse de fonctionner (voir .zone).
+// ============================================================
+.pbody__side {
+  @include from($bp-lg) {
+    position: sticky;
+    top: calc(var(--nav-h) + 24px);
+  }
+}
+
+.factbox {
+  position: relative;
+  overflow: hidden;
+  padding: 30px 24px 24px;
+  border: 1px solid var(--line);
+  border-radius: $radius-lg;
+  background-color: var(--surface);
+  box-shadow: var(--shadow-sm);
+
+  // Bande de bouée, rouge et blanche, en haut de la carte
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 6px;
+    background: repeating-linear-gradient(90deg, var(--accent) 0 14px, #fff 14px 28px);
+  }
+}
+
+.factbox__title {
+  @extend %eyebrow;
+  padding-bottom: 16px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.625rem;
+  color: var(--ink-3);
+}
+
+.factbox__list {
+  div {
+    padding-block: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  dt {
+    @extend %eyebrow;
+    margin-bottom: 5px;
+    font-size: 0.6875rem;
+    color: var(--ink-3);
+  }
+
+  dd {
+    margin: 0;
+    color: var(--ink);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.45;
+  }
+}
+
+.factbox__points {
+  display: grid;
+  gap: 10px;
+  padding-block: 18px;
+
+  li {
+    position: relative;
+    padding-left: 18px;
+    color: var(--ink-2);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0.55em;
+      left: 0;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--lagoon);
+    }
+  }
+}
+
+.factbox__repo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px;
+  border-radius: $radius-pill;
+  background-color: var(--ink);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: $dur-base $ease-spring;
+  @extend %focus-pill;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+// ============================================================
+//  Projet suivant, dans le lagon
+//  Fond transparent : c'est le dégradé de .zone--sea qui le
+//  porte. Le chromis nage sur sa route, entre le nom et la
+//  flèche : jamais par-dessus le texte.
+// ============================================================
+
+// Même sans projet suivant, il reste assez d'eau pour finir en --sea-3
+.pwater {
+  min-height: 96px;
+}
+
+.pnext {
+  // Lumière du lagon : caustiques fixes, qui s'effacent vers le bas
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.32;
+    background: var(--caustic) 0 0 / 240px;
+    mask-image: linear-gradient(transparent, #000 30%, transparent 85%);
+    pointer-events: none;
+  }
+}
+
+.pnext__link {
+  @include shell;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-block: 56px 64px;
+  @extend %focus;
+
+  @include from($bp-md) {
+    gap: 32px;
+    padding-block: 72px 88px;
+  }
+}
+
+.pnext__text {
+  display: grid;
+  gap: 10px;
+}
+
+.pnext__label {
+  @extend %eyebrow;
+  font-size: 0.625rem;
+  color: var(--ink-3);
+}
+
+.pnext__name {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 5vw, 2.8rem);
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 24, 'WONK' 1, 'opsz' 60;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ink);
+  transition: color $dur-base $ease-soft;
+}
+
+// Route en pointillés ; la nage (.pnext__swim) occupe toute sa
+// largeur et place le poisson à son bout droit. Au repos, elle est
+// décalée d'une largeur moins le poisson : il attend à gauche.
+.pnext__lane {
+  position: relative;
+  flex: 1;
+  align-self: flex-end;
+  min-width: 40px;
+  height: 16px;
+  margin-bottom: 0.3em;
+  overflow: hidden;
+  background: radial-gradient(circle, var(--line-strong) 0 1.4px, transparent 2px) 0 50% / 10px 6px repeat-x;
+}
+
+.pnext__swim {
+  position: absolute;
+  inset: 0;
+  transform: translateX(calc(-100% + 28px));
+}
+
+.pnext__fish {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+
+.pnext__arrow {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: var(--ink-2);
+  transition: $dur-base $ease-spring;
+}
+
+.pnext__link:is(:hover, :focus-visible) {
+  .pnext__name {
+    color: var(--accent);
+  }
+
+  .pnext__arrow {
+    transform: translateX(6px);
+    border-color: var(--accent);
+    background-color: var(--accent);
+    color: #fff;
+  }
+}
+
+@include motion-safe {
+  .pnext__swim {
+    transition: transform 0.9s $ease-out;
+  }
+
+  .pnext__link:is(:hover, :focus-visible) .pnext__swim {
+    transform: none;
+  }
+}

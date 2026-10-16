@@ -1,0 +1,651 @@
+@use 'core' as *;
+
+:host {
+  display: block;
+}
+
+// ============================================================
+//  Socle des cartes (vedette et projets) : surface, bordure, et
+//  halo qui suit le curseur, posé par la directive appSpotlight.
+//  Sous l'eau, c'est une tache de lumière turquoise.
+// ============================================================
+// Toute carte : coins arrondis qui rognent leur contenu
+%clip {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: $radius-lg;
+}
+
+// Cartes qui se soulèvent au survol (projets, GitHub)
+%lift {
+  transition:
+    transform 0.7s $ease-out,
+    box-shadow 0.7s $ease-soft,
+    border-color 0.7s $ease-soft;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+%card {
+  @extend %clip;
+  border: 1px solid var(--line);
+  background: var(--surface);
+
+  &:hover {
+    border-color: var(--line-strong);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border-radius: inherit;
+    // --lagoon-bright à 12 %
+    background: radial-gradient(340px circle at var(--mx, 50%) var(--my, 50%), rgba(23, 167, 173, 0.12), transparent 68%);
+    opacity: var(--spot, 0);
+    transition: opacity 0.7s $ease-soft;
+  }
+}
+
+// Captures d'écran : cadrées sur le haut de la page
+%cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+// ============================================================
+//  Projet mis en avant
+// ============================================================
+.feature {
+  @extend %card;
+  display: grid;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-sm);
+  transition:
+    box-shadow 0.7s $ease-soft,
+    border-color 0.7s $ease-soft;
+
+  &:hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  @include from($bp-lg) {
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+    align-items: stretch;
+  }
+}
+
+// La capture est montrée entière, comme une photo posée sur un fond
+// de lagon : aucun recadrage, donc aucun mot coupé, à toutes les largeurs.
+// Dès 1024 px, le média s'étire à la hauteur du texte et la photo
+// reste centrée sur son fond d'eau.
+.feature__media {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: clamp(16px, 4vw, 40px);
+  // Fond d'eau : lumière qui tombe de la surface (en haut à gauche),
+  // eau plus profonde dans le coin opposé
+  background:
+    radial-gradient(90% 70% at 10% 0%, rgba(255, 255, 255, 0.7), transparent 70%),
+    radial-gradient(70% 60% at 100% 100%, rgba(23, 167, 173, 0.18), transparent 70%),
+    linear-gradient(160deg, var(--sea-0), var(--sea-2));
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    transition: opacity 0.9s $ease-soft;
+  }
+
+  // Lumière qui danse : un filet de caustiques posé sur la capture.
+  // Invisible au repos ; au survol il apparaît, et ne dérive que si
+  // le visiteur accepte les animations. Le débord de 30 px absorbe
+  // la translation : aucun bord ne se découvre (dérive : voir
+  // « Boucles au survol », plus bas).
+  &::before {
+    --drift: 30px;
+    inset: -30px;
+    background: var(--caustic) 0 0 / 160px;
+    opacity: 0;
+  }
+
+  // Voile d'eau (turquoise puis soleil) qui accorde la capture au lagon
+  &::after {
+    inset: 0;
+    background: linear-gradient(120deg, rgba(23, 167, 173, 0.14), rgba(255, 215, 106, 0.12));
+    mix-blend-mode: multiply;
+    opacity: 0.85;
+  }
+
+  // Cadre photo blanc ; les dimensions réelles (attributs width et
+  // height) donnent le ratio, la hauteur suit donc la largeur.
+  img {
+    width: 100%;
+    height: auto;
+    padding: 6px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: var(--shadow-md);
+    transition: 1.4s $ease-out;
+    transition-property: transform, rotate;
+
+    @include from($bp-lg) {
+      rotate: -0.6deg;
+    }
+  }
+
+  .feature:hover & {
+    &::before {
+      opacity: 0.25;
+    }
+
+    &::after {
+      opacity: 0.35;
+    }
+
+    img {
+      rotate: 0deg;
+      transform: scale(1.03);
+    }
+  }
+}
+
+.feature__body {
+  padding: 32px 26px 34px;
+
+  @include from($bp-md) {
+    padding: 44px 44px 46px;
+  }
+}
+
+.feature__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.feature__index {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 20, 'opsz' 40;
+  line-height: 1;
+  // --line-strong ne donnait que 1,8:1 ; --ink-3 passe 7,3:1 sur blanc
+  color: var(--ink-3);
+}
+
+.feature__role {
+  @include eyebrow;
+  font-size: 0.625rem;
+  color: var(--ink-3);
+}
+
+.feature__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 24, 'WONK' 1, 'opsz' 60;
+  letter-spacing: -0.025em;
+  line-height: 1;
+
+  a {
+    transition: color $dur-base $ease-soft;
+    @include focus-ring;
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+}
+
+.feature__summary {
+  max-width: 48ch;
+  margin-top: 16px;
+  color: var(--ink-2);
+  font-size: 0.9688rem;
+  line-height: 1.72;
+}
+
+.feature__points {
+  display: grid;
+  gap: 11px;
+  margin-top: 24px;
+
+  li {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    align-items: start;
+    gap: 10px;
+    color: var(--ink-2);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  svg {
+    margin-top: 3px;
+    color: var(--lagoon);
+  }
+}
+
+.feature__stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 26px;
+}
+
+.feature__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 22px;
+  margin-top: 30px;
+}
+
+// Zone de clic portée à 44 px de haut sans bouger le texte : ::after
+// porte déjà le soulignement, ::before agrandit la cible (le lien est
+// en position relative via .link-underline).
+.feature__repo {
+  font-size: 0.875rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -11px -6px;
+  }
+}
+
+// ============================================================
+//  Autres projets
+// ============================================================
+.projects__grid {
+  display: grid;
+  gap: 28px;
+
+  @include from($bp-md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include from($bp-lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.pcard {
+  @extend %card;
+  @extend %lift;
+  box-shadow: var(--shadow-xs);
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.pcard__link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+// La carte rogne ce qui dépasse et la capture recouvrirait un anneau
+// tracé sur le lien : c'est donc la carte qui porte l'anneau de focus.
+// Sans :has(), le lien garde l'anneau natif du navigateur.
+@supports selector(:has(*)) {
+  .pcard__link {
+    outline: none;
+  }
+
+  .pcard:has(:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+
+.pcard__media {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background: var(--paper-alt);
+
+  // Capture ou vignette (le numéro, plus bas, a sa propre transition)
+  > * {
+    transition:
+      transform 1.3s $ease-out,
+      filter 0.9s $ease-soft;
+  }
+
+  img {
+    @extend %cover;
+    filter: saturate(0.85);
+  }
+
+  .pcard:hover & :is(img, .pong) {
+    transform: scale(1.06);
+    filter: none;
+  }
+}
+
+// ============================================================
+//  Vignette Java PONG : un terrain dessiné remplace la capture,
+//  presque toute noire. Repos : balle près de la raquette droite,
+//  raquettes centrées, le tout loin du « 02 » posé en bas à gauche.
+//  Tailles en cqw (largeur de la carte) ; le mouvement, en
+//  pourcentages, ne touche que translate.
+// ============================================================
+.pong {
+  position: absolute;
+  inset: 0;
+  container-type: inline-size;
+  // Filet en pointillés : --sand-0 à 30 %
+  background:
+    repeating-linear-gradient(rgba(251, 244, 228, 0.3) 0 8px, transparent 0 16px) 50% / 2px 100% no-repeat,
+    var(--ink);
+
+  * {
+    position: absolute;
+    border-radius: 2px;
+  }
+
+  // Raquettes : elles suivent la balle, avec un léger retard (--d)
+  b {
+    --y1: -60%;
+    --y2: -55%;
+    --d: 0.12s;
+    top: 38%;
+    left: 7%;
+    width: 2.4%;
+    height: 24%;
+    background: var(--sand-0);
+
+    + b {
+      left: 90.6%;
+    }
+  }
+
+  // Trajet horizontal de la balle : d'une raquette à l'autre, à 1 %
+  // de chacune ; la balle part du bout droit
+  > i {
+    --x1: -60%;
+    --x2: -100%;
+    inset: 47% 10.4% auto 13%;
+  }
+
+  // La balle : seulement la hauteur (--x1 et --x2 hérités, remis à 0)
+  i i {
+    --x1: 0;
+    --x2: 0;
+    --y1: -950%;
+    --y2: -315%;
+    right: 0;
+    top: -1.3cqw;
+    padding: 1.3cqw;
+    background: var(--sun);
+  }
+}
+
+// --sand-0 à 70 % sur l'encre ; un cadratin sépare les deux scores
+.pong__score {
+  top: 8%;
+  width: 100%;
+  font: 600 10cqw/1 var(--font-display);
+  text-align: center;
+  color: rgba(251, 244, 228, 0.7);
+}
+
+// Un aller-retour en 1,6 s, en ligne droite entre deux rebonds : la
+// balle monte au mur du haut (30 %), retombe sur la raquette gauche
+// (50 %) puis revient presque à plat vers la droite. Une seule règle
+// @keyframes : chaque élément y place ses valeurs (--x1, --y1…).
+@keyframes pong {
+  30% {
+    translate: var(--x1, 0) var(--y1, 0);
+  }
+
+  50% {
+    translate: var(--x2, 0) var(--y2, 0);
+  }
+}
+
+// ============================================================
+//  Boucles au survol, hors décor : caustiques de la vedette et
+//  partie de Pong. Elles s'arrêtent aussi en « Calme plat » : la
+//  pause est imbriquée pour l'emporter sur les raccourcis.
+// ============================================================
+@include motion-safe {
+  .feature:hover .feature__media::before {
+    animation: drift-x 6s ease-in-out infinite alternate;
+  }
+
+  .pcard:hover .pong :is(b, i) {
+    animation: pong 1.6s linear var(--d, 0s) infinite;
+  }
+
+  .feature:hover .feature__media::before,
+  .pcard:hover .pong :is(b, i) {
+    @include when-still {
+      animation-play-state: paused;
+    }
+  }
+}
+
+// Numéro du projet, posé à cheval sur l'image
+.pcard__index {
+  position: absolute;
+  left: 16px;
+  bottom: 12px;
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 0, 'opsz' 60;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 2px 14px rgba(8, 42, 56, 0.4);
+  transition: transform 0.7s $ease-spring;
+
+  .pcard:hover & {
+    transform: translateY(-4px);
+  }
+}
+
+.pcard__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 22px 24px 24px;
+}
+
+.pcard__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+// Un <h3> : on annule la marge et l'interligne serré du reset
+.pcard__title {
+  margin: 0;
+  line-height: inherit;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 20, 'opsz' 30;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.pcard__year {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.pcard__role {
+  @include eyebrow;
+  margin-top: 6px;
+  font-size: 0.6875rem;
+  color: var(--accent);
+}
+
+.pcard__summary {
+  margin-top: 12px;
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.pcard__stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 18px;
+}
+
+.pcard__cta {
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+// ============================================================
+//  Carte GitHub — une poche d'eau profonde dans la grille claire
+//  Texte sable à 72 % : 7,7:1 sur l'encre, 5,2:1 sur #0b4f5c.
+// ============================================================
+.ghcard {
+  @extend %clip;
+  @extend %lift;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 26px;
+  background: linear-gradient(135deg, var(--ink), #0b4f5c);
+  color: var(--sand-0);
+  box-shadow: var(--shadow-md);
+
+  // Pas de focus-ring() : il réduirait l'arrondi de la carte au focus
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  // Caustiques immobiles, à peine posées : la lumière qui descend
+  // jusqu'ici. Fixes, elles ne gênent pas la lecture.
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: var(--caustic) 0 0 / 180px;
+    opacity: 0.07;
+  }
+
+  // Trois projets dans la grille : en deux colonnes, la carte complète la
+  // seconde rangée, haute comme une carte projet, et se compose en
+  // affiche (icône et flèche en haut, titre en bas).
+  @include from($bp-md) {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 30px;
+
+    .ghcard__text {
+      margin-top: auto;
+
+      strong {
+        font-size: 1.5rem;
+        line-height: 1.15;
+      }
+    }
+
+    .ghcard__arrow {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+    }
+  }
+
+  // En trois colonnes, elle passe sous la rangée complète, en bandeau
+  @include from($bp-lg) {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    padding: 26px 30px;
+
+    .ghcard__text {
+      margin-top: 0;
+
+      strong {
+        font-size: 1.25rem;
+      }
+    }
+
+    .ghcard__arrow {
+      position: static;
+    }
+  }
+
+  &:hover {
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+.ghcard__icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: transform 0.7s $ease-spring;
+
+  .ghcard:hover & {
+    transform: translateY(-3px) rotate(-8deg);
+  }
+}
+
+.ghcard__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: rgba(251, 244, 228, 0.72);
+
+  strong {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    font-variation-settings: 'SOFT' 20, 'opsz' 24;
+    color: var(--sand-0);
+  }
+}
+
+// Flèche soleil (6,6:1 sur #0b4f5c) dans un anneau doré
+.ghcard__arrow {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  margin-left: auto;
+  border: 1px solid rgba(255, 215, 106, 0.4);
+  border-radius: 50%;
+  color: var(--sun);
+  transition: transform 0.6s $ease-spring;
+
+  .ghcard:hover & {
+    transform: translate(4px, -4px);
+  }
+}

@@ -1,0 +1,124 @@
+// =============================================================
+//  Custom properties globales — chargées une seule fois.
+//  Palette « Lagon calédonien » : on descend du ciel à la plage,
+//  puis sous l'eau turquoise jusqu'au fond sableux.
+//  Thème clair partout. Règle d'or : les six encres (--ink,
+//  --ink-2, --ink-3, --accent, --lagoon, --gold) passent 4,5:1
+//  sur TOUS les fonds du site (4,66:1 au minimum).
+//
+//  Les jetons de zone (--paper*, --line*, --rule, --shadow-*)
+//  valent « sable » ici et sont redéclarés dans l'eau par le
+//  mixin `sea-tokens` (voir _zones.scss).
+// =============================================================
+@use 'tokens' as *;
+
+:root {
+  color-scheme: light;
+
+  // --- Ciel ---
+  --sky-0: #a9dbf3; // haut du ciel
+  --sky-1: #cbeaf8;
+  --sky-2: #eaf7fc; // brume d'horizon
+  --sun: #ffd76a; // décor (et « N » du logo, sur encre)
+  --sun-glow: #fff3c4;
+
+  // --- Horizon : décor uniquement, jamais de texte dessus ---
+  --ocean-far: #3a8fc0; // océan au-delà du récif
+  --lagoon-far: #3fc1c4;
+  --lagoon-near: #8fe0d6;
+  --foam: #ffffff;
+
+  // --- Sable ---
+  --sand-0: #fbf4e4;
+  --sand-1: #f6ead0;
+  --sand-2: #efdcb8;
+  --sand-wet: #e6cfa2;
+  --sand-shadow: #d9c08f; // traces de pas, rides (décor)
+  --sand-deep: #b8955a; // contours de décor, filets
+
+  // --- Eau, de la surface au fond ---
+  --sea-0: #e0f5f1;
+  --sea-1: #cbeded;
+  --sea-2: #bce2ea;
+  --sea-3: #b0d8e7; // le plus « profond » : reste clair
+  --floor-water: #c3e2e6; // eau juste au-dessus du fond (footer)
+  --floor: #ece5d1; // fond sableux du lagon
+
+  // --- Surfaces (valeurs « sable », redéclarées dans l'eau) ---
+  --paper: #fbf4e4;
+  --paper-alt: #f6ead0;
+  --paper-deep: #efdcb8;
+  --surface: #ffffff;
+
+  // --- Encre marine ---
+  --ink: #0e2a38;
+  --ink-2: #2d4a58;
+  --ink-3: #405a66;
+
+  // --- Traits ---
+  --line: #ead9b6;
+  --line-strong: #d9c08f;
+  --rule: #b8955a; // filet ondulé des en-têtes de section
+
+  // --- Accents ---
+  --accent: #a03216; // corail brique : texte, boutons, `em` des titres
+  --accent-bright: #e8613a; // décor uniquement
+  --accent-soft: #fde6dc;
+  --lagoon: #0a5f69;
+  --lagoon-bright: #17a7ad; // décor uniquement (pastilles, progression)
+  --lagoon-soft: #d9f2f0;
+  --gold: #6e4f0a;
+  --gold-soft: #f8ecd4;
+
+  // --- Faune et flore : décor uniquement, jamais de texte dessus ---
+  --fx-pine: #2e5e48;
+  --fx-palm: #3f8a55;
+  --fx-palm-dark: #2f6f45;
+  --fx-trunk: #a07a4f;
+  --fx-wood: #7a5434;
+  --fx-sail: #f6ead0;
+  --fx-coral: #f2a48f;
+  --fx-coral-2: #e9a07a;
+  --fx-gorgon: #c75b6e;
+  --fx-weed: #5aa37a;
+  --fx-shell: #f3e3cc;
+  --fx-crab: #e8d3a6;
+  --fx-chromis: #52b6e8;
+  --fx-chromis-belly: #a9dcf5;
+  --fx-clown: #f47b20;
+  --fx-turtle: #7a8f4a;
+  --fx-turtle-dark: #5d7038;
+  --fx-turtle-skin: #9aa86a;
+  --fx-napoleon: #3f8f88;
+  --fx-nautilus-stripe: #b5653a;
+  --fx-clam: #3fa0a8;
+  --fx-clam-dot: #6c5bb4;
+  --fx-tricot: #1b2b36;
+  --fx-glass: #bfe6e0;
+
+  // --- Ombres (teinte sable ; redéclarées en teinte lagon dans l'eau) ---
+  --shadow-xs: 0 1px 2px rgba(122, 88, 34, 0.07);
+  --shadow-sm: 0 2px 12px rgba(122, 88, 34, 0.08);
+  --shadow-md: 0 16px 34px -16px rgba(122, 88, 34, 0.28);
+  --shadow-lg: 0 34px 64px -30px rgba(122, 88, 34, 0.36);
+
+  // --- Motifs partagés en data-URI (déclarés une seule fois) ---
+  // Empreinte de pied droit (viewBox 20×40), utilisée en masque : talon,
+  // voûte creusée côté interne, avant-pied et cinq orteils. Elle se lit
+  // comme un pied même à 11 px (une simple ellipse faisait « têtard »).
+  --foot: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 40'%3E%3Cpath d='M10.6 38.6C7.4 38.6 5.6 36.2 5.7 33 5.8 30 7.7 27.6 7.6 24.6 7.5 21.8 4.4 20.4 4.3 16.6 4.2 13.2 7.1 11.4 10.4 11.4 13.9 11.4 16.4 13.4 16.5 17.1 16.6 21.4 15.5 25.2 15.5 29.4 15.5 35 13.8 38.6 10.6 38.6Z'/%3E%3Cellipse cx='6.4' cy='6.9' rx='2.5' ry='3.2'/%3E%3Ccircle cx='10.6' cy='5.9' r='1.75'/%3E%3Ccircle cx='13.5' cy='7' r='1.55'/%3E%3Ccircle cx='15.8' cy='8.9' r='1.35'/%3E%3Ccircle cx='17.4' cy='11.5' r='1.15'/%3E%3C/svg%3E");
+  // Paire gauche / droite décalée : se répète en piste verticale
+  --foot-pair: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='64' viewBox='0 0 28 64'%3E%3Cg transform='translate(1 1) scale(.62)'%3E%3Cpath d='M10.6 38.6C7.4 38.6 5.6 36.2 5.7 33 5.8 30 7.7 27.6 7.6 24.6 7.5 21.8 4.4 20.4 4.3 16.6 4.2 13.2 7.1 11.4 10.4 11.4 13.9 11.4 16.4 13.4 16.5 17.1 16.6 21.4 15.5 25.2 15.5 29.4 15.5 35 13.8 38.6 10.6 38.6Z'/%3E%3Cellipse cx='6.4' cy='6.9' rx='2.5' ry='3.2'/%3E%3Ccircle cx='10.6' cy='5.9' r='1.75'/%3E%3Ccircle cx='13.5' cy='7' r='1.55'/%3E%3Ccircle cx='15.8' cy='8.9' r='1.35'/%3E%3Ccircle cx='17.4' cy='11.5' r='1.15'/%3E%3C/g%3E%3Cg transform='translate(27 33) scale(-.62 .62)'%3E%3Cpath d='M10.6 38.6C7.4 38.6 5.6 36.2 5.7 33 5.8 30 7.7 27.6 7.6 24.6 7.5 21.8 4.4 20.4 4.3 16.6 4.2 13.2 7.1 11.4 10.4 11.4 13.9 11.4 16.4 13.4 16.5 17.1 16.6 21.4 15.5 25.2 15.5 29.4 15.5 35 13.8 38.6 10.6 38.6Z'/%3E%3Cellipse cx='6.4' cy='6.9' rx='2.5' ry='3.2'/%3E%3Ccircle cx='10.6' cy='5.9' r='1.75'/%3E%3Ccircle cx='13.5' cy='7' r='1.55'/%3E%3Ccircle cx='15.8' cy='8.9' r='1.35'/%3E%3Ccircle cx='17.4' cy='11.5' r='1.15'/%3E%3C/g%3E%3C/svg%3E");
+  // Réseau de caustiques blanches (tuile de 200 px) pour la lumière sous l'eau
+  --caustic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cg fill='none' stroke='%23fff' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M0 38C30 26 50 52 80 40S130 20 160 36S190 44 200 38'/%3E%3Cpath d='M0 118C24 108 46 132 76 122S124 100 150 116S186 126 200 118'/%3E%3Cpath d='M38 0C26 24 52 44 40 72S20 120 36 146S48 184 38 200'/%3E%3Cpath d='M128 0C140 22 114 48 126 76S150 118 132 146S118 182 128 200'/%3E%3C/g%3E%3C/svg%3E");
+
+  // --- Typographie ---
+  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'Space Grotesk', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+
+  // --- Mesures partagées ---
+  --nav-h: #{$nav-h};
+  --shell: #{$shell-max};
+  --shell-narrow: #{$shell-narrow};
+}

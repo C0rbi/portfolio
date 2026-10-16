@@ -1,0 +1,235 @@
+// =============================================================
+//  Animations globales
+//  Parti pris : des mouvements longs et de faible amplitude.
+//  Rien ne « claque », tout se pose.
+// =============================================================
+@use 'tokens' as *;
+
+// --- Apparition au défilement (posée par la directive appReveal) ---
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity $dur-reveal $ease-out var(--reveal-delay, 0ms),
+    transform $dur-reveal $ease-out var(--reveal-delay, 0ms);
+
+  &.is-revealed {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// Variante neutre : l'élément ne bouge pas, mais reçoit `is-revealed`
+// pour piloter l'animation de ses enfants (frise, tracés SVG…).
+.reveal--static {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not(.motion-ok) .reveal {
+    transition-delay: 0ms !important;
+  }
+}
+
+// =============================================================
+//  Tracés SVG qui se dessinent
+//  L'élément SVG doit porter `pathLength="1"` : sa longueur est alors
+//  normalisée, ce qui évite d'avoir à la mesurer. Le tracé se dessine
+//  dès qu'un ancêtre reçoit `is-revealed`.
+// =============================================================
+.draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset var(--draw-dur, 1.6s) $ease-out var(--draw-delay, 0ms);
+
+  .is-revealed & {
+    stroke-dashoffset: 0;
+  }
+}
+
+// =============================================================
+//  Keyframes partagées
+// =============================================================
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Montée depuis le bas, sans rotation : plus calme que l'originale
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  70%,
+  100% {
+    transform: scale(2.3);
+    opacity: 0;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.12);
+  }
+}
+
+// =============================================================
+//  Keyframes des décors (ciel, plage, lagon)
+//  Globales : elles ne sont ni dupliquées ni préfixées par Angular,
+//  donc hors budget des composants. Les variables CSS règlent
+//  l'amplitude au cas par cas.
+// =============================================================
+
+// Traversée de l'écran, de gauche à droite (et l'inverse, retourné)
+@keyframes cross-x {
+  from {
+    transform: translateX(-22vw);
+  }
+  to {
+    transform: translateX(118vw);
+  }
+}
+
+@keyframes cross-x-rev {
+  from {
+    transform: translateX(118vw) scaleX(-1);
+  }
+  to {
+    transform: translateX(-22vw) scaleX(-1);
+  }
+}
+
+// Dérive horizontale (alternate)
+@keyframes drift-x {
+  to {
+    transform: translateX(var(--drift, 40px));
+  }
+}
+
+// Flottement vertical (alternate)
+@keyframes hover-y {
+  to {
+    transform: translateY(var(--amp, -10px));
+  }
+}
+
+// Tangage d'une embarcation (alternate)
+@keyframes bob {
+  from {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+  to {
+    transform: translateY(3px) rotate(1.5deg);
+  }
+}
+
+// Balancement d'une palme, d'un herbier (alternate)
+@keyframes sway {
+  from {
+    transform: rotate(var(--sway-from, -2.5deg));
+  }
+  to {
+    transform: rotate(var(--sway-to, 2deg));
+  }
+}
+
+// Reflet qui scintille
+@keyframes glint {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: var(--glint, 0.9);
+  }
+}
+
+// Battement d'aile (alternate)
+@keyframes flap {
+  to {
+    transform: scaleY(0.8);
+  }
+}
+
+// Boucle d'un motif doublé (vagues, écume) : linéaire, infinie
+@keyframes wave-loop {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+// Bulle qui monte en grossissant, puis s'évanouit
+@keyframes bubble-rise {
+  from {
+    transform: translate(-50%, 0) scale(0.4);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  to {
+    transform: translate(calc(-50% + var(--dx, 0px)), var(--rise, -180px)) scale(1);
+    opacity: 0;
+  }
+}
+
+// =============================================================
+//  Pause des décors : hors écran, ou en mode « Calme plat »
+//  `is-inview` est posée par InViewDirective, `is-still` (sur <html>)
+//  par MotionService. Les animations pilotées par le défilement
+//  (.scroll-anim) ne sont pas concernées : elles ne bougent que si
+//  le visiteur fait défiler la page.
+// =============================================================
+.decor:not(.is-inview),
+.is-still .decor {
+  &,
+  &::before,
+  &::after,
+  :not(.scroll-anim),
+  :not(.scroll-anim)::before,
+  :not(.scroll-anim)::after {
+    animation-play-state: paused !important;
+  }
+}

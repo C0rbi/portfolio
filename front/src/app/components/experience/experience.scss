@@ -1,0 +1,410 @@
+@use 'core' as *;
+
+:host {
+  display: block;
+}
+
+// ============================================================
+//  Entête : titre + filtres
+// ============================================================
+.experience__head {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+
+  // Grille dès 1024 px : la ligne « 02 · Parcours » occupe toute la
+  // largeur (sa sonde « +1 m » se cale à droite, comme ailleurs), puis
+  // le titre et les filtres se partagent la ligne suivante.
+  @include from($bp-lg) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 0 40px;
+
+    > div:first-child {
+      display: contents;
+    }
+
+    .section-head__top {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+.filters {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: $radius-pill;
+  background-color: var(--surface);
+  box-shadow: var(--shadow-xs);
+
+  @include upto($bp-sm) {
+    gap: 4px;
+  }
+
+  // Sous le titre, la pastille épouse son contenu…
+  align-self: flex-start;
+
+  // …et à côté, elle garde sa largeur : c'est le titre qui passe à la ligne
+  @include from($bp-lg) {
+    flex-wrap: nowrap;
+    align-self: auto;
+  }
+}
+
+.filters__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 17px;
+  border-radius: $radius-pill;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  transition:
+    background-color $dur-base $ease-soft,
+    color $dur-base $ease-soft;
+  @include focus-ring($radius: null);
+
+  // Les trois filtres tiennent sur une ligne dès 360 px,
+  // avec une cible tactile d'au moins 44 px de haut
+  @include upto($bp-sm) {
+    gap: 5px;
+    min-height: 44px;
+    padding: 8px 9px;
+    font-size: 0.75rem;
+  }
+
+  &:hover {
+    color: var(--ink);
+    background-color: var(--paper-alt);
+  }
+
+  &.is-active {
+    background-color: var(--ink);
+    color: var(--paper);
+  }
+}
+
+.filters__count {
+  padding: 1px 7px;
+  border-radius: $radius-pill;
+  background-color: var(--paper-deep);
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 0.6563rem;
+  font-weight: 600;
+
+  .filters__btn.is-active & {
+    background-color: rgba(255, 255, 255, 0.16);
+    color: var(--paper);
+  }
+}
+
+// Contraste élevé : le fond du filtre actif disparaîtrait. On le peint
+// aux couleurs système de sélection (sans outline, réservé au focus).
+@media (forced-colors: active) {
+  .filters__btn.is-active {
+    forced-color-adjust: none;
+    background-color: SelectedItem;
+    color: SelectedItemText;
+  }
+
+  .filters__btn.is-active .filters__count {
+    background-color: transparent;
+    color: SelectedItemText;
+  }
+
+  // forced-color-adjust: none garderait l'anneau corail, peu visible sur
+  // un fond système sombre : il reprend la couleur système, comme ailleurs.
+  .filters__btn.is-active:focus-visible {
+    outline-color: CanvasText;
+  }
+}
+
+// ============================================================
+//  Frise
+// ============================================================
+.timeline {
+  position: relative;
+  --rail-x: 12.5px;
+
+  @include from($bp-lg) {
+    --rail-x: 197px;
+  }
+}
+
+// Rail : un pointillé tracé dans le sable…
+.timeline__rail {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: var(--rail-x);
+  border-left: 1px dashed var(--sand-shadow);
+}
+
+// …et une piste de pas, du plus ancien (en bas) vers l'avenir (en haut).
+// Le masque reste sur cet élément fixe : c'est le remplissage, dessous,
+// qui se déroule. Un scaleY sur l'élément masqué écraserait les pieds.
+.timeline__steps {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -9.5px; // 18 px centrés sur le pointillé (calc(var(--rail-x) - 8.5px))
+  width: 18px;
+  mask: var(--foot-pair) 0 0 / 18px 41px repeat-y;
+}
+
+.timeline__fill {
+  position: absolute;
+  inset: 0;
+  background-color: var(--sand-deep);
+  opacity: 0.5;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 2.4s $ease-out 0.2s;
+
+  .timeline.is-revealed & {
+    transform: none;
+  }
+}
+
+// --- Une entrée ---
+.tl {
+  position: relative;
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  column-gap: 20px;
+  padding-bottom: 34px;
+
+  @include from($bp-lg) {
+    grid-template-columns: 160px 26px minmax(0, 1fr);
+    column-gap: 24px;
+    padding-bottom: 44px;
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.tl__period {
+  display: none;
+
+  @include from($bp-lg) {
+    display: block;
+    padding-top: 22px;
+    text-align: right;
+
+    span {
+      @include eyebrow;
+      font-size: 0.6875rem;
+      color: var(--ink-3);
+      line-height: 1.5;
+    }
+  }
+}
+
+// --- Pastille : un coquillage porcelaine posé sur la piste ---
+.tl__marker {
+  display: grid;
+  justify-items: center;
+  padding-top: 22px;
+}
+
+.tl__dot {
+  --shell: var(--accent);
+  --slit: #fff;
+  position: relative;
+  width: 14px;
+  height: 18px;
+  border-radius: 50% 50% 46% 46% / 60% 60% 40% 40%;
+  // reflet nacré sur le dos bombé
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.55) 0 12%, transparent 34%),
+    var(--shell);
+  transition: transform $dur-base $ease-spring;
+
+  .tl--formation & {
+    --shell: var(--lagoon);
+  }
+
+  // Ouverture dentée de la porcelaine : de petites dents alternées,
+  // pour qu'elle ne se lise ni comme un « 1 » ni comme une barre pleine
+  &::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    bottom: 4px;
+    left: 50%;
+    width: 3px;
+    border-radius: 2px;
+    background: repeating-linear-gradient(var(--slit) 0 1.5px, transparent 1.5px 3px);
+    translate: -50% 0;
+  }
+
+  // Ronds dans l'eau autour des périodes toujours en cours
+  &.is-live::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border: 1.5px solid var(--shell);
+    border-radius: inherit;
+    opacity: 0.45;
+
+    @include motion-safe {
+      animation: pulse-ring 2.6s $ease-out infinite;
+    }
+
+    @include when-still {
+      animation-play-state: paused;
+    }
+  }
+
+  .tl:hover & {
+    transform: scale(1.2) rotate(-8deg);
+  }
+
+  // Étape encore à venir : coquillage creux, à peine teinté
+  .tl--upcoming & {
+    --slit: var(--lagoon);
+    background: var(--lagoon-soft);
+    box-shadow: inset 0 0 0 1.5px var(--lagoon);
+  }
+}
+
+// --- Carte ---
+.tl__card {
+  position: relative;
+  padding: 22px 24px 24px;
+  border: 1px solid var(--line);
+  border-radius: $radius-md;
+  background-color: var(--surface);
+  box-shadow: var(--shadow-xs);
+  transition:
+    transform 0.6s $ease-out,
+    box-shadow 0.6s $ease-soft,
+    border-color 0.6s $ease-soft;
+
+  @include from($bp-md) {
+    // Laisse la place à l'étiquette posée en haut à droite
+    padding-right: 108px;
+  }
+
+  // Liseré de couleur sur le bord gauche
+  &::before {
+    content: '';
+    position: absolute;
+    top: 22px;
+    bottom: 22px;
+    left: -1px;
+    width: 2px;
+    border-radius: 2px;
+    background-color: var(--accent);
+    opacity: 0;
+    transition: opacity 0.6s $ease-soft;
+  }
+
+  .tl--formation &::before {
+    background-color: var(--lagoon);
+  }
+
+  .tl--upcoming & {
+    border-style: dashed;
+    background-color: transparent;
+  }
+
+  .tl:hover & {
+    transform: translateX(5px);
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-md);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+
+.tl__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.tl__title {
+  font-family: var(--font-display);
+  font-size: 1.1875rem;
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 20, 'opsz' 24;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.tl__live {
+  @include eyebrow;
+  padding: 3px 9px;
+  border-radius: $radius-pill;
+  background-color: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.6875rem;
+
+  .tl--formation & {
+    background-color: var(--lagoon-soft);
+    color: var(--lagoon);
+  }
+}
+
+.tl__live--soon {
+  background-color: transparent;
+  border: 1px dashed var(--lagoon);
+}
+
+.tl__org {
+  margin-top: 5px;
+  color: var(--ink-2);
+  font-size: 0.9063rem;
+  font-weight: 500;
+}
+
+.tl__period-inline {
+  @include eyebrow;
+  margin-top: 8px;
+  font-size: 0.6875rem;
+  color: var(--ink-3);
+
+  @include from($bp-lg) {
+    display: none;
+  }
+}
+
+.tl__desc {
+  margin-top: 14px;
+  color: var(--ink-2);
+  font-size: 0.9063rem;
+  line-height: 1.7;
+}
+
+.tl__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 18px;
+}
+
+// Étiquette discrète du type d'entrée, en haut à droite de la carte
+.tl__kind {
+  @include eyebrow;
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  font-size: 0.6875rem;
+  color: var(--ink-3);
+
+  @include upto($bp-md) {
+    display: none;
+  }
+}

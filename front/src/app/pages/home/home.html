@@ -1,0 +1,25 @@
+<!-- CIEL + PLAGE : le hero contient sa propre côte -->
+<app-hero data-depth="4" />
+
+<!-- SABLE : deux sections et un intermède -->
+<div class="zone zone--sand">
+  <app-about-me data-depth="2" />
+  <app-sand-steps />
+  <app-experience data-depth="1" />
+</div>
+
+<!-- RIVAGE : bande pleine largeur, du sable à l'eau -->
+<app-shoreline data-depth="0" />
+
+<!-- LAGON : caustiques en haut, faune entre les sections -->
+<div class="zone zone--sea">
+  <app-sea-light />
+  <app-projects data-depth="-2" />
+  <app-fish-school />
+  <app-skills data-depth="-6" />
+  <app-turtle-pass />
+  <app-certifications data-depth="-11" />
+  <app-reef-band />
+  <app-tech-watch data-depth="-16" />
+</div>
+<!-- FOND : le footer de l'app (app.html) porte data-depth="-22" -->

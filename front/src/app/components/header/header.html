@@ -1,36 +1,142 @@
-<!-- Le Header : fixed pour qu'il reste en haut, w-full pour toute la largeur -->
-<header class="fixed top-0 w-full bg-slate-900 text-white shadow-lg z-50">
-  
-  <!-- Container pour centrer le contenu et ajouter du padding -->
-  <nav class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-    
-    <!-- Ton "Logo" ou Nom -->
-    <div class="text-xl font-bold tracking-tight text-indigo-400">
-      Allan NICOLAS
+<a class="skip-link" href="#main" (click)="skipToMain($event)">Aller au contenu principal</a>
+
+<header class="nav" [class.is-scrolled]="scrolled()" [attr.data-zone]="zone()">
+  <!-- Filet de progression : du soleil au fond sableux, révélé au fil de la lecture -->
+  <div class="nav__progress" aria-hidden="true">
+    <span
+      class="nav__progress-bar"
+      [style.clip-path]="'inset(0 ' + (100 - progress() * 100) + '% 0 0)'"
+    ></span>
+  </div>
+
+  <div class="nav__inner">
+    <a class="brand" routerLink="/" fragment="top" (click)="closeMenu()">
+      <span class="brand__mark" aria-hidden="true">
+        <span>A</span><span>N</span>
+      </span>
+      <span class="brand__text">
+        <span class="brand__name">Allan Nicolas</span>
+        <span class="brand__sub">
+          <span class="brand__role">Développeur full stack</span>
+          <!-- Profondimètre : remplace le rôle quand la barre est compacte -->
+          <span class="brand__depth" aria-hidden="true">
+            @switch (zoneLabel()) {
+              @case ('ciel') {
+                <svg class="brand__icon" viewBox="0 0 12 12">
+                  <path
+                    d="M6 .7v1.4M6 9.9v1.4M.7 6h1.4M9.9 6h1.4M2.25 2.25l1 1M8.75 8.75l1 1M2.25 9.75l1-1M8.75 3.25l1-1"
+                  />
+                  <circle cx="6" cy="6" r="2.3" fill="var(--sun)" />
+                </svg>
+              }
+              @case ('plage') {
+                <svg class="brand__icon brand__icon--foot" viewBox="0 0 12 12">
+                  <ellipse cx="3.2" cy="9" rx="1.7" ry="2.9" />
+                  <circle cx="4.4" cy="5" r=".75" />
+                  <circle cx="3.3" cy="4.6" r=".62" />
+                  <circle cx="2.3" cy="4.8" r=".52" />
+                  <circle cx="1.6" cy="5.4" r=".45" />
+                  <ellipse cx="8.8" cy="5" rx="1.7" ry="2.9" />
+                  <circle cx="7.6" cy="1" r=".75" />
+                  <circle cx="8.7" cy=".6" r=".62" />
+                  <circle cx="9.7" cy=".8" r=".52" />
+                  <circle cx="10.4" cy="1.4" r=".45" />
+                </svg>
+              }
+              @case ('lagon') {
+                <svg class="brand__icon brand__icon--sea" viewBox="0 0 12 12">
+                  <circle cx="4.2" cy="7.6" r="2.9" />
+                  <circle cx="9" cy="3.6" r="1.8" />
+                  <circle cx="9.6" cy="9.2" r="1.1" />
+                </svg>
+              }
+              @default {
+                <svg class="brand__icon" viewBox="0 0 12 12">
+                  <circle cx="6" cy="2" r="1.2" />
+                  <path d="M6 3.2v8M3.8 5.2h4.4M1.5 7.6Q2.2 11.2 6 11.2t4.5-3.6" />
+                </svg>
+              }
+            }
+            <span class="brand__depth-value">{{ depthLabel() }}</span>
+            <span class="brand__zone">· {{ zoneLabel() }}</span>
+          </span>
+        </span>
+      </span>
+    </a>
+
+    <nav class="nav__menu" aria-label="Navigation principale">
+      <ul class="nav__list" #navList>
+        @for (link of links; track link.id) {
+          <li>
+            <a
+              #navLink
+              class="nav__link"
+              [attr.data-id]="link.id"
+              routerLink="/"
+              [fragment]="link.id"
+              [class.is-active]="active() === link.id"
+              [attr.aria-current]="active() === link.id ? 'true' : null"
+            >{{ link.label }}</a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <div class="nav__actions">
+      <!-- Ouvre la fenêtre « Écrire un message », par-dessus la page lue -->
+      <button type="button" class="nav__cta" aria-haspopup="dialog" (click)="contact.ouvrir()">
+        <span class="nav__cta-dot" aria-hidden="true"></span>
+        Me contacter
+      </button>
+
+      <!-- Deux vagues, toujours dessinées : jamais deux traits que l'on prendrait pour un menu.
+           Sans préférence système, le bouton fige tout (« Calme plat ») et la houle se couche ;
+           si le système demande moins d'animations, les vagues restent immobiles et le bouton
+           les réveille (« Animer le lagon »). -->
+      <button
+        type="button"
+        class="nav__calm"
+        [class.is-flat]="!motion.reduced() && motion.still()"
+        [attr.aria-pressed]="motion.reduced() ? motion.forced() : motion.still()"
+        [attr.aria-label]="
+          motion.reduced()
+            ? 'Animer le lagon : activer les animations du décor'
+            : 'Calme plat : mettre les animations en pause'
+        "
+        [attr.title]="motion.reduced() ? 'Animer le lagon' : 'Calme plat'"
+        (click)="motion.toggleChoice()"
+      >
+        <span class="nav__calm-sea" aria-hidden="true">
+          <svg class="calm__swell" viewBox="0 0 20 14">
+            <path d="M-8 4.6q2-2.4 4 0t4 0 4 0 4 0 4 0 4 0 4 0 4 0 4 0" />
+          </svg>
+          <svg class="calm__swell calm__swell--low" viewBox="0 0 20 14">
+            <path d="M-12 9.4q2-2.4 4 0t4 0 4 0 4 0 4 0 4 0 4 0 4 0 4 0 4 0" />
+          </svg>
+        </span>
+      </button>
+
+      <button
+        #burger
+        type="button"
+        class="burger"
+        [class.is-open]="menuOpen()"
+        [attr.aria-expanded]="menuOpen()"
+        aria-controls="mobile-drawer"
+        [attr.aria-label]="menuOpen() ? 'Fermer le menu' : 'Ouvrir le menu'"
+        (click)="toggleMenu()"
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
     </div>
-
-    <!-- Tes liens de navigation mis en ligne grâce à 'flex' -->
-    <ul class="flex items-center gap-x-8 font-medium">
-      <li>
-        <a href="#" class="hover:text-indigo-400 transition-colors">Accueil</a>
-      </li>
-      <li>
-        <a href="#skills" class="hover:text-indigo-400 transition-colors">Compétences</a>
-      </li>
-      <li>
-        <a href="#projects" class="hover:text-indigo-400 transition-colors">Projets</a>
-      </li>
-      <!-- Un bouton spécial pour le contact -->
-      <li>
-        <a href="mailto:allan.nicolas331966@gmail.com" class="bg-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-500 transition-all">
-          Contact
-        </a>
-      </li>
-    </ul>
-
-  </nav>
+  </div>
 </header>
 
-<!-- Important : comme le header est "fixed", il ne prend plus de place. 
-     On ajoute une div vide pour éviter que le Hero ne passe dessous. -->
-<div class="h-16"></div>
+<app-nav-drawer
+  [open]="menuOpen()"
+  [links]="links"
+  [email]="email"
+  (closed)="closeMenu()"
+  (ecrire)="ecrireDepuisMenu()"
+/>

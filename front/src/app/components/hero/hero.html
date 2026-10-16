@@ -1,47 +1,66 @@
-<section class="min-h-[80vh] flex items-center bg-slate-900 text-white px-6">
-  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-    
-    <!-- Texte d'accueil -->
-    <div>
-      <h2 class="text-indigo-400 font-semibold tracking-wide uppercase text-sm mb-2">
-        Actuellement Alternant a la CSB
-      </h2>
-      <h1 class="text-5xl md:text-6xl font-extrabold mb-6">
-        Salut, je suis <br>
-        <span class="text-indigo-500">Allan NICOLAS</span>
-      </h1>
-      <p class="text-slate-400 text-lg mb-8 leading-relaxed">
-        Étudiant en <span class="text-white font-medium">BTS SIO option SLAM</span>. 
-        J'aime le développement Full Stack, je conçois des applications avec Angular, Spring Boot et PostgreSQL.
+<section class="hero" id="top">
+  <!-- Ciel : nuages et sternes, sous le texte -->
+  <app-sky />
+
+  <div class="shell hero__inner">
+    <div class="hero__main">
+      <p class="hero__status">
+        <span class="hero__status-dot"></span>
+        BTS SIO SLAM · Alternant à la CSB
       </p>
-      
-      <!-- Boutons d'action -->
-      <div class="flex flex-wrap gap-4">
-        <a href="#projects" class="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg shadow-indigo-500/20">
+
+      <h1 class="hero__title">
+        <span class="hero__line" style="--i: 1"><span>Je développe</span></span>
+        <span class="hero__line" style="--i: 2"><span>des applications</span></span>
+        <span class="hero__line" style="--i: 3"><span>web <span class="hero__accent">à Nouméa.</span></span></span>
+      </h1>
+    </div>
+
+    <div class="hero__side">
+      <p class="hero__lede">
+        Moi c'est <strong>Allan Nicolas</strong>. J'aime suivre une application du début à la
+        fin&nbsp;: la maquette, le code, la base de données, puis la mise en ligne.
+      </p>
+
+      <div class="hero__actions">
+        <a class="btn btn--accent" href="#projects">
           Voir mes projets
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
         </a>
-        <a href="#skills" class="border border-slate-700 hover:bg-slate-800 text-white px-8 py-3 rounded-xl font-bold transition-all">
-          Mes compétences
+        <!-- Vrai téléchargement (pas d'onglet ouvert sans prévenir). Le libellé
+             tient dans un seul span : le .btn est un flex, sinon son gap
+             remplacerait l'espace avant « CV ». -->
+        <a class="btn btn--ghost" href="CV Allan NICOLAS, BTS SIO - SLAM.pdf" download="CV-Allan-Nicolas.pdf"
+           aria-label="Télécharger mon CV (PDF)">
+          <span><span class="hero__cv-long">Télécharger mon </span>CV</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 3v8m0 0 3.5-3.5M8 11 4.5 7.5M3 13h10" stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
         </a>
       </div>
     </div>
+  </div>
 
-    <!-- Visuel (code) -->
-    <div class="hidden md:block bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-2xl">
-        <div class="flex gap-2 mb-4">
-            <div class="w-3 h-3 rounded-full bg-red-500"></div>
-            <div class="w-3 h-3 rounded-full bg-amber-500"></div>
-            <div class="w-3 h-3 rounded-full bg-green-500"></div>
-        </div>
-        <code class="text-indigo-300">
-            <span class="text-pink-500">const</span> developer = {{ '{' }}<br>
-            &nbsp;&nbsp;name: <span class="text-yellow-200">'Allan Nicolas'</span>,<br>
-            &nbsp;&nbsp;role: <span class="text-yellow-200">'Full Stack Dev'</span>,<br>
-            &nbsp;&nbsp;location: <span class="text-yellow-200">'Nouméa, NC'</span>,<br>
-            &nbsp;&nbsp;status: <span class="text-yellow-200">'Looking for opportunities'</span><br>
-            {{ '}' }};
-        </code>
+  <!-- Côte : horizon, îlot Amédée et son phare, lagon, plage -->
+  <app-coast />
+
+  <!-- Plage : raccord invisible avec la zone de sable qui suit -->
+  <div class="hero__beach">
+    <div class="shell">
+      <dl class="hero__stats">
+        @for (stat of stats; track stat.label) {
+          <div class="hero__stat">
+            <dt class="hero__stat-value">
+              <span [appCounter]="stat.value"></span>{{ stat.suffix }}
+            </dt>
+            <dd class="hero__stat-label">{{ stat.label }}</dd>
+          </div>
+        }
+      </dl>
     </div>
-
   </div>
 </section>

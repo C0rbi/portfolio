@@ -1,0 +1,107 @@
+<!--
+  Intermède « banc farouche » : neuf demoiselles (Chromis viridis) qui
+  traversent le lagon, entre deux touffes d'herbier. Imbrication des
+  mouvements, un transform par élément : traversée (.mover) → fuite
+  (.school__flee, piloté par le pointeur) → nage (.school__swim).
+-->
+<div class="interlude__stage">
+  <!-- Herbiers : une animation par touffe, pas par brin -->
+  <svg class="weed" style="left: 1%; --h: 1; animation-delay: -1.5s" viewBox="0 0 60 100">
+    <path d="M26 100C25 72 19 42 9 16c-1-3 2-4 3-2 11 25 17 56 19 86z" fill="var(--fx-weed)" opacity=".7" />
+    <path d="M33 100c1-26 6-50 15-72 1-3 4-2 3 1-8 22-12 46-13 71z" fill="var(--fx-weed)" opacity=".7" />
+    <path d="M22 100C19 84 13 70 5 60c-2-2 0-4 2-3 9 10 16 24 20 43z" fill="var(--fx-weed)" />
+    <path d="M29 100c-1-32 1-62 6-93 1-3 4-3 4 0-3 31-5 62-5 93z" fill="var(--fx-weed)" />
+    <path d="M36 100c3-16 9-30 18-41 2-2 4 0 3 2-8 11-13 24-16 39z" fill="var(--fx-weed)" />
+  </svg>
+  <svg class="weed" style="left: 6.5%; --h: .72; animation-delay: -3.2s" viewBox="0 0 60 100">
+    <path d="M26 100C24 77 18 54 7 34c-1-3 1-4 3-2 12 19 19 43 21 68z" fill="var(--fx-weed)" opacity=".7" />
+    <path d="M33 100c0-30 4-58 12-86 1-3 4-2 3 1-7 27-10 56-10 85z" fill="var(--fx-weed)" />
+    <path d="M37 100c4-15 9-26 16-36 2-2 4 0 2 2-6 10-11 20-14 34z" fill="var(--fx-weed)" />
+    <path d="M21 100c-3-13-8-23-15-32-2-2 0-4 2-2 8 8 15 19 18 34z" fill="var(--fx-weed)" />
+    <path d="M30 100c-2-24-1-47 3-70 1-3 4-3 4 0-3 23-4 46-2 70z" fill="var(--fx-weed)" opacity=".7" />
+  </svg>
+  <svg class="weed weed--right" style="right: 2%; --h: .9; animation-delay: -.8s" viewBox="0 0 60 100">
+    <path d="M33 100c1-26 6-50 15-71 1-3 4-2 3 1-8 21-12 45-13 70z" fill="var(--fx-weed)" opacity=".7" />
+    <path d="M27 100C25 70 19 40 10 12c-1-3 2-4 3-1 10 29 16 60 19 89z" fill="var(--fx-weed)" />
+    <path d="M21 100C17 85 11 72 4 62c-2-2 0-4 2-2 9 10 16 24 20 40z" fill="var(--fx-weed)" opacity=".7" />
+    <path d="M36 100c4-20 9-37 17-52 2-3 4-1 3 1-7 15-12 32-15 51z" fill="var(--fx-weed)" />
+    <path d="M30 100c0-20 2-40 7-59 1-3 4-2 3 1-4 19-6 38-5 58z" fill="var(--fx-weed)" />
+  </svg>
+
+  <!-- Le banc : la légende voyage et fuit avec lui -->
+  <div class="mover school" #mover>
+    <div class="school__flee" #flee [class.is-fleeing]="fleeing()" [class.is-startled]="startled()">
+      <span class="legend school__legend"><em>Chromis viridis</em> · demoiselles</span>
+      <div class="school__swim">
+        <svg viewBox="0 0 240 120">
+          <defs>
+            <!-- Une demoiselle sans sa queue, tournée vers la droite (viewBox 40 × 20) -->
+            <symbol id="school-fish" viewBox="0 0 40 20">
+              <g fill="var(--fx-chromis)" fill-opacity=".72" stroke="var(--ink)" stroke-opacity=".3" stroke-width=".4">
+                <path d="M30.4 4.4C26.8 2.4 20.6 1.4 15.6 1c-2.2-.1-3.6 2.2-4.4 5.6 4.8-2 12.2-3 19.2-2.2z" />
+                <path d="M23.6 16.4c-3.6 2.2-8.2 3-10 2.4-1.2-.6-2-3.2-2.4-5.2 3.8 1.8 8.2 2.8 12.4 2.8z" />
+                <path d="M27.2 16c-1.2 1.8-3.2 2.8-5 2.8 1-1.2 1.8-2.2 2.4-3.4z" />
+              </g>
+              <path
+                d="M38.4 10.6C38.2 6.8 32.6 3.1 24.6 3 17.8 2.9 12.8 5.4 9.8 8.3v3.4c3 2.9 8 5.3 14.8 5.3 7.4 0 13.6-3 13.8-6.4z"
+                fill="var(--fx-chromis)"
+                stroke="var(--ink)"
+                stroke-opacity=".45"
+                stroke-width=".5"
+              />
+              <path d="M38 8.6C36.2 5 31 3.1 24.6 3.1 18.2 3 13.4 5.4 10.4 8.1c6-1.2 12.6-1.4 19-.8 3.4.3 6.2.7 8.6 1.3z" fill="var(--lagoon-bright)" fill-opacity=".5" />
+              <path d="M38.2 11.8C37 14.8 31.6 16.9 24.6 17c-6 0-11-2.2-14.2-5 6.2 1.6 12.6 1.4 18.6.6 3.8-.4 6.8-.7 9.2-.8z" fill="var(--fx-chromis-belly)" />
+              <path d="M28.8 10.4c-2.8-.4-5.6.8-6.4 3 2.8-.2 5.2-1.2 6.4-3z" fill="#fff" fill-opacity=".6" />
+              <path d="M31.4 5.6c-1.6 2.2-1.6 6.2 0 8.6" fill="none" stroke="var(--ink)" stroke-opacity=".3" stroke-width=".5" />
+              <path d="M38.3 10.8l-1.4.5" fill="none" stroke="var(--ink)" stroke-opacity=".5" stroke-width=".5" stroke-linecap="round" />
+              <circle cx="34" cy="8.4" r="1.7" fill="var(--ink)" />
+              <circle cx="34.5" cy="7.9" r=".55" fill="#fff" />
+            </symbol>
+          </defs>
+          <!--
+            Quinconce codée en dur. Le corps vient du symbole ; la queue est
+            un vrai élément, car une animation CSS ne joue pas dans l'instance
+            d'un <use>. --sx/--sy : écart de chaque poisson quand le banc
+            s'affole ; --td : décalage du battement de queue.
+          -->
+          <g class="school__fish" transform="translate(71.3 0.65) scale(1.03) rotate(-4 20 10)" opacity=".75" style="--sx: 3px; --sy: -14px; --td: -.32s">
+            <path class="school__tail" d="M11 8.6C8 6.4 4.8 4.2 1.6 2.6c1 2.6 2.2 5.2 3.4 7.4-1.2 2.2-2.4 4.8-3.4 7.4 3.2-1.6 6.4-3.8 9.4-6z" />
+            <use href="#school-fish" width="40" height="20" />
+          </g>
+          <g class="school__fish" transform="translate(19.45 22.73) scale(0.98) rotate(-7 20 10)" opacity=".75" style="--sx: -14px; --sy: -9px; --td: -.1s">
+            <path class="school__tail" d="M11 8.6C8 6.4 4.8 4.2 1.6 2.6c1 2.6 2.2 5.2 3.4 7.4-1.2 2.2-2.4 4.8-3.4 7.4 3.2-1.6 6.4-3.8 9.4-6z" />
+            <use href="#school-fish" width="40" height="20" />
+          </g>
+          <g class="school__fish" transform="translate(31.6 94.8) scale(0.92) rotate(5 20 10)" opacity=".75" style="--sx: -11px; --sy: 12px; --td: -.38s">
+            <path class="school__tail" d="M11 8.6C8 6.4 4.8 4.2 1.6 2.6c1 2.6 2.2 5.2 3.4 7.4-1.2 2.2-2.4 4.8-3.4 7.4 3.2-1.6 6.4-3.8 9.4-6z" />
+            <use href="#school-fish" width="40" height="20" />
+          </g>
+          <g class="school__fish" transform="translate(121 16.5) scale(1.15) rotate(-6 20 10)" style="--sx: 12px; --sy: -11px; --td: -.21s">
+            <path class="school__tail" d="M11 8.6C8 6.4 4.8 4.2 1.6 2.6c1 2.6 2.2 5.2 3.4 7.4-1.2 2.2-2.4 4.8-3.4 7.4 3.2-1.6 6.4-3.8 9.4-6z" />
+            <use href="#school-fish" width="40" height="20" />
+          </g>
+          <g class="school__fish" transform="translate(15.15 60.58) scale(1.09)" style="--sx: -16px; --sy: 3px; --td: -.44s">
+            <path class="school__tail" d="M11 8.6C8 6.4 4.8 4.2 1.6 2.6c1 2.6 2.2 5.2 3.4 7.4-1.2 2.2-2.4 4.8-3.4 7.4 3.2-1.6 6.4-3.8 9.4-6z" />
+            <use href="#school-fish" width="40" height="20" />
+          </g>
+          <g class="school__fish" transform="translate(79.15 84.58) scale(1.09) rotate(5 20 10)" style="--sx: -2px; --sy: 15px; --td: -.15s">
+            <path class="school__tail" d="M11 8.6C8 6.4 4.8 4.2 1.6 2.6c1 2.6 2.2 5.2 3.4 7.4-1.2 2.2-2.4 4.8-3.4 7.4 3.2-1.6 6.4-3.8 9.4-6z" />
+            <use href="#school-fish" width="40" height="20" />
+          </g>
+          <g class="school__fish" transform="translate(68.55 42.27) scale(1.32) rotate(-1 20 10)" style="--sx: -4px; --sy: 2px; --td: -.27s">
+            <path class="school__tail" d="M11 8.6C8 6.4 4.8 4.2 1.6 2.6c1 2.6 2.2 5.2 3.4 7.4-1.2 2.2-2.4 4.8-3.4 7.4 3.2-1.6 6.4-3.8 9.4-6z" />
+            <use href="#school-fish" width="40" height="20" />
+          </g>
+          <g class="school__fish" transform="translate(126.85 66.42) scale(1.21) rotate(2 20 10)" style="--sx: 13px; --sy: 10px; --td: -.06s">
+            <path class="school__tail" d="M11 8.6C8 6.4 4.8 4.2 1.6 2.6c1 2.6 2.2 5.2 3.4 7.4-1.2 2.2-2.4 4.8-3.4 7.4 3.2-1.6 6.4-3.8 9.4-6z" />
+            <use href="#school-fish" width="40" height="20" />
+          </g>
+          <g class="school__fish" transform="translate(172.7 40.35) scale(1.26) rotate(-3 20 10)" style="--sx: 18px; --sy: 0px; --td: 0s">
+            <path class="school__tail" d="M11 8.6C8 6.4 4.8 4.2 1.6 2.6c1 2.6 2.2 5.2 3.4 7.4-1.2 2.2-2.4 4.8-3.4 7.4 3.2-1.6 6.4-3.8 9.4-6z" />
+            <use href="#school-fish" width="40" height="20" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+:host {
+  display: block;
+}
+
+// Les pages sont chargées en différé : tant que leur chunk n'est pas arrivé,
+// <main> est vide. Sans hauteur minimale, le footer (fond du lagon) s'affiche
+// un instant en haut de l'écran et ses apparitions se déclenchent avant
+// même que le visiteur ne descende jusqu'à lui.
+main {
+  display: block;
+  min-height: 100vh;
+}

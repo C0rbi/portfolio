@@ -1,47 +1,69 @@
-<section id="about" class="py-20 bg-slate-900 text-white">
-  <div class="max-w-4xl mx-auto px-6">
-    
-    <!-- Titre -->
-    <h2 class="text-3xl font-bold mb-12 flex items-center gap-4">
-      <span class="text-indigo-500">00.</span>À propos de<span class="text-indigo-500">moi</span>
-    </h2>
-
-    <div class="grid md:grid-cols-3 gap-12 items-center">
-      <div class="md:col-span-2 space-y-6 text-slate-400 leading-relaxed">
-        <p>
-          Étudiant en <span class="text-indigo-400">BTS SIO (Option SLAM)</span>, je me spécialise dans le développement d'applications.
-        </p>
-
-        <p>
-          Actuellement en alternance à la <span class="text-indigo-400">CSB</span>, j'interviens sur des solutions monétiques et bancaires.
-        </p>
-
-        <p>
-          Dans le cadre de ma formation, je conçois des interfaces avec <span class="text-white font-medium">Angular</span> et je développe des architectures backend sous <span class="text-white font-medium">Spring Boot</span> avec <span class="text-white font-medium">PostgreSQL</span>.
-        </p>
+<section class="section about" id="about">
+  <div class="shell">
+    <header class="section-head" appReveal>
+      <div class="section-head__top">
+        <span class="section-head__num">01</span>
+        <span class="section-head__rule"></span>
+        <span class="section-head__label">À propos</span>
       </div>
+      <h2 class="section-title">D'abord la <em>gestion</em>, ensuite le code.</h2>
+    </header>
 
-      <!-- Image / Illustration (Format CV Rectangle) -->
-      <div class="relative group mx-auto md:mx-0 w-48 md:w-full">
-        <!-- Bordure décorative en arrière-plan (elle suit maintenant le format rectangle) -->
-        <div class="absolute inset-0 border-2 border-indigo-500 rounded-2xl translate-x-4 translate-y-4 group-hover:translate-x-2 group-hover:translate-y-2 transition-transform duration-300"></div>
-        
-        <!-- Conteneur principal avec Ratio A4 -->
-        <div class="relative bg-slate-800 rounded-2xl overflow-hidden aspect-[1/1.41] shadow-2xl">
-          <a href="CV Allan NICOLAS, BTS SIO - SLAM.pdf" target="_blank" class="block w-full h-full">
-            <img 
-              src="CV-Preview.png" 
-              alt="Preview CV Allan Nicolas" 
-              class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
-            >
-            <!-- Petit indicateur au survol pour montrer que c'est cliquable -->
-            <div class="absolute inset-0 bg-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <span class="bg-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">Voir le PDF</span>
+    <div class="about__grid">
+      <div class="about__text">
+        <p class="about__intro" appReveal>
+          Avant le développement, j'ai étudié la comptabilité et la gestion. Ça m'aide encore
+          aujourd'hui&nbsp;: avant d'écrire du code, je cherche à comprendre comment travaillent
+          les personnes qui vont utiliser l'application.
+        </p>
+
+        <p appReveal [revealDelay]="80">
+          Aujourd'hui en <strong>BTS SIO option SLAM</strong>, je développe des applications
+          complètes&nbsp;: interfaces <strong>Angular</strong>, API <strong>Spring Boot</strong> et
+          bases de données <strong>PostgreSQL</strong>. Je versionne mon code avec Git et je
+          documente ce que je fais.
+        </p>
+
+        <p appReveal [revealDelay]="140">
+          En alternance à la <strong>CSB</strong>, je travaille sur des solutions monétiques et
+          bancaires. C'est là que j'apprends à quel point la fiabilité et la sécurité comptent.
+        </p>
+
+        <dl class="about__facts" appReveal [revealDelay]="200">
+          @for (fact of facts; track fact.label) {
+            <div class="about__fact">
+              <dt>{{ fact.label }}</dt>
+              <dd>{{ fact.value }}</dd>
             </div>
-          </a>
-        </div>
+          }
+        </dl>
       </div>
 
+      <!-- Aperçu du CV : une feuille scotchée dans le carnet, cadre décalé -->
+      <figure class="about__cv" appReveal [revealDelay]="120">
+        <a
+          class="cv taped"
+          href="CV Allan NICOLAS, BTS SIO - SLAM.pdf"
+          target="_blank"
+          rel="noopener"
+          aria-label="Ouvrir le CV d'Allan Nicolas au format PDF"
+        >
+          <span class="cv__frame" aria-hidden="true"></span>
+          <span class="cv__sheet">
+            <img src="CV-Preview.png" alt="" width="600" height="849" loading="lazy" />
+            <span class="cv__overlay">
+              <span class="cv__pill">
+                Ouvrir le PDF
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M5 11 11 5m0 0H6m5 0v5" stroke="currentColor" stroke-width="1.7"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </span>
+          </span>
+        </a>
+        <figcaption class="cv__caption">CV · BTS SIO SLAM · 2026</figcaption>
+      </figure>
     </div>
   </div>
 </section>
