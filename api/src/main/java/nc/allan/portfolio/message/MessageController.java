@@ -2,6 +2,7 @@ package nc.allan.portfolio.message;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +20,8 @@ import java.util.List;
 /**
  * Messages du formulaire de contact.
  * <ul>
- *   <li>POST : public (validé, champ piège, limite par adresse IP) ;</li>
+ *   <li>POST : public (validé, champ piège, limite par adresse IP, boîte
+ *   de réception plafonnée) ;</li>
  *   <li>GET, PATCH, DELETE : réservés à la page /admin (voir JetonAdmin).</li>
  * </ul>
  */
@@ -29,10 +31,15 @@ public class MessageController {
 
 	private final MessageRepository messages;
 	private final LimiteurEnvois limiteur;
+	private final long maxNonLus;
 
-	public MessageController(MessageRepository messages, LimiteurEnvois limiteur) {
+	public MessageController(
+			MessageRepository messages,
+			LimiteurEnvois limiteur,
+			@Value("${portfolio.messages.max-non-lus:500}") long maxNonLus) {
 		this.messages = messages;
 		this.limiteur = limiteur;
+		this.maxNonLus = maxNonLus;
 	}
 
 	@PostMapping
@@ -44,6 +51,11 @@ public class MessageController {
 		}
 		if (!limiteur.autoriser(http.getRemoteAddr())) {
 			return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
+		}
+		// Boîte pleine (robots venus de nombreuses adresses à la fois) : on
+		// refuse plutôt que de remplir le disque ; le site propose alors l'e-mail
+		if (messages.countByLuFalse() >= maxNonLus) {
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
 		}
 
 		messages.save(new Message(

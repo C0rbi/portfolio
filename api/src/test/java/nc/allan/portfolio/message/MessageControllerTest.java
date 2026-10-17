@@ -2,13 +2,13 @@ package nc.allan.portfolio.message;
 
 import nc.allan.portfolio.ErreursApi;
 import nc.allan.portfolio.admin.ConfigurationWeb;
-import nc.allan.portfolio.admin.JetonAdmin;
+import nc.allan.portfolio.admin.SessionAdmin;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,14 +20,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MessageController.class)
-@Import({LimiteurEnvois.class, JetonAdmin.class, ConfigurationWeb.class, ErreursApi.class})
-@TestPropertySource(properties = "portfolio.admin-token=jeton-de-test")
+@Import({LimiteurEnvois.class, SessionAdmin.class, ConfigurationWeb.class, ErreursApi.class})
 class MessageControllerTest {
 
 	private static final String MESSAGE_VALIDE = """
@@ -39,6 +39,13 @@ class MessageControllerTest {
 
 	@MockitoBean
 	private MessageRepository messages;
+
+	/** Session telle que l'ouvre ConnexionController après une connexion réussie. */
+	private static MockHttpSession sessionAdmin() {
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute(SessionAdmin.ATTRIBUT, "allan");
+		return session;
+	}
 
 	@Test
 	void unMessageValideEstEnregistre() throws Exception {
@@ -74,20 +81,54 @@ class MessageControllerTest {
 	}
 
 	@Test
-	void laLectureDesMessagesExigeLeJeton() throws Exception {
-		mvc.perform(get("/api/messages")).andExpect(status().isUnauthorized());
-		mvc.perform(get("/api/messages").header("Authorization", "Bearer mauvais-jeton"))
-				.andExpect(status().isUnauthorized());
+	void quandLaBoiteEstPleineLesNouveauxMessagesSontRefuses() throws Exception {
+		when(messages.countByLuFalse()).thenReturn(500L);
+
+		mvc.perform(post("/api/messages").contentType(MediaType.APPLICATION_JSON).content(MESSAGE_VALIDE))
+				.andExpect(status().isServiceUnavailable());
+
+		verify(messages, never()).save(any());
 	}
 
 	@Test
-	void avecLeJetonLesMessagesSontListes() throws Exception {
+	void sansConnexionLesMessagesRestentFermes() throws Exception {
+		mvc.perform(get("/api/messages")).andExpect(status().isUnauthorized());
+		// Une session sans administrateur connecté ne suffit pas
+		mvc.perform(get("/api/messages").session(new MockHttpSession())).andExpect(status().isUnauthorized());
+		mvc.perform(delete("/api/messages/1")).andExpect(status().isUnauthorized());
+
+		verify(messages, never()).deleteById(any());
+	}
+
+	@Test
+	void uneSuppressionDemandeeDepuisUnAutreSiteEstRefusee() throws Exception {
+		// Même avec la session (cookie), un autre site, même voisin, n'y a pas droit
+		mvc.perform(delete("/api/messages/1").session(sessionAdmin()).header("Sec-Fetch-Site", "cross-site"))
+				.andExpect(status().isForbidden());
+		mvc.perform(delete("/api/messages/1").session(sessionAdmin()).header("Sec-Fetch-Site", "same-site"))
+				.andExpect(status().isForbidden());
+
+		verify(messages, never()).deleteById(any());
+	}
+
+	@Test
+	void connecteLAdministrateurSupprimeUnMessageDepuisLeSite() throws Exception {
+		when(messages.existsById(1L)).thenReturn(true);
+
+		mvc.perform(delete("/api/messages/1").session(sessionAdmin()).header("Sec-Fetch-Site", "same-origin"))
+				.andExpect(status().isNoContent());
+
+		verify(messages).deleteById(1L);
+	}
+
+	@Test
+	void connecteLAdministrateurVoitLesMessages() throws Exception {
 		Message message = new Message("Jeanne", "jeanne@exemple.nc", "Bonjour !", Instant.parse("2026-10-15T09:00:00Z"));
 		// En vrai, c'est MySQL qui attribue l'identifiant à l'enregistrement.
 		ReflectionTestUtils.setField(message, "id", 1L);
 		when(messages.findAllByOrderByCreeLeDesc()).thenReturn(List.of(message));
 
-		mvc.perform(get("/api/messages").header("Authorization", "Bearer jeton-de-test"))
+		mvc.perform(get("/api/messages").session(sessionAdmin()))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$[0].id").value(1))
 				.andExpect(jsonPath("$[0].nom").value("Jeanne"))

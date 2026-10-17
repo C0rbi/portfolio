@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 import java.time.Instant;
 
-/** Un message reçu par le formulaire de contact (table « message », voir db/init.sql). */
+/** Un message reçu par le formulaire de contact (table « message », voir schema.sql). */
 @Entity
 @Table(name = "message")
 public class Message {

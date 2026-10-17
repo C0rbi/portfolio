@@ -8,4 +8,6 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
 	/** Boîte de réception : les messages les plus récents d'abord. */
 	List<Message> findAllByOrderByCreeLeDesc();
+
+	long countByLuFalse();
 }

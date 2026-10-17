@@ -4,18 +4,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/** Branche le contrôle du jeton administrateur sur les routes des messages. */
+/** Branche le contrôle de la session administrateur sur les routes des messages. */
 @Configuration
 public class ConfigurationWeb implements WebMvcConfigurer {
 
-	private final JetonAdmin jetonAdmin;
+	private final SessionAdmin sessionAdmin;
 
-	public ConfigurationWeb(JetonAdmin jetonAdmin) {
-		this.jetonAdmin = jetonAdmin;
+	public ConfigurationWeb(SessionAdmin sessionAdmin) {
+		this.sessionAdmin = sessionAdmin;
 	}
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(jetonAdmin).addPathPatterns("/api/messages", "/api/messages/**");
+		registry.addInterceptor(sessionAdmin).addPathPatterns("/api/messages", "/api/messages/**");
 	}
 }
