@@ -8,19 +8,42 @@
         <h1 class="section-title">Messages reçus</h1>
       </header>
 
-      @if (!jeton()) {
-        <form class="admin__login" (submit)="connecter($event)">
-          <label for="admin-jeton">Jeton d’administration</label>
-          <input
-            id="admin-jeton"
-            type="password"
-            autocomplete="current-password"
-            [value]="saisie()"
-            (input)="saisie.set($any($event.target).value)"
-          />
-          <button type="submit" class="btn btn--accent">Se connecter</button>
+      @if (verification()) {
+        <p class="admin__count" role="status">Vérification de la session…</p>
+      } @else if (!connecte()) {
+        <form
+          class="admin__login"
+          [formGroup]="form"
+          (ngSubmit)="connecter()"
+          novalidate
+          aria-labelledby="admin-connexion"
+        >
+          <h2 class="admin__login-title" id="admin-connexion">Connexion</h2>
+
+          <div class="admin__field">
+            <label for="admin-identifiant">Identifiant</label>
+            <input
+              id="admin-identifiant"
+              type="text"
+              formControlName="identifiant"
+              autocomplete="username"
+              autocapitalize="none"
+              spellcheck="false"
+            />
+          </div>
+
+          <div class="admin__field">
+            <label for="admin-mdp">Mot de passe</label>
+            <input id="admin-mdp" type="password" formControlName="motDePasse" autocomplete="current-password" />
+          </div>
+
+          <button type="submit" class="btn btn--accent" [disabled]="envoi()">
+            {{ envoi() ? 'Connexion…' : 'Se connecter' }}
+          </button>
         </form>
       } @else {
+        <p class="admin__who">Connecté en tant que <strong>{{ connecte() }}</strong></p>
+
         <div class="admin__bar">
           <p class="admin__count" role="status">
             @if (messages(); as liste) {

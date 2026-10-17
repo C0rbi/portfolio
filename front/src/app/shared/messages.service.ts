@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -24,7 +24,8 @@ export interface MessageRecu {
 /**
  * Appels à l'API des messages. En production, nginx relaie `/api` vers le
  * conteneur Spring Boot (front/nginx.conf) ; en développement, c'est le
- * proxy du serveur Angular (front/proxy.conf.json).
+ * proxy du serveur Angular (front/proxy.conf.json). Lire, marquer et
+ * supprimer demandent une session administrateur (voir AdminService).
  */
 @Injectable({ providedIn: 'root' })
 export class MessagesService {
@@ -35,19 +36,15 @@ export class MessagesService {
     return this.http.post<void>(this.url, message);
   }
 
-  lister(jeton: string): Observable<MessageRecu[]> {
-    return this.http.get<MessageRecu[]>(this.url, { headers: this.autorisation(jeton) });
+  lister(): Observable<MessageRecu[]> {
+    return this.http.get<MessageRecu[]>(this.url);
   }
 
-  marquerLu(jeton: string, id: number): Observable<void> {
-    return this.http.patch<void>(`${this.url}/${id}/lu`, null, { headers: this.autorisation(jeton) });
+  marquerLu(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.url}/${id}/lu`, null);
   }
 
-  supprimer(jeton: string, id: number): Observable<void> {
-    return this.http.delete<void>(`${this.url}/${id}`, { headers: this.autorisation(jeton) });
-  }
-
-  private autorisation(jeton: string): HttpHeaders {
-    return new HttpHeaders({ Authorization: `Bearer ${jeton}` });
+  supprimer(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/${id}`);
   }
 }

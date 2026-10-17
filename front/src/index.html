@@ -25,16 +25,8 @@
 
   <link rel="icon" type="image/png" href="portfolio-icon.png">
 
-  <!-- Animations permises ? Décidé avant le premier rendu, sinon les entrées
-       animées clignoteraient. MotionService prend ensuite le relais. -->
-  <script>
-    (function () {
-      var forced = false;
-      try { forced = localStorage.getItem('lagon-anime') === '1'; } catch (e) {}
-      var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!reduced || forced) document.documentElement.classList.add('motion-ok');
-    })();
-  </script>
+  <!-- Animations permises ? Décidé avant le premier rendu (public/mouvement.js) -->
+  <script src="mouvement.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
