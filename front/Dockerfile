@@ -9,4 +9,5 @@ RUN npx ng build
 # --- Service : nginx sert le site et relaie /api vers l'API Spring Boot
 FROM nginx:stable-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY securite.conf /etc/nginx/snippets/securite.conf
 COPY --from=build /app/dist/front/browser /usr/share/nginx/html

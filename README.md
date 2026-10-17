@@ -55,7 +55,8 @@ La mise en ligne est détaillée dans [DEPLOIEMENT.md](DEPLOIEMENT.md).
 
 Le site compte quatre routes : la page d'accueil, une fiche détaillée par
 projet, les mentions légales et `/admin`, la boîte de réception des messages
-(protégée par un jeton, absente des menus et exclue des moteurs de recherche).
+(réservée au compte administrateur, absente des menus et exclue des moteurs de
+recherche).
 
 ```
 front/src/app/
@@ -83,6 +84,7 @@ front/src/app/
 │   └── mini-horizon/            # horizon compact en tête de fiche projet
 └── shared/
     ├── contact-dialog.service.ts # ouvre la fenêtre de message (« Me contacter », footer)
+    ├── admin.service.ts         # connexion, session et déconnexion de /admin
     ├── messages.service.ts      # appels à l'API des messages (formulaire, /admin)
     ├── motion.service.ts        # état du mouvement : préférence système, Calme plat, Animer le lagon
     ├── reveal.directive.ts      # apparition au défilement
@@ -100,10 +102,12 @@ L'API et la base tiennent en quelques fichiers :
 ```
 api/src/main/java/nc/allan/portfolio/
 ├── message/                     # entité Message, dépôt JPA, contrôleur REST, limite d'envois
-├── admin/                       # jeton exigé pour lire, marquer et supprimer les messages
+├── admin/                       # compte administrateur : connexion, session, mot de passe BCrypt
+├── FenetreGlissante.java        # limite d'actions par adresse IP (messages, connexions)
 └── ErreursApi.java              # erreurs de validation renvoyées champ par champ
-db/init.sql                      # table « message », créée au premier lancement de MySQL
+api/src/main/resources/schema.sql # tables « message » et « administrateur », créées au démarrage
 docker-compose.yml               # web (nginx + Angular), api, db
+front/nginx.conf, securite.conf  # relais /api, limites par IP, en-têtes de sécurité (CSP…)
 ```
 
 ## Organisation des styles
@@ -171,6 +175,18 @@ Un composant importe la base commune avec une seule ligne :
   inerte derrière). Les champs sont validés deux fois, par Angular
   pour guider le visiteur, puis par Spring (Bean Validation) car seule l'API
   fait foi. Un champ piège invisible écarte les robots, et une même adresse IP
-  ne peut envoyer que 5 messages par tranche de 10 minutes. La lecture des
-  messages passe par `/admin` avec un jeton comparé en temps constant
-  (`MessageDigest.isEqual`).
+  ne peut envoyer que 5 messages par tranche de 10 minutes.
+* **Compte administrateur** : les messages se lisent sur `/admin`, après
+  connexion. Le mot de passe est haché avec BCrypt (table `administrateur`),
+  la session tient dans un cookie `HttpOnly` et `SameSite=Strict` (`Secure`
+  en HTTPS), une nouvelle session est créée à chaque connexion (contre la
+  fixation de session), et une adresse IP n'a droit qu'à 10 tentatives par
+  quart d'heure. Un identifiant inconnu prend le même temps de réponse qu'un
+  mauvais mot de passe, pour ne pas révéler quels comptes existent.
+* **Sécurité du serveur** : nginx envoie une politique de sécurité du contenu
+  (CSP : seuls les scripts servis par le site s'exécutent, aucun script en
+  ligne), interdit l'affichage du site dans un cadre, masque sa version et
+  ne tient aucun journal des visites. Il limite les requêtes par adresse IP,
+  et la boîte de réception refuse les messages au-delà de 500 non lus. Les
+  conteneurs ne peuvent pas gagner de droits et leurs journaux sont
+  plafonnés. Dépendances vérifiées avec `npm audit` (aucune faille connue).
