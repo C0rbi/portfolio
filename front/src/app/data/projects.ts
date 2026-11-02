@@ -82,7 +82,7 @@ export const PROJECTS: readonly Project[] = [
     imageWidth: 1860,
     imageHeight: 810,
     repo: 'https://github.com/C0rbi/Nicolas_Allan_Projet_Web_LDNC',
-    competences: ['B1.3', 'B1.4', 'B1.5'],
+    competences: ['B1.4', 'B1.5'],
     featured: true,
     samples: [
       {
@@ -189,7 +189,7 @@ export class PanierService {
     imageWidth: 1600,
     imageHeight: 1000,
     repo: 'https://github.com/kibagami-nc/Projet_mobile_POO_Manley_Allan',
-    competences: ['B1.3', 'B1.4', 'B1.5'],
+    competences: ['B1.4', 'B1.5'],
     imageCredit: 'fond de carte © les contributeurs d’OpenStreetMap',
     samples: [
       {
@@ -364,7 +364,7 @@ public void run() {
     imageWidth: 1600,
     imageHeight: 1000,
     repo: 'https://github.com/C0rbi/portfolio',
-    competences: ['B1.3', 'B1.6'],
+    competences: ['B1.6'],
     samples: [
       {
         file: 'motion.service.ts',
