@@ -46,7 +46,7 @@ export class Footer {
     {
       label: 'Curriculum vitæ',
       value: 'CV au format PDF',
-      href: 'CV Allan NICOLAS, BTS SIO - SLAM.pdf',
+      href: 'CV Allan NICOLAS - LP MIAW.pdf',
       external: true,
     },
   ];

@@ -17,6 +17,6 @@ export class AboutMe {
     { label: 'Localisation', value: 'Nouméa, Nouvelle-Calédonie' },
     { label: 'Formation', value: 'BTS SIO · option SLAM' },
     { label: 'Entreprise', value: 'CSB · alternance' },
-    { label: 'Recherche', value: 'Stage 2027 · Licence MIAW' },
+    { label: 'Recherche', value: 'Alternance 2027 · Licence MIAW' },
   ];
 }

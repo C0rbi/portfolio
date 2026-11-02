@@ -28,12 +28,12 @@ export class Experience {
     {
       period: 'Objectif 2027',
       title: 'Licence professionnelle MIAW',
-      org: 'Université de la Nouvelle-Calédonie · Nouméa',
+      org: 'Université de la Nouvelle-Calédonie · en alternance',
       track: 'formation',
       upcoming: true,
       description:
-        'Métiers de l’Informatique : Applications Web. La suite logique du BTS pour approfondir le développement web.',
-      tags: ['Développement web', 'Bac +3'],
+        'Métiers de l’Informatique : Applications Web. La suite logique du BTS, en alternance, pour approfondir le développement web.',
+      tags: ['Développement web', 'Alternance', 'Bac +3'],
     },
     {
       period: '2026 — aujourd’hui',
