@@ -364,7 +364,7 @@ public void run() {
     imageWidth: 1600,
     imageHeight: 1000,
     repo: 'https://github.com/C0rbi/portfolio',
-    competences: ['B1.6'],
+    competences: ['B1.1', 'B1.5', 'B1.6'],
     samples: [
       {
         file: 'motion.service.ts',
